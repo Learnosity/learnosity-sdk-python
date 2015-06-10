@@ -24,6 +24,17 @@ Or, from a checkout of this repo:
 
     python setup.py install
 
+Upgrading
+---------
+
+If installed from pypi:
+
+	pip install --upgrade learnosity_sdk
+
+Or just do a pull from GitHub and run again in the repo:
+
+	python setup.py install
+
 Usage
 -----
 
