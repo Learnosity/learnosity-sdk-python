@@ -34,7 +34,7 @@ class Init(object):
         self.secret = secret
         self.request = request
         self.action = action
-        
+
         self.request_string = self.generate_request_string()
 
         self.validate()
@@ -61,22 +61,22 @@ class Init(object):
             # Remove the domain key from the security packet
             del output['domain']
 
-            # Stringify the request packegt if necessary
+            # Stringify the request packet if necessary
             if self.request is not None:
-                output.update(self.request)
+                output.update(self.request_string)
 
         elif self.service == 'events':
             output['security'] = self.security
-            output['config'] = self.request
+            output['config'] = self.request_string
         elif self.service == 'assess':
             if self.request is not None:
-                output.update(self.request)
+                output.update(self.request_string)
         elif self.service == 'data':
             # We ignore the encode param for data API
             output['security'] = json.dumps(self.security)
 
             if self.request is not None:
-                output['request'] = json.dumps(self.request)
+                output['request'] = self.request_string
 
             if self.action is not None:
                 output['action'] = self.action
@@ -86,7 +86,7 @@ class Init(object):
             output['security'] = self.security
 
             if self.request is not None:
-                output['request'] = self.request
+                output['request'] = self.request_string
 
             if self.action is not None:
                 output['action'] = self.action
