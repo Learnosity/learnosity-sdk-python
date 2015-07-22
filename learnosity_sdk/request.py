@@ -63,7 +63,7 @@ class Init(object):
 
             # Stringify the request packet if necessary
             if self.request is not None:
-                output['usrequest'] = self.request_string
+                output.update(json.loads(self.request_string))
 
         elif self.service == 'events':
             output['security'] = self.security
