@@ -67,16 +67,16 @@ class Init(object):
 
         elif self.service == 'events':
             output['security'] = self.security
-            output['config'] = self.request_string
+            output['config'] = json.loads(self.request_string)
         elif self.service == 'assess':
             if self.request is not None:
-                output.update(self.request_string)
+                output.update(json.loads(self.request_string))
         elif self.service == 'data':
             # We ignore the encode param for data API
             output['security'] = json.dumps(self.security)
 
             if self.request is not None:
-                output['request'] = self.request_string
+                output['request'] = json.loads(self.request_string)
 
             if self.action is not None:
                 output['action'] = self.action
@@ -86,7 +86,7 @@ class Init(object):
             output['security'] = self.security
 
             if self.request is not None:
-                output['request'] = self.request_string
+                output['request'] = json.loads(self.request_string)
 
             if self.action is not None:
                 output['action'] = self.action
