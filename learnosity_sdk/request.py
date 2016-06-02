@@ -63,20 +63,20 @@ class Init(object):
 
             # Stringify the request packet if necessary
             if self.request is not None:
-                output.update(json.loads(self.request_string))
+                output.update(self.request)
 
         elif self.service == 'events':
             output['security'] = self.security
-            output['config'] = json.loads(self.request_string)
+            output['config'] = self.request
         elif self.service == 'assess':
             if self.request is not None:
-                output.update(json.loads(self.request_string))
+                output.update(self.request)
         elif self.service == 'data':
             # We ignore the encode param for data API
-            output['security'] = json.dumps(self.security)
+            output['security'] = self.security
 
             if self.request is not None:
-                output['request'] = json.loads(self.request_string)
+                output['request'] = self.request
 
             if self.action is not None:
                 output['action'] = self.action
@@ -86,7 +86,7 @@ class Init(object):
             output['security'] = self.security
 
             if self.request is not None:
-                output['request'] = json.loads(self.request_string)
+                output['request'] = self.request
 
             if self.action is not None:
                 output['action'] = self.action
@@ -99,7 +99,7 @@ class Init(object):
     def generate_request_string(self):
         if self.request is None:
             return ""
-        return json.dumps(self.request)
+        return json.dumps(self.request, separators=(',', ':'))
 
     def generate_signature(self):
 
@@ -218,4 +218,6 @@ class Init(object):
 
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
+        print "pre-hashlist: " + "_".join(l).encode('utf-8') + " : pre-hashlist"
+        print "hashlist : " + hashlib.sha256("_".join(l).encode('utf-8')).hexdigest() + " : hashlist"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
