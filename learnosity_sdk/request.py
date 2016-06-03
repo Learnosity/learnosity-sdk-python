@@ -73,10 +73,10 @@ class Init(object):
                 output.update(self.request)
         elif self.service == 'data':
             # We ignore the encode param for data API
-            output['security'] = self.security
+            output['security'] = json.dumps(self.security)
 
             if self.request is not None:
-                output['request'] = self.request
+                output['request'] = self.request_string
 
             if self.action is not None:
                 output['action'] = self.action
@@ -218,6 +218,4 @@ class Init(object):
 
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
-        print "pre-hashlist: " + "_".join(l).encode('utf-8') + " : pre-hashlist"
-        print "hashlist : " + hashlib.sha256("_".join(l).encode('utf-8')).hexdigest() + " : hashlist"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
