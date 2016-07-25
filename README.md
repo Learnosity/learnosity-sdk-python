@@ -13,8 +13,16 @@ Does not yet support:
 
 * server-side Data API usage
 
-Installation
-------------
+# Supported Python Versions
+
+These are the versions we test for:
+
+* 2.7.x
+* 3.3.x
+* 3.4.x
+* 3.5.x
+
+# Installation
 
 To install from PyPi:
 
@@ -22,10 +30,9 @@ To install from PyPi:
 
 Or, from a checkout of this repo:
 
-    python setup.py install
+    pip install .
 
-Upgrading
----------
+# Upgrading
 
 If installed from pypi:
 
@@ -33,10 +40,9 @@ If installed from pypi:
 
 Or just do a pull from GitHub and run again in the repo:
 
-	python setup.py install
+	pip install .
 
-Usage
------
+# Usage
 
 Simple example:
 
@@ -86,11 +92,16 @@ init = learnosity_sdk.request.Init(
 request = init.generate()
 ```
 
-Tests
------
+# Tests
 
-To run the tests, run `tox` from the project directory. This will run tests in both Python 2.7 and Python 3.4.
+To run the tests, run `tox` from the project directory. This will run tests several different versions of python.
 
 If you don't have `tox` installed, run:
 
 	pip install tox
+
+This assumes that you have `pyenv` or a similar tool set up to provide python binaries for 2.7, 3.3, 3.4 and 3.5.
+
+Alternatively, if you only care about the version you're currently running, you can just:
+
+	python setup.py test
