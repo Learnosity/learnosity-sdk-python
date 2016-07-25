@@ -1,2 +1,2 @@
 include requirements.txt
-include learnosity_sdk/VERSION
+include requirements-dev.txt

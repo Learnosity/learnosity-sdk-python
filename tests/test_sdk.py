@@ -41,6 +41,7 @@ ServiceTests = [
     )
 ]
 
+
 class TestServiceRequests(unittest.TestCase):
     """
     Tests instantiating a request for each service.
@@ -52,7 +53,7 @@ class TestServiceRequests(unittest.TestCase):
 
     def test_init_generate(self):
         for t in ServiceTests:
-            # TODO(dbryan): Much more validation
+            # TODO(cera): Much more validation
             security = {
                 'consumer_key': self.key,
                 'domain': self.domain,
