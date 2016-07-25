@@ -4,7 +4,7 @@ Learnosity Python SDK
 [![Build Status](https://travis-ci.org/Learnosity/learnosity-sdk-python.svg?branch=master)](https://travis-ci.org/Learnosity/learnosity-sdk-python)
 
 This package was based off the [PHP
-SDK](https://github.com/Learnosity/learnosity-sdk-php], with some small
+SDK](https://github.com/Learnosity/learnosity-sdk-php), with some small
 adjustments to be more pythonic.
 
 Supports:
