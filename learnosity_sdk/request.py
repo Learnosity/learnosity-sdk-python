@@ -210,7 +210,7 @@ class Init(object):
             self.sign_request_data = False
             hashed_users = {}
             for user in self.request.get('users', []):
-                concat = "{}{}".format(user, self.security['consumer_key'])
+                concat = "{}{}".format(user, self.secret)
                 hashed_users[user] = hashlib.sha256(concat)
 
             if len(hashed_users) > 0:
