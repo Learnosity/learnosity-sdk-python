@@ -1,7 +1,7 @@
 import pip.req
 import setuptools
 
-VERSION = '0.0.6'
+VERSION = '0.1.0'
 
 
 def test_reqs():
@@ -21,5 +21,8 @@ setuptools.setup(
 
     packages=setuptools.find_packages(exclude=('tests')),
 
+    install_requires=[
+        'requests>=2'
+    ],
     tests_require=test_reqs(),
 )

@@ -1,66 +1,59 @@
 import collections
 import unittest
 
-import learnosity_sdk.request
+SdkTestSpec = collections.namedtuple(
+    "TestSpec", ["import_line", "object"])
 
-ServiceTestSpec = collections.namedtuple(
-    "TestSpec", ["service", "valid", "security", "request"])
-
-ServiceTests = [
-    ServiceTestSpec(
-        "questions", True, {"user_id": "demo_student"}, {
-            "type": "local_practice", "state": "initial",
-            "questions": [
-                {
-                    "response_id": "60005",
-                    "type": "association",
-                    "stimulus": "Match the cities to the parent nation",
-                    "stimulus_list": [
-                        "London", "Dublin", "Paris", "Sydney"
-                    ],
-                    "possible_responses": [
-                        "Australia", "France",
-                        "Ireland", "England"
-                    ],
-                    "validation": {
-                        "valid_responses": [
-                            ["England"], ["Ireland"], ["France"], ["Australia"]
-                        ]
-                    }
-                }
-            ]
-        }
+SdkImportTests = [
+    SdkTestSpec(
+        "import learnosity_sdk", "learnosity_sdk.request.Init"
     ),
-
-    ServiceTestSpec(
-        "data", True, None, {"limit": 100}
+    SdkTestSpec(
+        "from learnosity_sdk import *", "request.Init"
     ),
-
-    ServiceTestSpec(
-        "assess", True, None, {"foo": "bar"}
-    )
+    SdkTestSpec(
+        "import learnosity_sdk.request", "learnosity_sdk.request.Init"
+    ),
 ]
 
+SdkModuleTests = [
+    SdkTestSpec(
+        "from learnosity_sdk import *", "exceptions"
+    ),
+    SdkTestSpec(
+        "from learnosity_sdk.exceptions import *", "ValidationException"
+    ),
+    SdkTestSpec(
+        "from learnosity_sdk.exceptions import *", "DataApiException"
+    ),
+    SdkTestSpec(
+        "from learnosity_sdk.request import *", "Init"
+    ),
+    SdkTestSpec(
+        "from learnosity_sdk.request import *", "DataApi"
+    ),
+]
 
-class TestServiceRequests(unittest.TestCase):
+def _run_test(t):
+    globals = {}
+    locals = {}
+    exec(t.import_line, globals, locals)
+    eval(t.object, globals, locals)
+
+class TestSdkImport(unittest.TestCase):
     """
-    Tests instantiating a request for each service.
+    Tests importing the SDK
     """
 
-    key = 'foo'
-    secret = 'bar'
-    domain = 'localhost'
+    def test_sdk_imports(self):
+        for t in SdkImportTests:
+            _run_test(t)
 
-    def test_init_generate(self):
-        for t in ServiceTests:
-            # TODO(cera): Much more validation
-            security = {
-                'consumer_key': self.key,
-                'domain': self.domain,
-            }
-            if t.security is not None:
-                security.update(t.security)
-            init = learnosity_sdk.request.Init(
-                t.service, security, self.secret, request=t.request)
+class TestSdkImport(unittest.TestCase):
+    """
+    Tests importing the modules
+    """
 
-            self.assertTrue(init.generate() is not None)
+    def test_sdk_imports(self):
+        for t in SdkModuleTests:
+            _run_test(t)
