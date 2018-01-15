@@ -1,3 +1,4 @@
+
 import datetime
 import hashlib
 import json
@@ -30,9 +31,9 @@ class Init(object):
             self, service, security, secret,
             request=None, action=None):
         self.service = service
-        self.security = security
+        self.security = security.copy()
         self.secret = secret
-        self.request = request
+        self.request = request.copy()
         self.action = action
 
         self.request_string = self.generate_request_string()
@@ -219,3 +220,4 @@ class Init(object):
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
+
