@@ -10,10 +10,11 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 - This ChangeLog!
+- Example code
 
 ### Security fixes:
-  - Bump requests to 2.20.0 (CVE-2018-18074)
-  - Bump urllib3 to 1.24.1 (CVE-2018-20060)
+- Bump requests to 2.20.0 (CVE-2018-18074)
+- Bump urllib3 to 1.24.1 (CVE-2018-20060)
 
 
 ## [v0.2.0] - 2018-10-17
