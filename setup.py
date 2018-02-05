@@ -1,7 +1,7 @@
 import pip.req
 import setuptools
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 
 def test_reqs():
