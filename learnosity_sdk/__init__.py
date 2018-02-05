@@ -1,5 +1,5 @@
-from .request import *
-from .exceptions import *
+import learnosity_sdk.request
+import learnosity_sdk.exceptions
 
 __all__ = [
         "exceptions",
