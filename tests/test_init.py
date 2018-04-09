@@ -38,7 +38,11 @@ ServiceTests = [
 
     ServiceTestSpec(
         "assess", True, None, {"foo": "bar"}
-    )
+    ),
+
+    ServiceTestSpec(
+        "events", True, None, {"users": [ "a", "b", "c" ] }
+    ),
 ]
 
 

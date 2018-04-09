@@ -212,10 +212,10 @@ class Init(object):
             hashed_users = {}
             for user in self.request.get('users', []):
                 concat = "{}{}".format(user, self.secret)
-                hashed_users[user] = hashlib.sha256(concat)
+                hashed_users[user] = hashlib.sha256(concat.encode('utf-8')).hexdigest()
 
             if len(hashed_users) > 0:
-                self.request['users'] = hashed_users
+                self.security['users'] = hashed_users
 
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
