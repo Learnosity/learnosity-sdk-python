@@ -7,8 +7,9 @@ define venv-activate
 	unset PYTHONPATH
 endef
 
-build:
-	$(error build not implemented)
+build: venv
+	$(call venv-activate); \
+		pip wheel .
 devbuild: pip-requirements-dev build
 prodbuild: build
 
@@ -16,19 +17,19 @@ test-unit: venv pip-requirements-dev
 	$(call venv-activate); \
 		$(PYTHON) setup.py test
 
-test-integration-python: venv pip-tox
+test-integration-dev: venv pip-tox
 	$(call venv-activate); \
 		tox
 
-build-clean: clean
-	test ! -d learnosity_sdk.egg-info/ || rm -r learnosity_sdk.egg-info/
+build-clean: real-clean
 
 clean:
-	find . -name __pycache__ -delete
+	find . -path __pycache__ -delete
 	test ! -d $(VENVPATH) || rm -r $(VENVPATH)
 	test ! -d .tox || rm -r .tox
-real-clean:
+real-clean: clean
 	test ! -d $(VENV) || rm -r $(VENV)
+	test ! -d learnosity_sdk.egg-info/ || rm -r learnosity_sdk.egg-info/
 
 # Python environment and dependencies
 venv: $(VENVPATH)
