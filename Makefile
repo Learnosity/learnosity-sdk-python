@@ -7,13 +7,11 @@ define venv-activate
 	unset PYTHONPATH
 endef
 
+prodbuild: build
+devbuild: build
 build: venv
 	$(call venv-activate); \
-		pip wheel . -w $(BUILDDIR)
-devbuild: BUILDDIR=dev
-devbuild: pip-requirements-dev build
-prodbuild: BUILDDIR=prod
-prodbuild: build
+		$(PYTHON) setup.py sdist
 
 test-unit: venv pip-requirements-dev
 	$(call venv-activate); \
@@ -31,8 +29,7 @@ clean:
 	test ! -d .tox || rm -r .tox
 real-clean: clean
 	test ! -d $(VENV) || rm -r $(VENV)
-	test ! -d prod || rm -r prod
-	test ! -d dev || rm -r dev
+	test ! -d dist || rm -r dist
 	test ! -d learnosity_sdk.egg-info/ || rm -r learnosity_sdk.egg-info/
 
 # Python environment and dependencies
