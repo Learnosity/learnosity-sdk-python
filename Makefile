@@ -9,8 +9,10 @@ endef
 
 build: venv
 	$(call venv-activate); \
-		pip wheel .
+		pip wheel . -w $(BUILDDIR)
+devbuild: BUILDDIR=dev
 devbuild: pip-requirements-dev build
+prodbuild: BUILDDIR=prod
 prodbuild: build
 
 test-unit: venv pip-requirements-dev
@@ -29,6 +31,8 @@ clean:
 	test ! -d .tox || rm -r .tox
 real-clean: clean
 	test ! -d $(VENV) || rm -r $(VENV)
+	test ! -d prod || rm -r prod
+	test ! -d dev || rm -r dev
 	test ! -d learnosity_sdk.egg-info/ || rm -r learnosity_sdk.egg-info/
 
 # Python environment and dependencies
