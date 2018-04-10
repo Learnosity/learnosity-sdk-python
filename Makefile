@@ -2,12 +2,14 @@ PYTHON=python3
 VENV=.venv
 VENVPATH=$(VENV)/$(shell uname)-$(shell uname -m)-sdk-python
 
+PKG_VER=$(shell sed -n "s/^.*VERSION\s\+=\s\+'\([^']\+\)'.*$$/\1/p" setup.py)
+
 define venv-activate
 	. $(VENVPATH)/bin/activate; \
 	unset PYTHONPATH
 endef
 
-prodbuild: build
+prodbuild: test-version build
 devbuild: build
 build: venv
 	$(call venv-activate); \
@@ -20,6 +22,10 @@ test-unit: venv pip-requirements-dev
 test-integration-dev: venv pip-tox
 	$(call venv-activate); \
 		tox
+
+test-version:
+	git describe --tags | grep -q $(PKG_VER) || (echo Version number $(PKG_VER) in setup.py does not match git tag; false)
+
 
 build-clean: real-clean
 
