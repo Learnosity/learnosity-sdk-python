@@ -1,11 +1,14 @@
-import pip.req
+try: # for pip >= 10
+       from pip._internal.req import parse_requirements
+except ImportError: # for pip <= 9.0.3
+       from pip.req import parse_requirements
 import setuptools
 
 VERSION = '0.1.1'
 
 
 def test_reqs():
-    reqs = pip.req.parse_requirements('requirements-dev.txt', session=False)
+    reqs = parse_requirements('requirements-dev.txt', session=False)
     reqs = [str(ir.req) for ir in reqs]
 
     return reqs

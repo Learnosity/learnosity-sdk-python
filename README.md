@@ -44,7 +44,7 @@ Or just do a pull from GitHub and run again in the repo:
 
 # Usage
 
-Simple example:
+## Questions API
 
 ```python
 import learnosity_sdk.request
@@ -83,16 +83,16 @@ questions_request = {
     ]
 }
 
-init = learnosity_sdk.request.Init(
+questions_init = learnosity_sdk.request.Init(
     'questions', security, secret,
     request=questions_request
 )
 
 # Get the JSON that can be rendered into the page and passed to LearnosityApp.init
-signed_request = init.generate()
+signed_request = questions_init.generate()
 ```
 
-Data API example:
+## Data API
 
 ```python
 import json
@@ -137,6 +137,36 @@ print(len(items))
 for result in client.request_iter(endpoint, security, consumer_secret, data_request, action):
     # print the length of each page of the items list (will print a line for each page in the results)
     print(len(result['data']))
+```
+
+## Events API
+
+```python
+import learnosity_sdk.request
+
+# Security packet including consumer key
+security = {
+  'consumer_key': 'MY_API_KEY',
+  'domain': 'localhost',
+  'user_id': 'demo_student'
+}
+# consumer secret for API access
+# WARNING: The consumer secret should not be committed to source control.
+secret = 'MY_API_SECRET'
+
+# request data for Questions API
+events_request = {
+	"users": [ "diego", "manny", "sid"  ]
+}
+
+events_init = learnosity_sdk.request.Init(
+    'events', security, secret,
+    request=events_request
+)
+
+# Get the JSON that can be rendered into the page and passed to LearnosityApp.init
+signed_request = events_init.generate()
+print(signed_request)
 ```
 
 # Tests
