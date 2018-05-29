@@ -2,21 +2,31 @@ PYTHON=python3
 VENV=.venv
 VENVPATH=$(VENV)/$(shell uname)-$(shell uname -m)-sdk-python
 
+ENV=prod
+REGION=.learnosity.com
+# Data API
+VER=v1
+
 define venv-activate
 	. $(VENVPATH)/bin/activate; \
 	unset PYTHONPATH
 endef
 
-prodbuild: test-version build
+prodbuild: dist-check-version build
 devbuild: build
 build: venv
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist
 
-test: test-unit test-integration-dev test-version
+test: test-unit test-integration-dev dist-check-version
 test-unit: venv pip-requirements-dev
 	$(call venv-activate); \
-		$(PYTHON) setup.py test
+		$(PYTHON) setup.py test  --addopts '--pyargs tests.unit'
+
+test-integration-env: venv pip-requirements-dev
+	$(call venv-activate); \
+		ENV=$(ENV) \
+		$(PYTHON) setup.py test  --addopts '--pyargs tests.integration'
 
 test-integration-dev: venv pip-tox
 	$(call venv-activate); \
@@ -53,7 +63,7 @@ real-clean: clean
 # Python environment and dependencies
 venv: $(VENVPATH)
 $(VENVPATH):
-	virtualenv -p$(PYTHON) $(VENVPATH)
+	unset PYTHONPATH; virtualenv -p$(PYTHON) $(VENVPATH)
 	$(call venv-activate); \
 		pip install -e .
 
