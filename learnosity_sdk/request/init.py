@@ -60,7 +60,8 @@ class Init(object):
             output.update(self.security)
 
             # Remove the domain key from the security packet
-            del output['domain']
+            if 'domain' in output.keys():
+                del output['domain']
 
             # Stringify the request packet if necessary
             if self.request is not None:
@@ -194,11 +195,9 @@ class Init(object):
                     }.values())
                 }
 
-                del questionsApi['consumer_key']
-                del questionsApi['domain']
-                del questionsApi['timestamp']
-                del questionsApi['user_id']
-                del questionsApi['signature']
+                for key in [ 'consumer_key', 'domain', 'timestamp', 'user_id', 'signature']:
+                    if key in questionsApi.keys():
+                        del questionsApi[key]
 
                 self.request['questionsApiActivity'].update(questionsApi)
 
