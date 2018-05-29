@@ -84,33 +84,3 @@ class UnitTestDataApiClient(unittest.TestCase):
         assert len(results) == 2
         assert results[0]['id'] == 'a'
         assert results[1]['id'] == 'b'
-
-
-class IntegrationTestDataApiClient(unittest.TestCase):
-
-    def test_real_request(self):
-        """Make a request against Data Api to ensure the SDK works"""
-        client = DataApi()
-        res = client.request(endpoint, security, consumer_secret, request,
-                             action)
-        print(res.request.url)
-        print(res.request.body)
-        print(res.content)
-        returned_json = res.json()
-        assert len(returned_json['data']) > 0
-        returned_ref = returned_json['data'][0]['reference']
-        assert returned_ref in request['references']
-
-    def test_paging(self):
-        """Verify that paging works"""
-        client = DataApi()
-        pages = client.request_iter(endpoint, security, consumer_secret,
-                                    request, action)
-        results = set()
-        for page in pages:
-            if page['data']:
-                results.add(page['data'][0]['reference'])
-
-        assert len(results) == 2
-        assert results == {'item_2', 'item_3'}
-
