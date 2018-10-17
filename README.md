@@ -92,6 +92,64 @@ questions_init = learnosity_sdk.request.Init(
 signed_request = questions_init.generate()
 ```
 
+## Items API
+
+Request packet generation containing signature could look as follows:
+```python
+#!/usr/bin/env python
+from learnosity_sdk.request import Init
+from learnosity_sdk.uuid import Uuid
+
+# Security packet including consumer key
+security = {
+  'consumer_key': 'yis0TYCu7U9V4o7M',
+  # Change to your domain, e.g. 127.0.0.1, learnosity.com
+  'domain': 'localhost',
+}
+# consumer secret for API access
+# WARNING: The consumer secret should not be committed to source control.
+secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
+
+# example request data for Items API
+items_request = items_request = {
+    "rendering_type": "inline",
+    "user_id": "12345678",
+    "session_id": Uuid.generate()
+    "type": "submit_practice",
+    "activity_id": "emberDemo2013",
+    "name": "Items API demo - inline activity.",
+    "items": [
+        "classification_1",
+        "multiple_choice_1"
+    ]
+}
+
+init = Init(
+    'items', security, secret,
+    request=items_request
+)
+
+# Get the JSON that can be rendered into the page and passed to LearnosityItems.init
+print(init.generate())
+```
+Corresponding HTML template (using Django template markup):
+```html
+<html>
+    <head>
+    </head>
+    <body>
+        <script src="https://items.learnosity.com/?v1"></script>
+        <span class="learnosity-item" data-reference="multiple_choice_1"></span>
+        <span class="learnosity-item" data-reference="classification_1"></span>
+        <script>
+            <!-- `generated` should be the unescaped string obtained from Init.generate() method -->
+            var itemsApp = LearnosityItems.init({{ generated|safe }});
+        </script>
+    </body>
+</html>
+```
+
+
 ## Data API
 
 ```python
@@ -193,4 +251,3 @@ Alternatively, if you only care about the version you're currently running, you 
 5. Run `twine upload dist/*` to deploy the distributions to PyPi
 
 You will need to be set up as a maintainer in order to do this.
-
