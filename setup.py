@@ -4,7 +4,7 @@ except ImportError: # for pip <= 9.0.3
        from pip.req import parse_requirements
 import setuptools
 
-VERSION = '0.1.2'
+VERSION = '0.2.0'
 
 
 def test_reqs():
