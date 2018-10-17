@@ -114,7 +114,7 @@ secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 items_request = items_request = {
     "rendering_type": "inline",
     "user_id": "12345678",
-    "session_id": Uuid.generate()
+    "session_id": Uuid.generate(),
     "type": "submit_practice",
     "activity_id": "exampleActivity",
     "name": "Items API demo - inline activity.",
