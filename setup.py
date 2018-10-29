@@ -25,7 +25,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=('tests')),
 
     install_requires=[
-        'requests>=2'
+        'requests>=2.20'
     ],
     tests_require=test_reqs(),
 )
