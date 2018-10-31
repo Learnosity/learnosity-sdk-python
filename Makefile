@@ -18,6 +18,9 @@ build: venv
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist
 
+release:
+	@./release.sh
+
 test: test-unit test-integration-dev dist-check-version
 test-unit: venv pip-requirements-dev
 	$(call venv-activate); \
