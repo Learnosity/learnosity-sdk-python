@@ -4,8 +4,7 @@ except ImportError: # for pip <= 9.0.3
        from pip.req import parse_requirements
 import setuptools
 
-VERSION = '0.2.0'
-
+VERSION = '0.2.1pre'
 
 def test_reqs():
     reqs = parse_requirements('requirements-dev.txt', session=False)
