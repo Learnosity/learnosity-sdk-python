@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VERSION_FILE=".version"
+VERSION_FILE="setup.py"
 CHANGELOG="ChangeLog.md"
 
 check_git_clean () {
@@ -83,7 +83,7 @@ confirm_tagging () {
 update_version () {
 	# update and commit local version file used by tracking telemetry
 	echo -e "\\nWriting version file..."
-	echo "${new_version}" > "${VERSION_FILE}"
+	sed -i "s/^VERSION *=.*/VERSION = '${new_version}'/" ${VERSION_FILE}
 
 	echo -e "Updating ${CHANGELOG}..."
 	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
