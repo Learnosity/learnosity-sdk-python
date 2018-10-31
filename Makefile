@@ -54,6 +54,7 @@ dist-upload-twine: pip-requirements-dev dist # This target doesn't do any safety
 		twine upload dist/*
 
 clean: test-clean distclean
+	test ! -d build || rm -r build
 	find . -path __pycache__ -delete
 	find . -name *.pyc -delete
 test-clean:
