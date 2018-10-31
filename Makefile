@@ -20,6 +20,7 @@ build: venv
 
 release:
 	@./release.sh
+	@echo '*** You can now use \`make dist-upload\`' to publish the new version to PyPI'
 
 test: test-unit test-integration-dev dist-check-version
 test-unit: venv pip-requirements-dev
