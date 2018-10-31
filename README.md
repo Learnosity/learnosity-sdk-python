@@ -1,6 +1,8 @@
 Learnosity Python SDK
 =====================
 
+[![PyPi version](https://pypip.in/v/learnosity_sdk/badge.png)](https://crate.io/packages/learnosity_sdk/)
+[![GitHub version](https://badge.fury.io/gh/Learnosity%2Flearnosity-sdk-python.svg)](https://badge.fury.io/gh/Learnosity%2Flearnosity-sdk-python)
 [![Build Status](https://travis-ci.org/Learnosity/learnosity-sdk-python.svg?branch=master)](https://travis-ci.org/Learnosity/learnosity-sdk-python)
 
 This package was based off the [PHP
