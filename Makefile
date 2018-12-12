@@ -20,7 +20,11 @@ build: venv
 
 release:
 	@./release.sh
-	@echo '*** You can now use \`make dist-upload\`' to publish the new version to PyPI'
+	@echo '*** You can now use \`make dist-upload\` to publish the new version to PyPI'
+
+freeze-deps:
+	$(call venv-activate); \
+               $(PYTHON) -m pip freeze | grep -v learnosity_sdk > requirements.txt
 
 test: test-unit test-integration-dev dist-check-version
 test-unit: venv pip-requirements-dev

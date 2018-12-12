@@ -2,6 +2,7 @@
 
 VERSION_FILE="setup.py"
 CHANGELOG="ChangeLog.md"
+REQUIREMENTS="requirements.txt"
 
 check_git_clean () {
 	if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
@@ -80,6 +81,11 @@ confirm_tagging () {
 	expect_yes || exit 1
 }
 
+update_requirements() {
+       echo -e "\\nUpdating dependencies..."
+       make freeze-deps
+}
+
 update_version () {
 	# update and commit local version file used by tracking telemetry
 	echo -e "\\nWriting version file..."
@@ -89,7 +95,7 @@ update_version () {
 	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
 
 	echo -e "Committing release files..."
-	git add "${VERSION_FILE}" "${CHANGELOG}"
+        git add "${VERSION_FILE}" "${CHANGELOG}" "${REQUIREMENTS}"
 	git commit --allow-empty -m "[RELEASE] ${new_version}"
 }
 
@@ -138,6 +144,7 @@ get_new_version
 get_prev_version
 print_release_notes
 confirm_tagging
+update_requirements
 update_version
 create_tag
 test_dist
