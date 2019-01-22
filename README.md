@@ -100,7 +100,7 @@ Request packet generation containing signature could look as follows:
 ```python
 #!/usr/bin/env python
 from learnosity_sdk.request import Init
-from learnosity_sdk.uuid import Uuid
+from learnosity_sdk.utils import Uuid
 
 # Security packet including consumer key
 security = {
