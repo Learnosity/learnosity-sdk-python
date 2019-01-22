@@ -4,8 +4,7 @@ except ImportError: # for pip <= 9.0.3
        from pip.req import parse_requirements
 import setuptools
 
-VERSION = '0.2.0'
-
+VERSION = '0.2.1pre'
 
 def test_reqs():
     reqs = parse_requirements('requirements-dev.txt', session=False)
@@ -25,7 +24,8 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=('tests')),
 
     install_requires=[
-        'requests>=2'
+        'requests>=2.20',
+        'urllib3>1.23',
     ],
     tests_require=test_reqs(),
 )
