@@ -12,8 +12,8 @@ define venv-activate
 	unset PYTHONPATH
 endef
 
-prodbuild: dist-check-version build
 devbuild: build
+prodbuild: dist-check-version build
 build: venv
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist
