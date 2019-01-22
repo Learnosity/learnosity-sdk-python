@@ -6,5 +6,5 @@
 - [ ] ChangeLog.md updated
 
 - [ ] Tests added
-- [ ] All testsuites passe
+- [ ] All testsuites passed
 - [ ] `make dist` completed successfully
