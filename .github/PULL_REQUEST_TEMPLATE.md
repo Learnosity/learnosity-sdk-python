@@ -1,7 +1,11 @@
+
+
 ## Checklist
 
 - [ ] Feature
 - [ ] Bug
+- [ ] Security
+- [ ] Documentation
 
 - [ ] ChangeLog.md updated
 
