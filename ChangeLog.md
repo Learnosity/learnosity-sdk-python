@@ -11,6 +11,7 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 - This ChangeLog!
 - Example code
+- Add better context to `DataApiException`s
 
 ### Security fixes:
 - Bump requests to 2.20.0 (CVE-2018-18074)
