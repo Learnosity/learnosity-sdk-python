@@ -8,6 +8,8 @@ security = {
     'consumer_key': 'yis0TYCu7U9V4o7M',
     'domain': 'localhost'
 }
+# consumer secret for API access
+# WARNING: The consumer secret should not be committed to source control.
 consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 data_request = { 'limit': 1 }
 
