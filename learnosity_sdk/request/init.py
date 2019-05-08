@@ -2,6 +2,8 @@
 import datetime
 import hashlib
 import json
+import pkg_resources
+import platform
 
 from learnosity_sdk.exceptions import ValidationException
 
@@ -44,6 +46,12 @@ class Init(object):
         self.set_service_options()
 
         self.security['signature'] = self.generate_signature()
+
+        """
+        We use telemetry to enable better support and feature planning. It is
+        however not advised to disable it, and it will not interfere with any usage.
+        """
+        self.__telemetry_enabled = True
 
     def generate(self, encode=True):
         """
@@ -93,10 +101,30 @@ class Init(object):
             if self.action is not None:
                 output['action'] = self.action
 
+        if self.__telemetry_enabled:
+            output['meta'] = self.get_meta()
+
         if encode:
             return json.dumps(output)
         else:
             return output
+
+    def get_meta(self):
+        return {
+            'sdk': {
+                'version': self.get_sdk_version(),
+                'lang': 'python',
+                'lang_version': platform.python_version(),
+                'platform': platform.system(),
+                'platform_version': platform.release()
+            }
+        }
+
+    def get_sdk_version(self):
+        try:
+            return 'v' + pkg_resources.require('learnosity_sdk')[0].version
+        except:
+            return 'unknown'
 
     def generate_request_string(self):
         if self.request is None:
@@ -220,3 +248,8 @@ class Init(object):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
 
+    def disable_telemetry(self):
+        self.__telemetry_enabled = False
+
+    def enable_telemetry(self):
+        self.__telemetry_enabled = True
