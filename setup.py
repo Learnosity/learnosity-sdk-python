@@ -4,7 +4,9 @@ except ImportError: # for pip <= 9.0.3
        from pip.req import parse_requirements
 import setuptools
 
-VERSION = '0.2.1pre'
+# Loads __version__ using exec as setup.py can't import its own package
+exec(open('learnosity_sdk/_version.py').read())
+
 
 def test_reqs():
     reqs = parse_requirements('requirements-dev.txt', session=False)
@@ -17,7 +19,7 @@ setuptools.setup(
     author='Cera Davies',
     author_email='cera.davies@learnosity.com',
     url='https://github.com/Learnosity/learnosity-sdk-python',
-    version=VERSION,
+    version=__version__,
     name='learnosity_sdk',
     description='Learnosity SDK for Python',
 

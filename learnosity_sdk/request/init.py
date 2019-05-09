@@ -2,8 +2,8 @@
 import datetime
 import hashlib
 import json
-import pkg_resources
 import platform
+from learnosity_sdk._version import __version__
 
 from learnosity_sdk.exceptions import ValidationException
 
@@ -121,10 +121,7 @@ class Init(object):
         }
 
     def get_sdk_version(self):
-        try:
-            return 'v' + pkg_resources.require('learnosity_sdk')[0].version
-        except:
-            return 'unknown'
+        return 'v' + __version__
 
     def generate_request_string(self):
         if self.request is None:

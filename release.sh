@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VERSION_FILE="setup.py"
+VERSION_FILE="learnosity_sdk/_version.py"
 CHANGELOG="ChangeLog.md"
 REQUIREMENTS="requirements.txt"
 
@@ -90,7 +90,7 @@ update_requirements() {
 update_version () {
 	# update and commit local version file used by tracking telemetry
 	echo -e "\\nWriting version file..."
-	sed -i "s/^VERSION *=.*/VERSION = '${new_version}'/" ${VERSION_FILE}
+	sed -i "s/^__version__ *=.*/__version__ = '${new_version}'/" ${VERSION_FILE}
 
 	echo -e "Updating ${CHANGELOG}..."
 	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
