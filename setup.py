@@ -29,8 +29,8 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=('tests')),
 
     install_requires=[
-        'requests>=2.20',
-        'urllib3>1.23',
+        'requests>=2.21.0',
+        'urllib3>=1.24.3',
     ],
     tests_require=test_reqs(),
 )
