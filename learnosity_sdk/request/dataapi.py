@@ -102,7 +102,9 @@ class DataApi(object):
                 action
             )
             if not res.ok:
-                raise DataApiException(res.text)
+                raise DataApiException(
+                    'server returned HTTP status ' + str(res.status_code)
+                    + ': ' + res.text)
             try:
                 data = res.json()
             except ValueError:
@@ -115,7 +117,8 @@ class DataApi(object):
                 data_end = True
 
             if not data['meta']['status']:
-                raise DataApiException(res.text)
+                raise DataApiException(
+                    'server returned unsuccessful status: ' + res.text)
             else:
                 yield data
 
