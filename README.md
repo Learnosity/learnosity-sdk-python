@@ -246,10 +246,17 @@ Alternatively, if you only care about the version you're currently running, you 
 
 # Deploying to PyPi
 
-1. Update the version number in `setup.py`
-2. Install the dev requirements `pip install -r requirements-dev.txt`
-3. Run `python setup.py sdist` to create the source distribution
-4. Run `python setup.py bdist_wheel --universal` to create the binary distribution
-5. Run `twine upload dist/*` to deploy the distributions to PyPi
+Run `make release` and follow the instructions to deploy the distributions to PyPi
 
 You will need to be set up as a maintainer in order to do this.
+
+
+## Tracking
+In version v0.3.0 we introduced code to track the following information by adding it to the request being signed:
+- SDK version
+- SDK language
+- SDK language version
+- Host platform (OS)
+- Platform version
+
+We use this data to enable better support and feature planning. All subsequent versions of the SDK shall include this usage tracking.
