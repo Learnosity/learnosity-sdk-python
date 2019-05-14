@@ -246,10 +246,7 @@ Alternatively, if you only care about the version you're currently running, you 
 
 # Deploying to PyPi
 
-1. Install the dev requirements `pip install -r requirements-dev.txt`
-2. Run `python setup.py sdist` to create the source distribution
-3. Run `python setup.py bdist_wheel --universal` to create the binary distribution
-4. Run `twine upload dist/*` to deploy the distributions to PyPi
+Run `make release` and follow the instructions to deploy the distributions to PyPi
 
 You will need to be set up as a maintainer in order to do this.
 
