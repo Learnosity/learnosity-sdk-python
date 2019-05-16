@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 import setuptools
 
 # Loads __version__ using exec as setup.py can't import its own package
 version = {}
 version_file = 'learnosity_sdk/_version.py'
-exec(open(version_file).read(), { '__builtins__': None }, version)
+exec(open(version_file).read(), {'__builtins__': None}, version)
 if '__version__' not in version:
     raise Exception('__version__ not found in file %s' % version_file)
 
