@@ -11,6 +11,7 @@ if '__version__' not in version:
 
 
 INSTALL_REQUIRES = [
+    'click>=7',
     'requests >=2.21.0',
 ]
 
@@ -37,6 +38,12 @@ setuptools.setup(
     description='Learnosity SDK for Python',
 
     packages=setuptools.find_packages(exclude=('tests')),
+
+    entry_points={
+        'console_scripts': [
+            'lrn-cli = learnosity_sdk.scripts.lrn_cli:cli',
+        ],
+    },
 
     install_requires=INSTALL_REQUIRES,
     extras_require={

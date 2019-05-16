@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Example code
 - Add better context to `DataApiException`s
 - Telemetry support
+- lrn-cli command
 
 ### Security
 - Bump requests to 2.21.0 (CVE-2018-18074)
