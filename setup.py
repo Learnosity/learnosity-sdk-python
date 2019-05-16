@@ -19,8 +19,8 @@ def test_reqs():
 
 
 setuptools.setup(
-    author='Cera Davies',
-    author_email='cera.davies@learnosity.com',
+    author='Learnosity',
+    author_email='sdk@learnosity.com',
     url='https://github.com/Learnosity/learnosity-sdk-python',
     version=version['__version__'],
     name='learnosity_sdk',
