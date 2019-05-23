@@ -21,6 +21,11 @@ checks:
 
 plugins:
   # Python
+  sonar-python:
+    enabled: true
+    config:
+      tests_patterns:
+        - tests/**
   radon:
     enabled: true
     config:
