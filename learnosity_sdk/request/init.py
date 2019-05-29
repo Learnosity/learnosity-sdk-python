@@ -47,10 +47,6 @@ class Init(object):
 
         self.security['signature'] = self.generate_signature()
 
-        """
-        We use telemetry to enable better support and feature planning. It is
-        however not advised to disable it, and it will not interfere with any usage.
-        """
         self.__telemetry_enabled = True
 
     def generate(self, encode=True):
@@ -245,6 +241,10 @@ class Init(object):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
 
+    """
+    We use telemetry to enable better support and feature planning. It is
+    however not advised to disable it, and it will not interfere with any usage.
+    """
     def disable_telemetry(self):
         self.__telemetry_enabled = False
 
