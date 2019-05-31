@@ -47,7 +47,7 @@ dist: distclean
 		$(PYTHON) setup.py sdist; \
 		$(PYTHON) setup.py bdist_wheel --universal
 dist-upload: dist-check-version clean test dist-upload-twine
-dist-check-version: PKG_VER=v$(shell sed -n "s/^.*__version__\s\+=\s\+'\([^']\+\)'.*$$/\1/p" learnosity_sdk/_version.py)
+dist-check-version: PKG_VER=v$(shell sed -n "s/^.*__version__\s*=\s*'\([^']\+\)'.*$$/\1/p" learnosity_sdk/_version.py)
 dist-check-version: GIT_TAG=$(shell git describe --tags)
 dist-check-version:
 ifeq ('$(shell echo $(GIT_TAG) | grep -qw "$(PKG_VER)")', '')
