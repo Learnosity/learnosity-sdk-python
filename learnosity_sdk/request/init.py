@@ -38,6 +38,9 @@ class Init(object):
         self.request = request.copy()
         self.action = action
 
+        self.__telemetry_enabled = True
+        self.request = self.add_telemetry_data(self.request)
+
         self.request_string = self.generate_request_string()
 
         self.validate()
@@ -46,8 +49,6 @@ class Init(object):
         self.set_service_options()
 
         self.security['signature'] = self.generate_signature()
-
-        self.__telemetry_enabled = True
 
     def generate(self, encode=True):
         """
@@ -97,23 +98,18 @@ class Init(object):
             if self.action is not None:
                 output['action'] = self.action
 
-        if self.__telemetry_enabled:
-            output['meta'] = self.get_meta()
-
         if encode:
             return json.dumps(output)
         else:
             return output
 
-    def get_meta(self):
+    def get_sdk_meta(self):
         return {
-            'sdk': {
-                'version': self.get_sdk_version(),
-                'lang': 'python',
-                'lang_version': platform.python_version(),
-                'platform': platform.system(),
-                'platform_version': platform.release()
-            }
+            'version': self.get_sdk_version(),
+            'lang': 'python',
+            'lang_version': platform.python_version(),
+            'platform': platform.system(),
+            'platform_version': platform.release()
         }
 
     def get_sdk_version(self):
@@ -240,6 +236,17 @@ class Init(object):
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
+
+    def add_telemetry_data(self, request_object):
+        if self.__telemetry_enabled:
+            if 'meta' in request_object:
+                request_object['meta']['sdk'].update(self.get_sdk_meta())
+            else:
+                request_object['meta'] = {
+                    'sdk': self.get_sdk_meta()
+                }
+
+        return request_object
 
     """
     We use telemetry to enable better support and feature planning. It is

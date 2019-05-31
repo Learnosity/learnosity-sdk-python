@@ -34,8 +34,26 @@ ServiceTests = [
     ),
 
     ServiceTestSpec(
+        "items", True, {"user_id": "demo_student"}, {
+            "activity_id": "itemsactivitiesdemo",
+            "activity_template_id": "demo-activity-1",
+            "name": "Items API demo - activities",
+            "rendering_type": "assess",
+            "type": "submit_practice",
+            "session_id": "336f26aa-00e8-43d7-a873-0b451ce8e04c",
+            "user_id": "demos-site",
+            "config": {
+                "title": "Activities Demo",
+                "subtitle": "Walter White",
+                "regions": "main"
+            }
+        }, None,
+        'c1eec873e0cba577def8878a08a0c1b090961efdbd0e486cf15c2b5dc99e5b8b',
+    ),
+
+    ServiceTestSpec(
         "data", True, None, {"limit": 100}, "get",
-        'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
+        '0dca90b2ee78c69311ab22498ef0c42ef974d43d0895ed5e1fabaf7d4cc617fa',
     ),
 
 #     ServiceTestSpec(
