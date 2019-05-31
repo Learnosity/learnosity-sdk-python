@@ -39,16 +39,15 @@ class Init(object):
         self.action = action
 
         self.__telemetry_enabled = True
-        self.request = self.add_telemetry_data(self.request)
+        self.request_string = ''
+        self.sign_request_data = True
 
+    def set_request_packet(self):
+        self.request = self.add_telemetry_data(self.request)
         self.request_string = self.generate_request_string()
 
-        self.validate()
-
-        self.sign_request_data = True
-        self.set_service_options()
-
-        self.security['signature'] = self.generate_signature()
+    def is_telemetry_enabled(self):
+        return self.__telemetry_enabled
 
     def generate(self, encode=True):
         """
@@ -58,6 +57,11 @@ class Init(object):
         If encode is True, the result is a JSON string. Otherwise, it's a
         dictionary. If self.service == data, encode is ignored.
         """
+        self.validate()
+        self.set_request_packet()
+        self.set_service_options()
+        self.security['signature'] = self.generate_signature()
+
         output = {}
 
         if self.service == 'questions':
@@ -239,13 +243,18 @@ class Init(object):
 
     def add_telemetry_data(self, request_object):
         if self.__telemetry_enabled:
+            test1 = 'yes it is enabled'
+
             if 'meta' in request_object:
                 request_object['meta']['sdk'].update(self.get_sdk_meta())
             else:
                 request_object['meta'] = {
                     'sdk': self.get_sdk_meta()
                 }
-
+        else:
+            test1 = 'no it is disabled'
+        print(test1)
+        print(request_object)
         return request_object
 
     """
