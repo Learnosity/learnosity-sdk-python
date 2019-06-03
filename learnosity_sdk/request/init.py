@@ -41,7 +41,7 @@ class Init(object):
         self.action = action
 
         self.sign_request_data = True
-        self.request_string = ''
+        self.request_string = None
 
     def is_telemetry_enabled(self):
         return self.__telemetry_enabled
@@ -84,7 +84,7 @@ class Init(object):
             # We ignore the encode param for data API
             output['security'] = json.dumps(self.security)
 
-            if self.request is not None:
+            if self.request_string is not None:
                 output['request'] = self.request_string
 
             if self.action is not None:
@@ -119,7 +119,7 @@ class Init(object):
 
     def generate_request_string(self):
         if self.request is None:
-            return ""
+            return None
         return json.dumps(self.request, separators=(',', ':'))
 
     def generate_signature(self):
@@ -136,7 +136,7 @@ class Init(object):
         vals.append(self.secret)
 
         # Add the request if necessary
-        if self.sign_request_data and self.request_string != '':
+        if self.sign_request_data and self.request_string is not None:
             vals.append(self.request_string)
 
         if self.action is not None:
@@ -145,7 +145,7 @@ class Init(object):
         return self.hash_list(vals)
 
     def validate(self):
-        if self.request_string == '':
+        if self.request_string is None:
             del self.request_string
 
         # Parse the security packet if the user provided it as a string
