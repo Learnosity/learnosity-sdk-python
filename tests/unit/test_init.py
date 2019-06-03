@@ -158,6 +158,7 @@ class TestServiceRequests(unittest.TestCase):
     timestamp = '20140626-0528'
 
     def test_init_generate(self):
+        learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
             # TODO(cera): Much more validation
             security = {
@@ -167,10 +168,10 @@ class TestServiceRequests(unittest.TestCase):
             }
             if t.security is not None:
                 security.update(t.security)
+
             init = learnosity_sdk.request.Init(
                 t.service, security, self.secret, request=t.request, action=t.action)
 
-            init.disable_telemetry()
             self.assertFalse(init.is_telemetry_enabled())
             self.assertEqual(t.signature, init.generate_signature())
             self.assertTrue(init.generate() is not None)

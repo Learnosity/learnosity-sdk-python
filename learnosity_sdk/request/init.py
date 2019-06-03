@@ -255,8 +255,11 @@ class Init(object):
     We use telemetry to enable better support and feature planning. It is
     however not advised to disable it, and it will not interfere with any usage.
     """
-    def disable_telemetry(self):
-        self.__telemetry_enabled = False
 
-    def enable_telemetry(self):
-        self.__telemetry_enabled = True
+    @classmethod
+    def disable_telemetry(cls):
+        cls.__telemetry_enabled = False
+
+    @classmethod
+    def enable_telemetry(cls):
+        cls.__telemetry_enabled = True
