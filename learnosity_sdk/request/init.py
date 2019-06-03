@@ -29,6 +29,8 @@ class Init(object):
         'consumer_key', 'domain', 'timestamp', 'user_id'
     ]
 
+    __telemetry_enabled = True
+
     def __init__(
             self, service, security, secret,
             request=None, action=None):
@@ -38,13 +40,8 @@ class Init(object):
         self.request = request.copy()
         self.action = action
 
-        self.__telemetry_enabled = True
-        self.request_string = ''
         self.sign_request_data = True
-
-    def set_request_packet(self):
-        self.request = self.add_telemetry_data(self.request)
-        self.request_string = self.generate_request_string()
+        self.request_string = ''
 
     def is_telemetry_enabled(self):
         return self.__telemetry_enabled
@@ -57,11 +54,12 @@ class Init(object):
         If encode is True, the result is a JSON string. Otherwise, it's a
         dictionary. If self.service == data, encode is ignored.
         """
+
+        self.add_telemetry_data()
+        self.request_string = self.generate_request_string()
         self.validate()
-        self.set_request_packet()
         self.set_service_options()
         self.security['signature'] = self.generate_signature()
-
         output = {}
 
         if self.service == 'questions':
@@ -138,7 +136,7 @@ class Init(object):
         vals.append(self.secret)
 
         # Add the request if necessary
-        if self.sign_request_data:
+        if self.sign_request_data and self.request_string != '':
             vals.append(self.request_string)
 
         if self.action is not None:
@@ -147,6 +145,9 @@ class Init(object):
         return self.hash_list(vals)
 
     def validate(self):
+        if self.request_string == '':
+            del self.request_string
+
         # Parse the security packet if the user provided it as a string
         if isinstance(self.security, str):
             self.security = json.loads(self.security)
@@ -241,21 +242,14 @@ class Init(object):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
 
-    def add_telemetry_data(self, request_object):
+    def add_telemetry_data(self):
         if self.__telemetry_enabled:
-            test1 = 'yes it is enabled'
-
-            if 'meta' in request_object:
-                request_object['meta']['sdk'].update(self.get_sdk_meta())
+            if 'meta' in self.request:
+                self.request['meta']['sdk'].update(self.get_sdk_meta())
             else:
-                request_object['meta'] = {
+                self.request['meta'] = {
                     'sdk': self.get_sdk_meta()
                 }
-        else:
-            test1 = 'no it is disabled'
-        print(test1)
-        print(request_object)
-        return request_object
 
     """
     We use telemetry to enable better support and feature planning. It is
