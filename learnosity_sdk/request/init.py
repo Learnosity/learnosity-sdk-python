@@ -41,7 +41,12 @@ class Init(object):
         self.action = action
 
         self.sign_request_data = True
-        self.request_string = None
+
+        self.add_telemetry_data()
+        self.request_string = self.generate_request_string()
+        self.validate()
+        self.set_service_options()
+        self.security['signature'] = self.generate_signature()
 
     def is_telemetry_enabled(self):
         return self.__telemetry_enabled
@@ -54,12 +59,6 @@ class Init(object):
         If encode is True, the result is a JSON string. Otherwise, it's a
         dictionary. If self.service == data, encode is ignored.
         """
-
-        self.add_telemetry_data()
-        self.request_string = self.generate_request_string()
-        self.validate()
-        self.set_service_options()
-        self.security['signature'] = self.generate_signature()
         output = {}
 
         if self.service == 'questions':

@@ -33,33 +33,15 @@ ServiceTests = [
         '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
     ),
 
-    # ServiceTestSpec(
-    #     "items", True, {"user_id": "demo_student"}, {
-    #         "activity_id": "itemsactivitiesdemo",
-    #         "activity_template_id": "demo-activity-1",
-    #         "name": "Items API demo - activities",
-    #         "rendering_type": "assess",
-    #         "type": "submit_practice",
-    #         "session_id": "336f26aa-00e8-43d7-a873-0b451ce8e04c",
-    #         "user_id": "demos-site",
-    #         "config": {
-    #             "title": "Activities Demo",
-    #             "subtitle": "Walter White",
-    #             "regions": "main"
-    #         }
-    #     }, None,
-    #     '6fd7d81d9ac8c3b68598babdbbddeffc24459ef3d2d23c7723850fef69b9668a',
-    # ),
+    ServiceTestSpec(
+        "data", True, None, {"limit": 100}, "get",
+        'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
+    ),
 
-    # ServiceTestSpec(
-    #     "data", True, None, {"limit": 100}, "get",
-    #     "e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe"
-    # ),
-    #
-    # ServiceTestSpec(
-    #     "assess", True, {"user_id": "demo_student"}, {"foo": "bar"}, None,
-    #         '6fd7d81d9ac8c3b68598babdbbddeffc24459ef3d2d23c7723850fef69b9668a',
-    # ),
+#     ServiceTestSpec(
+#         "assess", True, {"user_id": "demo_student"}, {"foo": "bar"}, None,
+            # '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
+#     ),
 #         $request = [
 #             "items" => [
 #                 [
@@ -152,7 +134,7 @@ class TestServiceRequests(unittest.TestCase):
     Tests instantiating a request for each service.
     """
 
-    key =  'yis0TYCu7U9V4o7M'
+    key = 'yis0TYCu7U9V4o7M'
     secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
     domain = 'localhost'
     timestamp = '20140626-0528'
