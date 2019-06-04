@@ -240,7 +240,7 @@ class Init(object):
     def add_telemetry_data(self):
         if self.__telemetry_enabled:
             if 'meta' in self.request:
-                self.request['meta']['sdk'].update(self.get_sdk_meta())
+                self.request['meta']['sdk'] = self.get_sdk_meta()
             else:
                 self.request['meta'] = {
                     'sdk': self.get_sdk_meta()
