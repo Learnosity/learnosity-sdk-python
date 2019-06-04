@@ -40,11 +40,10 @@ class Init(object):
         self.request = request.copy()
         self.action = action
 
-        self.sign_request_data = True
-
+        self.validate()
         self.add_telemetry_data()
         self.request_string = self.generate_request_string()
-        self.validate()
+        self.sign_request_data = True
         self.set_service_options()
         self.security['signature'] = self.generate_signature()
 
@@ -144,9 +143,6 @@ class Init(object):
         return self.hash_list(vals)
 
     def validate(self):
-        if self.request_string is None:
-            del self.request_string
-
         # Parse the security packet if the user provided it as a string
         if isinstance(self.security, str):
             self.security = json.loads(self.security)
