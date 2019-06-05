@@ -29,6 +29,8 @@ class Init(object):
         'consumer_key', 'domain', 'timestamp', 'user_id'
     ]
 
+    __telemetry_enabled = True
+
     def __init__(
             self, service, security, secret,
             request=None, action=None):
@@ -38,20 +40,15 @@ class Init(object):
         self.request = request.copy()
         self.action = action
 
-        self.request_string = self.generate_request_string()
-
         self.validate()
-
+        self.add_telemetry_data()
+        self.request_string = self.generate_request_string()
         self.sign_request_data = True
         self.set_service_options()
-
         self.security['signature'] = self.generate_signature()
 
-        """
-        We use telemetry to enable better support and feature planning. It is
-        however not advised to disable it, and it will not interfere with any usage.
-        """
-        self.__telemetry_enabled = True
+    def is_telemetry_enabled(self):
+        return self.__telemetry_enabled
 
     def generate(self, encode=True):
         """
@@ -85,7 +82,7 @@ class Init(object):
             # We ignore the encode param for data API
             output['security'] = json.dumps(self.security)
 
-            if self.request is not None:
+            if self.request_string is not None:
                 output['request'] = self.request_string
 
             if self.action is not None:
@@ -101,23 +98,18 @@ class Init(object):
             if self.action is not None:
                 output['action'] = self.action
 
-        if self.__telemetry_enabled:
-            output['meta'] = self.get_meta()
-
         if encode:
             return json.dumps(output)
         else:
             return output
 
-    def get_meta(self):
+    def get_sdk_meta(self):
         return {
-            'sdk': {
-                'version': self.get_sdk_version(),
-                'lang': 'python',
-                'lang_version': platform.python_version(),
-                'platform': platform.system(),
-                'platform_version': platform.release()
-            }
+            'version': self.get_sdk_version(),
+            'lang': 'python',
+            'lang_version': platform.python_version(),
+            'platform': platform.system(),
+            'platform_version': platform.release()
         }
 
     def get_sdk_version(self):
@@ -125,7 +117,7 @@ class Init(object):
 
     def generate_request_string(self):
         if self.request is None:
-            return ""
+            return None
         return json.dumps(self.request, separators=(',', ':'))
 
     def generate_signature(self):
@@ -142,7 +134,7 @@ class Init(object):
         vals.append(self.secret)
 
         # Add the request if necessary
-        if self.sign_request_data:
+        if self.sign_request_data and self.request_string is not None:
             vals.append(self.request_string)
 
         if self.action is not None:
@@ -245,8 +237,24 @@ class Init(object):
         "Hash a list by concatenating values with an underscore"
         return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
 
-    def disable_telemetry(self):
-        self.__telemetry_enabled = False
+    def add_telemetry_data(self):
+        if self.__telemetry_enabled:
+            if 'meta' in self.request:
+                self.request['meta']['sdk'] = self.get_sdk_meta()
+            else:
+                self.request['meta'] = {
+                    'sdk': self.get_sdk_meta()
+                }
 
-    def enable_telemetry(self):
-        self.__telemetry_enabled = True
+    """
+    We use telemetry to enable better support and feature planning. It is
+    however not advised to disable it, and it will not interfere with any usage.
+    """
+
+    @classmethod
+    def disable_telemetry(cls):
+        cls.__telemetry_enabled = False
+
+    @classmethod
+    def enable_telemetry(cls):
+        cls.__telemetry_enabled = True

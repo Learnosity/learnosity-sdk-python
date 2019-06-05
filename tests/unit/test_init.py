@@ -39,7 +39,7 @@ ServiceTests = [
     ),
 
 #     ServiceTestSpec(
-#         "assess", True, {"user_id": "demo_student"}, {"foo": "bar"}, None, 
+#         "assess", True, {"user_id": "demo_student"}, {"foo": "bar"}, None,
             # '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
 #     ),
 #         $request = [
@@ -134,12 +134,13 @@ class TestServiceRequests(unittest.TestCase):
     Tests instantiating a request for each service.
     """
 
-    key =  'yis0TYCu7U9V4o7M'
+    key = 'yis0TYCu7U9V4o7M'
     secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
     domain = 'localhost'
     timestamp = '20140626-0528'
 
     def test_init_generate(self):
+        learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
             # TODO(cera): Much more validation
             security = {
@@ -149,8 +150,10 @@ class TestServiceRequests(unittest.TestCase):
             }
             if t.security is not None:
                 security.update(t.security)
+
             init = learnosity_sdk.request.Init(
                 t.service, security, self.secret, request=t.request, action=t.action)
 
+            self.assertFalse(init.is_telemetry_enabled())
             self.assertEqual(t.signature, init.generate_signature())
             self.assertTrue(init.generate() is not None)
