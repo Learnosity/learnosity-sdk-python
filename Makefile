@@ -22,7 +22,7 @@ release:
 	@./release.sh
 	@echo '*** You can now use \`make dist-upload\` to publish the new version to PyPI'
 
-freeze-deps:
+freeze-deps: venv
 	$(call venv-activate); \
                $(PYTHON) -m pip freeze | grep -v learnosity_sdk > requirements.txt
 
@@ -42,7 +42,7 @@ test-integration-dev: venv pip-tox
 
 build-clean: real-clean
 
-dist: distclean
+dist: distclean venv
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist; \
 		$(PYTHON) setup.py bdist_wheel --universal
@@ -53,7 +53,7 @@ dist-check-version:
 ifeq ('$(shell echo $(GIT_TAG) | grep -qw "$(PKG_VER)")', '')
 	$(error Version number $(PKG_VER) in learnosity_sdk/_version.py does not match git tag $(GIT_TAG))
 endif
-dist-upload-twine: pip-requirements-dev dist # This target doesn't do any safety check!
+dist-upload-twine: venv pip-requirements-dev dist # This target doesn't do any safety check!
 	$(call venv-activate); \
 		twine upload dist/*
 
