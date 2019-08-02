@@ -55,7 +55,7 @@ import learnosity_sdk.request
 security = {
   'consumer_key': 'MY_API_KEY',
   'domain': 'localhost',
-  'user_id': 'demo_student'
+  'user_id': '$ANONYMIZED_USER_ID'
 }
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
@@ -115,7 +115,7 @@ secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 # example request data for Items API
 items_request = items_request = {
     "rendering_type": "inline",
-    "user_id": "12345678",
+    "user_id": "$ANONYMIZED_USER_ID",
     "session_id": Uuid.generate(),
     "type": "submit_practice",
     "activity_id": "exampleActivity",
@@ -208,7 +208,7 @@ import learnosity_sdk.request
 security = {
   'consumer_key': 'MY_API_KEY',
   'domain': 'localhost',
-  'user_id': 'demo_student'
+  'user_id': '$ANONYMIZED_USER_ID'
 }
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
@@ -216,7 +216,7 @@ secret = 'MY_API_SECRET'
 
 # request data for Questions API
 events_request = {
-	"users": [ "diego", "manny", "sid"  ]
+	"users": [ "$ANONYMIZED_USER_ID_1", "$ANONYMIZED_USER_ID_2", "$ANONYMIZED_USER_ID_3"  ]
 }
 
 events_init = learnosity_sdk.request.Init(
