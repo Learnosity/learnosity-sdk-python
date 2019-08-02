@@ -1,4 +1,3 @@
-
 import requests
 import copy
 
@@ -7,8 +6,8 @@ from learnosity_sdk.request import Init
 
 
 class DataApi(object):
-
-    def request(self, endpoint, security_packet,
+    @staticmethod
+    def request(endpoint, security_packet,
                 secret, request_packet={}, action='get'):
         """
         Make a request to Data API
@@ -60,8 +59,12 @@ class DataApi(object):
         for response in self.request_iter(endpoint, security_packet,
                                           secret, request_packet,
                                           action):
-            for result in response['data']:
-                yield result
+            if isinstance(response['data'], dict):
+                for key, value in self.__iteritems(response['data']):
+                    yield {key: value}
+            else:
+                for result in response['data']:
+                    yield result
 
     def request_iter(self, endpoint, security_packet,
                      secret, request_packet={},
@@ -92,7 +95,9 @@ class DataApi(object):
         # are modified between yields
         security_packet = copy.deepcopy(security_packet)
         request_packet = copy.deepcopy(request_packet)
+
         data_end = False
+
         while not data_end:
             res = self.request(
                 endpoint,
@@ -101,10 +106,12 @@ class DataApi(object):
                 request_packet,
                 action
             )
+
             if not res.ok:
                 raise DataApiException(
                     'server returned HTTP status ' + str(res.status_code)
                     + ': ' + res.text)
+
             try:
                 data = res.json()
             except ValueError:
@@ -122,4 +129,11 @@ class DataApi(object):
             else:
                 yield data
 
+    @staticmethod
+    def __iteritems(obj, **kwargs):
+        func = getattr(obj, "iteritems", None)
 
+        if not func:
+            func = obj.items
+
+        return func(**kwargs)
