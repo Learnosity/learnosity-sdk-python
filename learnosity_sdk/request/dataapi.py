@@ -7,8 +7,8 @@ from learnosity_sdk.utils import Future
 
 
 class DataApi(object):
-    @staticmethod
-    def request(endpoint, security_packet,
+
+    def request(self, endpoint, security_packet,
                 secret, request_packet={}, action='get'):
         """
         Make a request to Data API
