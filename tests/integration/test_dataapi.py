@@ -32,7 +32,8 @@ questions_endpoint = '/itembank/questions'
 
 class IntegrationTestDataApiClient(unittest.TestCase):
 
-    def _build_base_url(self):
+    @staticmethod
+    def __build_base_url():
         env = os.environ
         env_domain = ''
         region_domain = '.learnosity.com'
@@ -49,14 +50,12 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         base_url = "https://data%s%s/%s" % (env_domain, region_domain, version_path)
 
-        print('Using base URL: ' + base_url)
-
         return base_url
 
     def test_real_request(self):
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
-        res = client.request(self._build_base_url() + items_endpoint, security, consumer_secret, items_request,
+        res = client.request(self.__build_base_url() + items_endpoint, security, consumer_secret, items_request,
                              action)
         returned_json = res.json()
 
@@ -68,7 +67,7 @@ class IntegrationTestDataApiClient(unittest.TestCase):
     def test_paging(self):
         """Verify that paging works"""
         client = DataApi()
-        pages = client.request_iter(self._build_base_url() + items_endpoint, security, consumer_secret,
+        pages = client.request_iter(self.__build_base_url() + items_endpoint, security, consumer_secret,
                                     items_request, action)
         results = set()
 
@@ -83,21 +82,14 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
 
-        test_url = self._build_base_url() + questions_endpoint
-
-        print("test_url is", test_url)
-
         questions_request['limit'] = 3
-
-        res = client.request(test_url, security, consumer_secret, questions_request,
+        res = client.request(self.__build_base_url() + questions_endpoint, security, consumer_secret, questions_request,
                              action)
 
         returned_json = res.json()
-
         assert len(returned_json['data']) > 0
 
         keys = set()
-
         for key, value in Future.iteritems(returned_json['data']):
             keys.add(key)
 
@@ -107,21 +99,15 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         """Verify that paging works"""
         client = DataApi()
 
-        test_url = self._build_base_url() + questions_endpoint
-
-        print("test_url is", test_url)
-
-        pages = client.request_iter(test_url, security, consumer_secret,
+        pages = client.request_iter(self.__build_base_url() + questions_endpoint, security, consumer_secret,
                                     questions_request, action)
 
         results = []
-
         for page in pages:
             if page['data']:
                 results.append(page['data'])
 
         keys = set()
-
         for row in results:
             for key in row.keys():
                 keys.add(key)
