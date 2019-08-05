@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Fixed
-- Fixed an issue where the DataApi class's results_iter method would return no data 
-  when receiving responses from Data API endpoints that set the "data" field of the
+- Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
+  when receiving responses from Data API endpoints that set the "`data`" field of the
   response to an object (like the [itembank/questions endpoint](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getQuestions) 
-  when item_references is included in the request).
+  when `item_references` is included in the request).
 
 ### Added
 - utils.Future
