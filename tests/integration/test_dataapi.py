@@ -1,7 +1,7 @@
 import unittest
 import os
 from learnosity_sdk.request import DataApi
-from learnosity_sdk.utils import Future
+
 
 # This test uses the consumer key and secret for the demos consumer
 # this is the only consumer with publicly available keys
@@ -90,7 +90,7 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         assert len(returned_json['data']) > 0
 
         keys = set()
-        for key, value in Future.iteritems(returned_json['data']):
+        for key in returned_json['data']:
             keys.add(key)
 
         assert keys == {'py-sdk-test-2019-1', 'py-sdk-test-2019-2'}

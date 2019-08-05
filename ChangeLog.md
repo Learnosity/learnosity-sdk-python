@@ -12,9 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   response to an object (like the [itembank/questions endpoint](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getQuestions) 
   when `item_references` is included in the request).
 
-### Added
-- utils.Future
-
 ## [v0.3.0] - 2019-06-17
 ### Added
 - This ChangeLog!
