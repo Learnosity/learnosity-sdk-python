@@ -1,6 +1,7 @@
 import unittest
 import os
 from learnosity_sdk.request import DataApi
+from learnosity_sdk.utils import Future
 
 # This test uses the consumer key and secret for the demos consumer
 # this is the only consumer with publicly available keys
@@ -55,33 +56,20 @@ class IntegrationTestDataApiClient(unittest.TestCase):
     def test_real_request(self):
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
-
-        test_url = self._build_base_url() + items_endpoint
-
-        print("test_url is", test_url)
-
-        res = client.request(test_url, security, consumer_secret, items_request,
+        res = client.request(self._build_base_url() + items_endpoint, security, consumer_secret, items_request,
                              action)
-
         returned_json = res.json()
 
         assert len(returned_json['data']) > 0
 
         returned_ref = returned_json['data'][0]['reference']
-
         assert returned_ref in items_request['references']
 
     def test_paging(self):
         """Verify that paging works"""
         client = DataApi()
-
-        test_url = self._build_base_url() + items_endpoint
-
-        print("test_url is", test_url)
-
-        pages = client.request_iter(test_url, security, consumer_secret,
+        pages = client.request_iter(self._build_base_url() + items_endpoint, security, consumer_secret,
                                     items_request, action)
-
         results = set()
 
         for page in pages:
@@ -110,7 +98,7 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         keys = set()
 
-        for key, value in self.__iteritems(returned_json['data']):
+        for key, value in Future.iteritems(returned_json['data']):
             keys.add(key)
 
         assert keys == {'py-sdk-test-2019-1', 'py-sdk-test-2019-2'}
@@ -140,12 +128,3 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         assert len(results) == 3
         assert keys == {'py-sdk-test-2019-1', 'py-sdk-test-2019-2'}
-
-    @staticmethod
-    def __iteritems(obj, **kwargs):
-        func = getattr(obj, "iteritems", None)
-
-        if not func:
-            func = obj.items
-
-        return func(**kwargs)
