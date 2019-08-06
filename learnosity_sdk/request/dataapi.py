@@ -59,7 +59,7 @@ class DataApi(object):
         for response in self.request_iter(endpoint, security_packet,
                                           secret, request_packet,
                                           action):
-            if isinstance(response['data'], dict):
+            if type(response['data']) == dict:
                 for key, value in self.__iteritems(response['data']):
                     yield {key: value}
             else:
