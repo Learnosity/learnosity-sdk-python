@@ -113,7 +113,7 @@ class Init(object):
         }
 
     def get_sdk_version(self):
-        return 'v' + __version__
+        return __version__
 
     def generate_request_string(self):
         if self.request is None:
