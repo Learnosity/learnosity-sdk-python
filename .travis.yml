@@ -8,3 +8,7 @@ python:
 install: "(pip install -r requirements-dev.txt && pip install .)"
 
 script: "python setup.py test"
+
+matrix:
+  allow_failures:
+    - python: "3.3" # This version of python is no longer available on Travis

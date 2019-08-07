@@ -8,7 +8,7 @@ ServiceTestSpec = collections.namedtuple(
 
 ServiceTests = [
     ServiceTestSpec(
-        "questions", True, {"user_id": "demo_student"}, {
+        "questions", True, {"user_id": "$ANONYMIZED_USER_ID"}, {
             "type": "local_practice", "state": "initial",
             "questions": [
                 {
@@ -30,7 +30,7 @@ ServiceTests = [
                 }
             ]
         }, None,
-        '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
+        '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
     ),
 
     ServiceTestSpec(
@@ -39,8 +39,8 @@ ServiceTests = [
     ),
 
 #     ServiceTestSpec(
-#         "assess", True, {"user_id": "demo_student"}, {"foo": "bar"}, None,
-            # '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
+#         "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
+            # '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
 #     ),
 #         $request = [
 #             "items" => [
@@ -88,7 +88,7 @@ ServiceTests = [
 #                 "questionsApiVersion" => "v2"
 #             ],
 #             "questionsApiActivity" => [
-#                 "user_id" => "demo_student",
+#                 "user_id" => "$ANONYMIZED_USER_ID",
 #                 "type" => "submit_practice",
 #                 "state" => "initial",
 #                 "id" => "assessdemo",
@@ -123,7 +123,7 @@ ServiceTests = [
 
     ServiceTestSpec(
         "events", True, None,
-        {"users": [ "brianmoser", "hankshrader", "jessepinkman", "walterwhite" ] }, None,
+        {"users": [ "$ANONYMIZED_USER_ID_1", "$ANONYMIZED_USER_ID_2", "$ANONYMIZED_USER_ID_3", "$ANONYMIZED_USER_ID_4" ] }, None,
         '20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf'
     ),
 ]
