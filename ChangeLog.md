@@ -3,10 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic
-Versioning](http://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
+  when receiving responses from Data API endpoints that set the "`data`" field of the
+  response to an object (like the [itembank/questions endpoint](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getQuestions) 
+  when `item_references` is included in the request).
 
 ## [v0.3.0] - 2019-06-17
 ### Added

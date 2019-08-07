@@ -1,4 +1,3 @@
-
 import requests
 import copy
 
@@ -60,8 +59,12 @@ class DataApi(object):
         for response in self.request_iter(endpoint, security_packet,
                                           secret, request_packet,
                                           action):
-            for result in response['data']:
-                yield result
+            if type(response['data']) == dict:
+                for key, value in self.__iteritems(response['data']):
+                    yield {key: value}
+            else:
+                for result in response['data']:
+                    yield result
 
     def request_iter(self, endpoint, security_packet,
                      secret, request_packet={},
@@ -92,7 +95,9 @@ class DataApi(object):
         # are modified between yields
         security_packet = copy.deepcopy(security_packet)
         request_packet = copy.deepcopy(request_packet)
+
         data_end = False
+
         while not data_end:
             res = self.request(
                 endpoint,
@@ -101,10 +106,12 @@ class DataApi(object):
                 request_packet,
                 action
             )
+
             if not res.ok:
                 raise DataApiException(
                     'server returned HTTP status ' + str(res.status_code)
                     + ': ' + res.text)
+
             try:
                 data = res.json()
             except ValueError:
@@ -122,4 +129,23 @@ class DataApi(object):
             else:
                 yield data
 
+    """
+    This helper method allows the .items method of Python 3
+    to be wrapped to the equivalent .iteritems method
+    of Python 2.7
 
+    The code for this method was sourced from Python Future:
+    https://python-future.org/
+
+    Python Future is licenced under the MIT Licence. Full licence details
+    and credits can be found here:
+    https://python-future.org/credits.html
+    """
+    @staticmethod
+    def __iteritems(obj, **kwargs):
+        func = getattr(obj, "iteritems", None)
+
+        if not func:
+            func = obj.items
+
+        return func(**kwargs)
