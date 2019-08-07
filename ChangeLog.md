@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.3.1] - 2019-08-07
 ### Fixed
 - Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
   when receiving responses from Data API endpoints that set the "`data`" field of the
