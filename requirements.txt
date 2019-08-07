@@ -1,5 +1,5 @@
 attrs==19.1.0
-certifi==2019.3.9
+certifi==2019.6.16
 chardet==3.0.4
 cookies==2.2.1
 coverage==4.5.4
