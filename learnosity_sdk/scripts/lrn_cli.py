@@ -23,6 +23,9 @@ DEFAULT_API_DATA_VERSION = 'v1'
 @click.option('--consumer-secret', '-S',
               help='Secret associated with the consumer key',
               default='74c5fd430cf1242a527f6223aebd42d30464be22')
+@click.option('--request-json', '-R', 'request_json',
+              help='JSON body of the request to send,',
+              default=None)
 @click.option('--file', '-f', type=click.File('r'),
               help='File containing the JSON request',
               default='-')
@@ -33,7 +36,8 @@ DEFAULT_API_DATA_VERSION = 'v1'
 @click.option('--requests-log-level', '-L', default='warning',
               help='log level for the HTTP requests')
 @click.pass_context
-def cli(ctx, consumer_key, consumer_secret, file,
+def cli(ctx, consumer_key, consumer_secret,
+        file, request_json=None,
         dump_meta = False,
         log_level='info',
         requests_log_level='warning',
@@ -43,6 +47,7 @@ def cli(ctx, consumer_key, consumer_secret, file,
     ctx.obj['consumer_key'] = consumer_key
     ctx.obj['consumer_secret'] = consumer_secret
     ctx.obj['file'] = file
+    ctx.obj['request_json'] = request_json
     ctx.obj['dump_meta'] = dump_meta
 
     logging.basicConfig(
@@ -86,6 +91,7 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
     consumer_key = ctx.obj['consumer_key']
     consumer_secret = ctx.obj['consumer_secret']
     file = ctx.obj['file']
+    request_json = ctx.obj['request_json']
     dump_meta = ctx.obj['dump_meta']
 
     # TODO: factor this out into a separate function
@@ -100,11 +106,16 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
 
     security = _make_data_security_packet(consumer_key, consumer_secret)
 
-    if file.isatty():
-        logger.info(f'Reading request json from {file}...')
+    if request_json is not None:
+        logger.debug(f'Using request JSON from command line argument')
+        data_request = json.loads(request_json)
     else:
-        logger.debug(f'Reading request json from {file}...')
-    data_request = json.load(file)
+        if file.isatty():
+            # Make sure the user is aware they need to enter something
+            logger.info(f'Reading request json from {file}...')
+        else:
+            logger.debug(f'Reading request json from {file}...')
+        data_request = json.load(file)
 
     action = 'get'
     if do_set:
