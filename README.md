@@ -14,6 +14,9 @@ Supports:
 * generating init packets for Learnosity JavaScript APIs
 * server-side Data API usage
 
+This also provides a command-line tool, [`lrn-cli`](#lrn-cli) allowing to easily
+interact with the Learnosity APIs (most useful for the Data API).
+
 # Supported Python Versions
 
 These are the versions we test for:
@@ -228,6 +231,128 @@ events_init = learnosity_sdk.request.Init(
 signed_request = events_init.generate()
 print(signed_request)
 ```
+
+# lrn-cli
+
+The `lrn-cli` tool allows to exchange JSON payloads with the Learnosity APIs
+without having to worry about signature generation.
+
+In a nutshell, it can be use as follows
+
+	$ lrn-cli --consumer-key CONSUMER_KEY --consumer-secret --request-json '{}' CONSUMER_SECRET API ENDPOINT
+
+By default, the demonstration consumer credentials will be used if none are
+specified. If `--request-json` is not specified, the request will be read from
+standard input, or an alternative JSON file provided through `--file`.
+
+## Examples
+
+Getting the status of a session, passing the request from the command line arguments.
+
+	$ API=data
+	$ ENDPOINT=/sessions/statuses
+	$ lrn-cli -l debug -R  '{ "limit": 1, "session_ids": ["4562ae00-0f59-6d3c-860b-74b7b5579b32"] }' ${API} ${ENDPOINT}
+	2019-10-22 14:22:25,490 DEBUG:Using request JSON from command line argument
+	2019-10-22 14:22:25,491 DEBUG:Sending GET request to https://data.learnosity.com/v1/sessions/statuses ...
+	[
+	 {
+	  "user_id": "open_web_demo1",
+	  "activity_id": "Demo Activity Id",
+	  "num_attempted": 0,
+	  "num_questions": 5,
+	  "session_id": "4562ae00-0f59-6d3c-860b-74b7b5579b32",
+	  "session_duration": 0,
+	  "status": "Incomplete",
+	  "dt_saved": "2019-10-21T23:48:31Z",
+	  "dt_started": "2019-10-21T23:48:29Z",
+	  "dt_completed": null
+	 }
+	]
+
+Getting the last authored Item, passing the request from standard input.
+
+	$ echo '{ "limit": 1 }' | lrn-cli -l debug data /itembank/items
+	2019-10-22 14:24:07,108 DEBUG:Reading request json from <_io.TextIOWrapper name='<stdin>' mode='r' encoding='UTF-8'>...
+	2019-10-22 14:24:07,108 DEBUG:Sending GET request to https://data.learnosity.com/v1/itembank/items ...
+	[
+	 {
+	  "reference": "1de592c9-0af5-4a58-8d47-75c304ec654e",
+	  "title": null,
+	  "workflow": null,
+	  "metadata": null,
+	  "note": "",
+	  "source": "",
+	  "definition": {
+	   "widgets": [
+	    {
+	     "reference": "10f24a41-64ad-4d08-ab44-cc7469e324ba",
+	     "widget_type": "response"
+	    },
+	    {
+	     "reference": "27093a4b-19cb-4517-9d47-557241577ec2",
+	     "widget_type": "response"
+	    }
+	   ],
+	   "template": "dynamic"
+	  },
+	  "description": "",
+	  "status": "published",
+	  "questions": [
+	   {
+	    "reference": "10f24a41-64ad-4d08-ab44-cc7469e324ba",
+	    "type": "mcq"
+	   },
+	   {
+	    "reference": "27093a4b-19cb-4517-9d47-557241577ec2",
+	    "type": "mcq"
+	   }
+	  ],
+	  "features": [],
+	  "tags": {}
+	 }
+	]
+
+Documentation about all the options is available with the `--help` flag to both
+the base tool, and each API. (Don't trust this example, run those for real to
+get an up-to-date help).
+
+	$ lrn-cli --help
+	Usage: lrn-cli [OPTIONS] COMMAND [ARGS]...
+
+	  Prepare and send request to Learnosity APIs
+
+	Options:
+	  -k, --consumer-key TEXT        API key for desired consumer
+	  -S, --consumer-secret TEXT     Secret associated with the consumer key
+	  -R, --request-json TEXT        JSON body of the request to send,
+	  -f, --file FILENAME            File containing the JSON request
+	  -m, --dump-meta                output meta object to stderr
+	  -l, --log-level TEXT           log level
+	  -L, --requests-log-level TEXT  log level for the HTTP requests
+	  --help                         Show this message and exit.
+
+	Commands:
+	  data  Make a request to Data API.
+	[14:26:04] ~/learnosity/salt-developer/code/sdk/python$ lrn-cli data --help
+	Usage: lrn-cli data [OPTIONS] ENDPOINT_URL
+
+	  Make a request to Data API.
+
+	  The endpoint_url can be:
+
+	  - a full URL: https://data.learnosity.com/v1/itembank/items
+
+	  - a REST path, with or without version:
+
+	    - /v1/itembank/items
+
+	    - /itembank/items
+
+	Options:
+	  -r, --reference TEXT  `reference` to request (can be used multiple times
+	  -s, --set             Send a SET request
+	  -u, --update          Send an UPDATE request
+	  --help                Show this message and exit.
 
 # Tests
 
