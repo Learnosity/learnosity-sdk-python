@@ -14,7 +14,7 @@ endef
 
 devbuild: build
 prodbuild: dist-check-version build
-build: venv
+build: venv pip-requirements-dev
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist
 
@@ -22,27 +22,23 @@ release:
 	@./release.sh
 	@echo '*** You can now use \`make dist-upload\` to publish the new version to PyPI'
 
-freeze-deps: venv
-	$(call venv-activate); \
-               $(PYTHON) -m pip freeze | grep -v learnosity_sdk > requirements.txt
-
 test: test-unit test-integration-dev dist-check-version
-test-unit: venv pip-requirements-dev
+test-unit: venv pip-requirements-test
 	$(call venv-activate); \
-		$(PYTHON) setup.py test  --addopts '--pyargs tests.unit'
+		pytest --pyargs tests.unit
 
-test-integration-env: venv pip-requirements-dev
+test-integration-env: venv pip-requirements-test
 	$(call venv-activate); \
 		ENV=$(ENV) \
-		$(PYTHON) setup.py test  --addopts '--pyargs tests.integration'
+		pytest  --pyargs tests.integration
 
-test-integration-dev: venv pip-tox
+test-integration-dev: venv pip-requirements-dev pip-requirements-test
 	$(call venv-activate); \
 		tox
 
 build-clean: real-clean
 
-dist: distclean venv
+dist: distclean venv pip-requirements-dev
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist; \
 		$(PYTHON) setup.py bdist_wheel --universal
@@ -78,10 +74,10 @@ $(VENVPATH):
 
 pip-requirements-dev: venv
 	$(call venv-activate); \
-		pip install -r requirements-dev.txt
+		pip install -e ".[dev]" > /dev/null
 
-pip-tox: venv
+pip-requirements-test: venv
 	$(call venv-activate); \
-		pip install tox
+		pip install -e ".[test]" > /dev/null
 
 .PHONY: dist
