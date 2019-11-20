@@ -82,11 +82,6 @@ confirm_tagging () {
 	expect_yes || exit 1
 }
 
-update_requirements() {
-       echo -e "\\nUpdating dependencies..."
-       make freeze-deps
-}
-
 update_version () {
 	# update and commit local version file used by tracking telemetry
 	echo -e "\\nWriting version file..."
@@ -145,7 +140,6 @@ get_new_version
 get_prev_version
 print_release_notes
 confirm_tagging
-update_requirements
 update_version
 create_tag
 test_dist
