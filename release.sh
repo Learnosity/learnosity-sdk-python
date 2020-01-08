@@ -2,7 +2,6 @@
 
 VERSION_FILE="learnosity_sdk/_version.py"
 CHANGELOG="ChangeLog.md"
-REQUIREMENTS="requirements.txt"
 
 check_git_clean () {
 	if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
@@ -91,7 +90,7 @@ update_version () {
 	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
 
 	echo -e "Committing release files..."
-        git add "${VERSION_FILE}" "${CHANGELOG}" "${REQUIREMENTS}"
+        git add "${VERSION_FILE}" "${CHANGELOG}"
 	git commit --allow-empty -m "[RELEASE] ${new_version}"
 }
 
