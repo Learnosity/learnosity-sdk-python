@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.3.2] - 2020-01-08
 ### Fixed
 - Removed the explicit dependency on `urllib3` as we do not use it directly.
 - Updated testing commands and dependency declaration to remove deprecated uses
