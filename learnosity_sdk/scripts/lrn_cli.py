@@ -137,21 +137,14 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
     logger.debug('Sending %s request to %s ...' %
                  (action.upper(), endpoint_url))
     try:
-        r = data_api.request(endpoint_url, security, consumer_secret,
-                             data_request, action)
+        r = _get_data(endpoint_url, consumer_key, consumer_secret, data_request, action, do_recurse)
     except Exception as e:
         logger.error('Exception sending request to %s: %s' %
                      (endpoint_url, e))
         return False
 
-    # TODO: factor this out into a separate function
-    if r.status_code != 200:
-        logger.error('Error %d sending request to %s: %s' %
-                     # TODO: try to extract an error message from r.json()
-                     (r.status_code, endpoint_url, r.text))
-
     try:
-        response = decode_response(r, dump_meta)
+        response = _decode_response(r, logger, dump_meta)
     except Exception as e:
         logger.error('Exception decoding response: %s\nResponse text: %s' % (e, r.text))
         return False
@@ -181,3 +174,15 @@ def _make_data_security_packet(consumer_key, consumer_secret,
         'consumer_key': consumer_key,
         'domain': domain,
     }
+
+
+def _decode_response(response, logger, dump_meta=False):
+    if type(response) == Response:
+        if response.status_code != 200:
+            logger.error('Error %d sending request to %s: %s' %
+                         # TODO: try to extract an error message from r.json()
+                         (response.status_code, response.url, response.text))
+        response = response.json()
+    if dump_meta and response['meta']:
+        sys.stderr.write(json.dumps(response['meta'], indent=True) + '\n')
+    return response
