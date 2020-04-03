@@ -69,10 +69,13 @@ def cli(ctx, consumer_key, consumer_secret,
               multiple=True)
 @click.option('--set', '-s', 'do_set', is_flag=True, default=False,
               help='Send a SET request')
+@click.option('--recurse', '-R', 'do_recurse', is_flag=True, default=False,
+              help='Automatically recurse using the next token')
 @click.option('--update', '-u', 'do_update', is_flag=True, default=False,
               help='Send an UPDATE request')
 @click.pass_context
-def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
+def data(ctx, endpoint_url, references=None,
+         do_set=False, do_update=False, do_recurse=False):
     ''' Make a request to Data API.
 
     The endpoint_url can be:
@@ -101,10 +104,6 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
         if not endpoint_url.startswith('/v'):  # API version
             endpoint_url = '/' + DEFAULT_API_DATA_VERSION + endpoint_url
         endpoint_url = DEFAULT_API_DATA_HOST + endpoint_url
-
-    data_api = DataApi()
-
-    security = _make_data_security_packet(consumer_key, consumer_secret)
 
     if request_json is not None:
         logger.debug(f'Using request JSON from command line argument')
@@ -137,7 +136,8 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
     logger.debug('Sending %s request to %s ...' %
                  (action.upper(), endpoint_url))
     try:
-        r = _get_data(endpoint_url, consumer_key, consumer_secret, data_request, action, do_recurse)
+        r = _get_data(endpoint_url, consumer_key, consumer_secret, data_request, action,
+                      logger, do_recurse)
     except Exception as e:
         logger.error('Exception sending request to %s: %s' %
                      (endpoint_url, e))
@@ -159,13 +159,40 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
     print(json.dumps(data, indent=True))
     return True
 
+def _get_data(endpoint_url, consumer_key, consumer_secret, request, action, logger,
+              do_recurse=False):
+    data_api = DataApi()
 
-def decode_response(response, dump_meta=False):
-    if type(response) == Response:
-            response = response.json()
-    if dump_meta and response['meta']:
-        sys.stderr.write(json.dumps(response['meta'], indent=True) + '\n')
-    return response
+    security = _make_data_security_packet(consumer_key, consumer_secret)
+
+    if not do_recurse:
+        r = data_api.request(endpoint_url, security, consumer_secret, request, action)
+    else:
+        meta = {
+            '_comment': 'fake meta recreated by lrn-cli for failing initial recursive request',
+            'status': 'false',
+        }
+        data = None
+        logger.debug('Iterating through pages of data...')
+        for r_iter in data_api.request_iter(endpoint_url, security, consumer_secret, request, action):
+            meta = r_iter['meta']
+            new_data = r_iter['data']
+            if data is None:
+                data = new_data
+            elif type(data) is list:
+                data += new_data
+            elif type(data) is dict:
+                data.update(new_data)
+            else:
+                raise Exception('Unexpected retun data type: not list or dict')
+            logger.debug(f'Got {len(new_data)} new objects')
+        meta['records'] = len(data)
+        r = {
+            'meta': meta,
+            'data': data,
+        }
+
+    return r
 
 
 def _make_data_security_packet(consumer_key, consumer_secret,
