@@ -123,7 +123,7 @@ def data(ctx, endpoint_url, references=None, do_set=False, do_update=False):
 
     if do_update:
         # XXX: Mutually exclusive options, This would be better implemented at the Click level
-        if action is 'get':
+        if action == 'get':
             action = 'update'
         else:
             logger.error('Options --set and --update are mutually exclusive')
