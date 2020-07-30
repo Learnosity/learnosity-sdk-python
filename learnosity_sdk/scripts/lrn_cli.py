@@ -29,7 +29,7 @@ DEFAULT_API_DATA_VERSION = 'v1'
 @click.option('--file', '-f', type=click.File('r'),
               help='File containing the JSON request',
               default='-')
-@click.option('--dump-meta', '-m', is_flag=True, default = False,
+@click.option('--dump-meta', '-m', is_flag=True, default=False,
               help='output meta object to stderr')
 @click.option('--log-level', '-l', default='info',
               help='log level')
@@ -42,7 +42,7 @@ DEFAULT_API_DATA_VERSION = 'v1'
 @click.pass_context
 def cli(ctx, consumer_key, consumer_secret,
         file, request_json=None,
-        dump_meta = False,
+        dump_meta=False,
         log_level='info',
         requests_log_level='warning',
         do_set=False, do_update=False,
