@@ -11,6 +11,9 @@ from requests import Response
 from learnosity_sdk.request import Init, DataApi
 
 
+DEFAULT_API_AUTHOR_URL = 'https://authorapi.learnosity.com'
+DEFAULT_API_AUTHOR_VERSION = 'latest'
+
 DEFAULT_API_DATA_URL = 'https://data.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
@@ -69,6 +72,51 @@ def cli(ctx, consumer_key, consumer_secret,
 
     logger = logging.getLogger()
     ctx.obj['logger'] = logger
+
+
+@cli.command()
+@click.argument('endpoint_url')
+@click.pass_context
+def author(ctx, endpoint_url):
+    ''' Make a request to Author API.
+
+    The endpoint_url can be:
+
+    - a full URL: https://authorapi.learnosity.com/v2020.2.LTS/itembank/items
+
+    - a REST path, with or without version:
+
+      - /latest-lts/itembank/items
+
+      - /itembank/items
+
+    '''
+    ctx.ensure_object(dict)
+    logger = ctx.obj['logger']
+    consumer_key = ctx.obj['consumer_key']
+    consumer_secret = ctx.obj['consumer_secret']
+
+    author_request = _get_request(ctx)
+    author_request = _add_user(author_request)
+    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_AUTHOR_URL, DEFAULT_API_AUTHOR_VERSION)
+    action = _get_action(ctx)
+
+    try:
+        r = _send_www_encoded_request('author', endpoint_url, consumer_key, consumer_secret,
+                                      author_request, action, logger)
+    except Exception as e:
+        logger.error('Exception sending request to %s: %s' %
+                     (endpoint_url, e))
+        return False
+
+    response = _validate_response(ctx, r)
+    if response is None:
+        return False
+
+    data = response['data']
+
+    print(json.dumps(data, indent=True))
+    return True
 
 
 @cli.command()
@@ -161,6 +209,20 @@ def _get_request(ctx):
     else:
         logger.debug(f'Reading request json from {file}...')
     return json.load(file)
+
+
+def _add_user(request):
+    if 'user' in request:
+        return
+
+    request['user'] = {
+        'id': 'lrn-cli',
+        'firstname': 'Learnosity',
+        'lastname': 'CLI',
+        'email': 'lrn-cli@learnosity.com',
+    }
+
+    return request
 
 
 def _build_endpoint_url(endpoint_url, default_url, default_version):
