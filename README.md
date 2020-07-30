@@ -329,6 +329,8 @@ get an up-to-date help).
 	  -m, --dump-meta                output meta object to stderr
 	  -l, --log-level TEXT           log level
 	  -L, --requests-log-level TEXT  log level for the HTTP requests
+	  -s, --set                      Send a SET request
+	  -u, --update                   Send an UPDATE request
 	  --help                         Show this message and exit.
 
 	Commands:
@@ -350,8 +352,6 @@ get an up-to-date help).
 
 	Options:
 	  -r, --reference TEXT  `reference` to request (can be used multiple times
-	  -s, --set             Send a SET request
-	  -u, --update          Send an UPDATE request
 	  --help                Show this message and exit.
 
 # Tests
