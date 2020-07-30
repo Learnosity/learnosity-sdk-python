@@ -4,9 +4,11 @@ import click
 import logging
 import json
 import sys
+import datetime
+import requests
 
 from requests import Response
-from learnosity_sdk.request import DataApi
+from learnosity_sdk.request import Init, DataApi
 
 
 DEFAULT_API_DATA_URL = 'https://data.learnosity.com'
@@ -171,7 +173,28 @@ def _build_endpoint_url(endpoint_url, default_url, default_version):
     return endpoint_url
 
 
-def _send_json_request(endpoint_url, consumer_key, consumer_secret, request, action, logger,
+def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
+                              request, action,
+                              logger):
+    security = _make_security_packet(consumer_key, consumer_secret)
+
+    init = Init(api, security, consumer_secret, request)
+
+    security['signature'] = init.generate_signature()
+
+    form = {
+        'action': action,
+        'security': json.dumps(security),
+        'request': init.generate_request_string(),
+        'usrequest': init.generate_request_string(),
+    }
+
+    return requests.post(endpoint_url, data=form)
+
+
+def _send_json_request(endpoint_url, consumer_key, consumer_secret,
+                       request, action,
+                       logger,
               do_recurse=False):
     data_api = DataApi()
 
