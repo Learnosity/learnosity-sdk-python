@@ -18,7 +18,6 @@ Supports:
 
 These are the versions we test for:
 
-* 3.3.x
 * 3.4.x
 * 3.5.x
 * 3.6.x
