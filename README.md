@@ -235,6 +235,8 @@ print(signed_request)
 
 # lrn-cli
 
+![lrn-cli logo](lrn-cli.png)
+
 The `lrn-cli` tool allows to exchange JSON payloads with the Learnosity APIs
 without having to worry about signature generation.
 
