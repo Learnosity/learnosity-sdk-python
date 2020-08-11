@@ -1,2 +1,2 @@
-* Add doc
-* Allow to not expect payload on stdin
+* AWS Profile-like storage of endpoints / creds
+* REPL
