@@ -10,6 +10,7 @@ import requests
 from requests import Response
 from learnosity_sdk.request import Init, DataApi
 
+from pygments import highlight, lexers, formatters
 
 DEFAULT_API_AUTHOR_URL = 'https://authorapi.learnosity.com'
 DEFAULT_API_AUTHOR_VERSION = 'latest'
@@ -115,7 +116,7 @@ def author(ctx, endpoint_url):
 
     data = response['data']
 
-    print(json.dumps(data, indent=True))
+    _output_json(data)
     return True
 
 
@@ -172,7 +173,7 @@ def data(ctx, endpoint_url, references=None,
 
     data = response['data']
 
-    print(json.dumps(data, indent=True))
+    _output_json(data)
     return True
 
 
@@ -326,5 +327,17 @@ def _decode_response(response, logger, dump_meta=False):
                          (response.status_code, response.url, response.text))
         response = response.json()
     if dump_meta and response['meta']:
-        sys.stderr.write(json.dumps(response['meta'], indent=True) + '\n')
+        _output_json(response['meta'], sys.stderr)
     return response
+
+def _output_json(data, stream=None):
+    colorise = True
+    if stream is None:
+        stream = sys.stdout
+    elif stream is not sys.stderr:
+        colorise = False
+
+    outJson = json.dumps(data, indent=True)
+    if colorise:
+        outJson = highlight(outJson, lexers.JsonLexer(), formatters.TerminalFormatter())
+    stream.write(outJson + '\n')

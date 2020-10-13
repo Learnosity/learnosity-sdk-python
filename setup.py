@@ -13,6 +13,9 @@ if '__version__' not in version:
 INSTALL_REQUIRES = [
     'click>=7',
     'requests >=2.21.0',
+
+    # lrn-cli-only requirements
+    'pygments >= 2',
 ]
 
 DEV_REQUIRES = [
