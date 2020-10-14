@@ -5,6 +5,7 @@ import logging
 import json
 from json.decoder import JSONDecodeError
 import sys
+import os
 import datetime
 import requests
 
@@ -13,56 +14,82 @@ from learnosity_sdk.request import Init, DataApi
 
 from pygments import highlight, lexers, formatters
 
-DEFAULT_API_AUTHOR_URL = 'https://authorapi.learnosity.com'
+# This is a public Learnosity Demos consumer
+# XXX: never commit any other secret anywhere!
+DEFAULT_CONSUMER_KEY='yis0TYCu7U9V4o7M'
+DEFAULT_CONSUMER_SECRET='74c5fd430cf1242a527f6223aebd42d30464be22'
+
+DEFAULT_API_AUTHOR_URL = 'https://authorapi{region}{env}.learnosity.com'
 DEFAULT_API_AUTHOR_VERSION = 'latest'
 
-DEFAULT_API_DATA_URL = 'https://data.learnosity.com'
+DEFAULT_API_DATA_URL = 'https://data{region}{env}.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
 
 # TODO: use credentials from environment/file
 @click.group()
 @click.option('--consumer-key', '-k',
-              help='API key for desired consumer',
-              default='yis0TYCu7U9V4o7M')
-# This is a public Learnosity Demos consumer
-# XXX: never commit any other secret anywhere!
+              help=f'API key for desired consumer, defaults to {DEFAULT_CONSUMER_KEY}',
+              default=DEFAULT_CONSUMER_KEY,
+              envvar='LRN_CONSUMER_KEY', show_envvar=True)
 @click.option('--consumer-secret', '-S',
-              help='Secret associated with the consumer key',
-              default='74c5fd430cf1242a527f6223aebd42d30464be22')
-@click.option('--request-json', '-R', 'request_json',
-              help='JSON body of the request to send,',
-              default=None)
+              help=f'Secret associated with the consumer key, defaults to {DEFAULT_CONSUMER_SECRET}',
+              default=DEFAULT_CONSUMER_SECRET,
+              envvar='LRN_CONSUMER_SECRET', show_envvar=True)
+# Requests
 @click.option('--file', '-f', type=click.File('r'),
               help='File containing the JSON request',
               default='-')
-@click.option('--dump-meta', '-m', is_flag=True, default=False,
-              help='output meta object to stderr')
-@click.option('--log-level', '-l', default='info',
-              help='log level')
-@click.option('--requests-log-level', '-L', default='warning',
-              help='log level for the HTTP requests')
+@click.option('--request-json', '-R', 'request_json',
+              help='JSON body of the request to send,',
+              metavar='JSON', default=None)
 @click.option('--set', '-s', 'do_set', is_flag=True, default=False,
               help='Send a SET request')
 @click.option('--update', '-u', 'do_update', is_flag=True, default=False,
               help='Send an UPDATE request')
+@click.option('--dump-meta', '-m', is_flag=True, default=False,
+              help='output meta object to stderr')
+# Environment
+@click.option('--region', '-e',
+              help='API region to target',
+              envvar='LRN_REGION', show_envvar=True)
+@click.option('--environment', '-e',
+              help='API environment to target',
+              envvar='LRN_ENVIRONMENT', show_envvar=True)
+@click.option('--version', '-e',
+              help='API version to target',
+              envvar='LRN_VERSION', show_envvar=True)
+# Logging
+@click.option('--log-level', '-l', default='info',
+              help='log level')
+@click.option('--requests-log-level', '-L', default='warning',
+              help='log level for the HTTP requests')
 @click.pass_context
-def cli(ctx, consumer_key, consumer_secret,
-        file, request_json=None,
-        dump_meta=False,
-        log_level='info',
-        requests_log_level='warning',
+def cli(ctx,
+        consumer_key, consumer_secret,
+        file, request_json=None, dump_meta=False,
+        environment=None, region=None, version=None,
+        log_level='info', requests_log_level='warning',
         do_set=False, do_update=False,
         ):
-    ''' Prepare and send request to Learnosity APIs '''
+    ''' Prepare and send requests to Learnosity APIs
+
+        If neither --file nor --request-json are specified, the request will be read from STDIN. An empty input will be defaulted to {}, which a warning.
+    '''
     ctx.ensure_object(dict)
+
     ctx.obj['consumer_key'] = consumer_key
     ctx.obj['consumer_secret'] = consumer_secret
+
     ctx.obj['file'] = file
     ctx.obj['request_json'] = request_json
-    ctx.obj['dump_meta'] = dump_meta
     ctx.obj['do_set'] = do_set
     ctx.obj['do_update'] = do_update
+    ctx.obj['dump_meta'] = dump_meta
+
+    ctx.obj['region'] = region
+    ctx.obj['environment'] = environment
+    ctx.obj['version'] = version
 
     logging.basicConfig(
         format='%(asctime)s %(levelname)s:%(message)s',
@@ -91,6 +118,9 @@ def author(ctx, endpoint_url):
       - /latest-lts/itembank/items
 
       - /itembank/items
+
+    When not using a full URL, environment variables LRN_DEFAULT_VERSION, LRN_DEFAULT_REGION, and LRN_DEFAULT_ENV
+    will be used to determine the location of the API to hit.
 
     '''
     ctx.ensure_object(dict)
@@ -143,6 +173,9 @@ def data(ctx, endpoint_url, references=None,
 
       - /itembank/items
 
+    When not using a full URL, environment variables LRN_DEFAULT_VERSION, LRN_DEFAULT_REGION, and LRN_DEFAULT_ENV
+    will be used to determine the location of the API to hit.
+
     '''
     ctx.ensure_object(dict)
     logger = ctx.obj['logger']
@@ -162,7 +195,7 @@ def data(ctx, endpoint_url, references=None,
                  (action.upper(), endpoint_url))
     try:
         r = _send_json_request(endpoint_url, consumer_key, consumer_secret, data_request, action,
-                      logger, do_recurse)
+                               logger, do_recurse)
     except Exception as e:
         logger.error('Exception sending request to %s: %s' %
                      (endpoint_url, e))
@@ -176,6 +209,13 @@ def data(ctx, endpoint_url, references=None,
 
     _output_json(data)
     return True
+
+def _get_env():
+    return {
+        'env': os.getenv('LRN_DEFAULT_ENV'),
+        'region': os.getenv('LRN_DEFAULT_REGION'),
+        'version': os.getenv('LRN_DEFAULT_VERSION'),
+    }
 
 
 def _get_action(ctx):
@@ -234,13 +274,21 @@ def _add_user(request):
     return request
 
 
-def _build_endpoint_url(endpoint_url, default_url, default_version):
+def _build_endpoint_url(endpoint_url, default_url, version,
+                        region='', env=''):
+
+    if region:
+        region = f'-{region}'
+    if env not in ['', 'prod', 'production']:
+        env = f'.{env}'
+
     if not endpoint_url.startswith('http'):
         if not endpoint_url.startswith('/'):  # Prepend leading / if missing
-            endpoint_url = '/' + endpoint_url
+            endpoint_url = f'/{endpoint_url}'
         if not endpoint_url.startswith('/v'):  # API version
-            endpoint_url = '/' + default_version + endpoint_url
-        endpoint_url = default_url + endpoint_url
+            endpoint_url = f'/{version}{endpoint_url}'
+
+        endpoint_url = default_url.format(region=region, env=env) + endpoint_url
     return endpoint_url
 
 
