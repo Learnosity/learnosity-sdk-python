@@ -3,6 +3,7 @@
 import click
 import logging
 import json
+from json.decoder import JSONDecodeError
 import sys
 import datetime
 import requests
@@ -209,7 +210,14 @@ def _get_request(ctx):
         logger.info(f'Reading request json from {file}...')
     else:
         logger.debug(f'Reading request json from {file}...')
-    return json.load(file)
+
+    try:
+        request = json.load(file)
+    except JSONDecodeError as e:
+        logger.warning(f'Invalid JSON ({e}), using empty request')
+        request = {}
+
+    return request
 
 
 def _add_user(request):
