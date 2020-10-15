@@ -6,8 +6,10 @@ import json
 from json.decoder import JSONDecodeError
 import sys
 import os
+import configparser
 import datetime
 import requests
+from collections import OrderedDict
 
 from requests import Response
 from learnosity_sdk.request import Init, DataApi
@@ -19,26 +21,30 @@ from pygments import highlight, lexers, formatters
 DEFAULT_CONSUMER_KEY='yis0TYCu7U9V4o7M'
 DEFAULT_CONSUMER_SECRET='74c5fd430cf1242a527f6223aebd42d30464be22'
 
-DEFAULT_API_AUTHOR_URL = 'https://authorapi{region}{env}.learnosity.com'
+DEFAULT_API_AUTHOR_URL = 'https://authorapi{region}{environment}.learnosity.com'
 DEFAULT_API_AUTHOR_VERSION = 'latest'
 
-DEFAULT_API_DATA_URL = 'https://data{region}{env}.learnosity.com'
+DEFAULT_API_DATA_URL = 'https://data{region}{environment}.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
+DOTDIR = os.path.expanduser('~') + '/.learnosity'
+SHARED_CREDENTIALS_FILE = f'{DOTDIR}/credentials'
+CONFIG_FILE = f'{DOTDIR}/config'
 
 # TODO: use credentials from environment/file
 @click.group()
+
 @click.option('--consumer-key', '-k',
               help=f'API key for desired consumer, defaults to {DEFAULT_CONSUMER_KEY}',
-              default=DEFAULT_CONSUMER_KEY,
+              default=None,
               envvar='LRN_CONSUMER_KEY', show_envvar=True)
 @click.option('--consumer-secret', '-S',
               help=f'Secret associated with the consumer key, defaults to {DEFAULT_CONSUMER_SECRET}',
-              default=DEFAULT_CONSUMER_SECRET,
+              default=None,
               envvar='LRN_CONSUMER_SECRET', show_envvar=True)
 # Requests
 @click.option('--file', '-f', type=click.File('r'),
-              help='File containing the JSON request',
+              help='File containing the JSON request.',
               default='-')
 @click.option('--request-json', '-R', 'request_json',
               help='JSON body of the request to send,',
@@ -59,6 +65,18 @@ DEFAULT_API_DATA_VERSION = 'v1'
 @click.option('--version', '-e',
               help='API version to target',
               envvar='LRN_VERSION', show_envvar=True)
+# Configuration
+@click.option('--shared-credentials-file', '-c', type=click.File('r'),
+              help=f'Credentials file to use for profiles definition, defaults to {SHARED_CREDENTIALS_FILE}',
+              default=None,
+              envvar='LRN_SHARED_CREDENTIALS_FILE', show_envvar=True)
+@click.option('--config-file', '-C', type=click.File('r'),
+              help=f'Configuration file to use for profiles definition, defaults to {CONFIG_FILE}',
+              default=None,
+              envvar='LRN_CONFIG_FILE', show_envvar=True)
+@click.option('--profile', '-p',
+              help='Profile to use (provides default consumer key and secret from the credentials, as well as environment and region from the config)',
+              envvar='LRN_PROFILE', show_envvar=True)
 # Logging
 @click.option('--log-level', '-l', default='info',
               help='log level')
@@ -69,6 +87,7 @@ def cli(ctx,
         consumer_key, consumer_secret,
         file, request_json=None, dump_meta=False,
         environment=None, region=None, version=None,
+        profile=None, shared_credentials_file=None, config_file=None,
         log_level='info', requests_log_level='warning',
         do_set=False, do_update=False,
         ):
@@ -90,6 +109,10 @@ def cli(ctx,
     ctx.obj['region'] = region
     ctx.obj['environment'] = environment
     ctx.obj['version'] = version
+
+    ctx.obj['shared_credentials_file'] = shared_credentials_file
+    ctx.obj['config_file'] = config_file
+    ctx.obj['profile'] = profile
 
     logging.basicConfig(
         format='%(asctime)s %(levelname)s:%(message)s',
@@ -119,18 +142,15 @@ def author(ctx, endpoint_url):
 
       - /itembank/items
 
-    When not using a full URL, environment variables LRN_DEFAULT_VERSION, LRN_DEFAULT_REGION, and LRN_DEFAULT_ENV
-    will be used to determine the location of the API to hit.
-
     '''
     ctx.ensure_object(dict)
     logger = ctx.obj['logger']
-    consumer_key = ctx.obj['consumer_key']
-    consumer_secret = ctx.obj['consumer_secret']
+
+    consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, DEFAULT_API_AUTHOR_VERSION)
 
     author_request = _get_request(ctx)
     author_request = _add_user(author_request)
-    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_AUTHOR_URL, DEFAULT_API_AUTHOR_VERSION)
+    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_AUTHOR_URL, version, region, environment)
     action = _get_action(ctx)
 
     try:
@@ -173,18 +193,15 @@ def data(ctx, endpoint_url, references=None,
 
       - /itembank/items
 
-    When not using a full URL, environment variables LRN_DEFAULT_VERSION, LRN_DEFAULT_REGION, and LRN_DEFAULT_ENV
-    will be used to determine the location of the API to hit.
-
     '''
     ctx.ensure_object(dict)
     logger = ctx.obj['logger']
-    consumer_key = ctx.obj['consumer_key']
-    consumer_secret = ctx.obj['consumer_secret']
+
+    consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, DEFAULT_API_DATA_VERSION)
 
     action = _get_action(ctx)
     data_request = _get_request(ctx)
-    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_DATA_URL, DEFAULT_API_DATA_VERSION)
+    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_DATA_URL, version, region, environment)
 
     if len(references) > 0:
         if 'references' in data_request:
@@ -210,12 +227,75 @@ def data(ctx, endpoint_url, references=None,
     _output_json(data)
     return True
 
-def _get_env():
-    return {
-        'env': os.getenv('LRN_DEFAULT_ENV'),
-        'region': os.getenv('LRN_DEFAULT_REGION'),
-        'version': os.getenv('LRN_DEFAULT_VERSION'),
-    }
+
+def _get_profile(ctx, default_version=None):
+    '''
+    Returns profile information based on CLI option and config:
+    * consumer_key,
+    * consumer_secret,
+    * version,
+    * region,
+    * environment
+    '''
+    logger = ctx.obj['logger']
+    profile_name = ctx.obj['profile']
+
+
+    # Changed in version 3.6: With the acceptance of PEP 468, order is retained for keyword
+    # arguments passed to the OrderedDict constructor and its update() method.
+    profile_params = OrderedDict(
+        # credentials
+        consumer_key=DEFAULT_CONSUMER_KEY,
+        consumer_secret=DEFAULT_CONSUMER_SECRET,
+
+        # config
+        version=default_version,
+        region='',
+        environment=''
+    )
+
+    if profile_name:
+        shared_credentials_file = ctx.obj['shared_credentials_file']
+        if not shared_credentials_file:
+            shared_credentials_file = open(SHARED_CREDENTIALS_FILE, 'r')
+        credentials = configparser.ConfigParser()
+        credentials.read_file(shared_credentials_file)
+
+        if not ctx.obj['config_file']:
+            try:
+                ctx.obj['config_file'] = open(CONFIG_FILE, 'r')
+            except FileNotFoundError:
+                logger.debug(f'Config file not found: {CONFIG_FILE}')
+        config_file = ctx.obj['config_file']
+
+        # look for profile in config
+        if config_file:
+            config = configparser.ConfigParser()
+            config.read_file(config_file)
+
+            if profile_name not in config:
+                logger.debug(f'Profile {profile_name} not found in config {config_file.name}')
+            else:
+                for key in [ 'version', 'region', 'environment' ]:
+                    if key in config[profile_name]:
+                        profile_params[key] = config[profile_name][key]
+                # XXX: limited source_profile support: only allow to share credentials for now
+                if 'source_profile' in config[profile_name]:
+                    profile_name = config[profile_name]['source_profile']
+
+        if profile_name not in credentials:
+            logger.warning(f'Profile {profile_name} not found in credentials file {shared_credentials_file.name}, using demo credentials...')
+        else:
+            for key in [ 'consumer_key', 'consumer_secret' ]:
+                if key in credentials[profile_name]:
+                    profile_params[key] = credentials[profile_name][key]
+
+    # override everything with CLI/env config
+    for key in profile_params.keys():
+        if ctx.obj[key]:
+            profile_params[key] = ctx.obj[key]
+
+    return profile_params.values()
 
 
 def _get_action(ctx):
@@ -275,12 +355,12 @@ def _add_user(request):
 
 
 def _build_endpoint_url(endpoint_url, default_url, version,
-                        region='', env=''):
+                        region='', environment=''):
 
     if region:
         region = f'-{region}'
-    if env not in ['', 'prod', 'production']:
-        env = f'.{env}'
+    if environment not in ['', 'prod', 'production']:
+        environment = f'.{environment}'
 
     if not endpoint_url.startswith('http'):
         if not endpoint_url.startswith('/'):  # Prepend leading / if missing
@@ -288,7 +368,7 @@ def _build_endpoint_url(endpoint_url, default_url, version,
         if not endpoint_url.startswith('/v'):  # API version
             endpoint_url = f'/{version}{endpoint_url}'
 
-        endpoint_url = default_url.format(region=region, env=env) + endpoint_url
+        endpoint_url = default_url.format(region=region, environment=environment) + endpoint_url
     return endpoint_url
 
 
