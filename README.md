@@ -240,7 +240,7 @@ print(signed_request)
 The `lrn-cli` tool allows to exchange JSON payloads with the Learnosity APIs
 without having to worry about signature generation.
 
-In a nutshell, it can be use as follows
+In a nutshell, it can be used as follows
 
 	$ lrn-cli --consumer-key CONSUMER_KEY --consumer-secret --request-json '{}' CONSUMER_SECRET API ENDPOINT
 
@@ -356,6 +356,55 @@ get an up-to-date help).
 	Options:
 	  -r, --reference TEXT  `reference` to request (can be used multiple times
 	  --help                Show this message and exit.
+
+## Configuration
+
+While most parameters (credentials, version, region, ...) can be specified on
+the command line, they can also be set as environment variables (`LRN_...` as
+documented in the `--help` output of the main and sub-commands, if relevant).
+
+lrn-cli also supports credentials and configuration file. By default those are,
+resp., `~/.learnosity/credentials` and `˜~/.learnosity/config`. Both are
+formatted as simple INI file, with sections in square brackets, and parameters
+set within the section.  Those entries can be selected for use with either the
+`--profile` command line option, or the `LRN_PROFILE` environment variable.
+
+If the profile is not found, and keys not otherwise specified, `lrn-cli` will
+default to the demo consumer keys.
+
+### Credentials file
+
+The credentials file allows to specify named consumer key and secret pairs.
+By default, it is in `~/.learnosity/credentials`.
+
+
+```ini
+[default]
+consumer_key=yis0TYCu7U9V4o7M
+consumer_secret=74c5fd430cf1242a527f6223aebd42d30464be22
+
+[some-other-consumer]
+consumer_key=X
+consumer_secret=Y
+```
+
+### Configuration file
+
+The config file allows to specify additional parameters such as region and
+version. By default, it is in `~/.learnosity/config`.
+
+```ini
+[default]
+region=au
+version=v2020.2.LTS
+
+[old-lts]
+version=v2020.1.LTS
+source_profile=default
+```
+
+The `source_profile` allows to fetch a differently-named set of consumers
+credentials.
 
 # Tests
 
