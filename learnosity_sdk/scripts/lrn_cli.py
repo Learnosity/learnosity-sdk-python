@@ -173,13 +173,15 @@ def author(ctx, endpoint_url):
 
 @cli.command()
 @click.argument('endpoint_url')
+@click.option('--limit', '-l', 'limit',
+              help='Maximum `limit` of object to request at once')
 @click.option('--reference', '-r', 'references',
               help='`reference` to request (can be used multiple times',
               multiple=True)
 @click.option('--recurse', '-R', 'do_recurse', is_flag=True, default=False,
               help='Automatically recurse using the next token')
 @click.pass_context
-def data(ctx, endpoint_url, references=None,
+def data(ctx, endpoint_url, references=None, limit=None,
          do_recurse=False):
     ''' Make a request to Data API.
 
@@ -205,8 +207,12 @@ def data(ctx, endpoint_url, references=None,
 
     if len(references) > 0:
         if 'references' in data_request:
-            logger.warning('Overriding `references` from request with references from the command line')
+            logger.warning('Overriding `references` in request with `--references` from the command line')
         data_request['references'] = references
+    if limit:
+        if 'limit' in data_request:
+            logger.warning('Overriding `limit` in request with `--limit` from the command line')
+        data_request['limit'] = limit
 
     logger.debug('Sending %s request to %s ...' %
                  (action.upper(), endpoint_url))
