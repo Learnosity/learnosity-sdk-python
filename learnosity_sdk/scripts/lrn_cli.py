@@ -476,7 +476,7 @@ def _output_json(data, stream=None):
     colorise = True
     if stream is None:
         stream = sys.stdout
-    elif stream is not sys.stderr:
+    if not stream.isatty():
         colorise = False
 
     outJson = json.dumps(data, indent=True)
