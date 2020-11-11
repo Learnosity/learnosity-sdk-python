@@ -233,7 +233,7 @@ signed_request = events_init.generate()
 print(signed_request)
 ```
 
-# lrn-cli
+# Learnosity CLI tool (lrn-cli)
 
 ![lrn-cli logo](lrn-cli.png)
 
@@ -316,61 +316,26 @@ Getting the last authored Item, passing the request from standard input.
 	]
 
 Documentation about all the options is available with the `--help` flag to both
-the base tool, and each API. (Don't trust this example, run those for real to
-get an up-to-date help).
+the base tool, and each API.
 
 	$ lrn-cli --help
-	Usage: lrn-cli [OPTIONS] COMMAND [ARGS]...
-
-	  Prepare and send request to Learnosity APIs
-
-	Options:
-	  -k, --consumer-key TEXT        API key for desired consumer
-	  -S, --consumer-secret TEXT     Secret associated with the consumer key
-	  -R, --request-json TEXT        JSON body of the request to send,
-	  -f, --file FILENAME            File containing the JSON request
-	  -m, --dump-meta                output meta object to stderr
-	  -l, --log-level TEXT           log level
-	  -L, --requests-log-level TEXT  log level for the HTTP requests
-	  -s, --set                      Send a SET request
-	  -u, --update                   Send an UPDATE request
-	  --help                         Show this message and exit.
-
-	Commands:
-	  data  Make a request to Data API.
-	[14:26:04] ~/learnosity/salt-developer/code/sdk/python$ lrn-cli data --help
-	Usage: lrn-cli data [OPTIONS] ENDPOINT_URL
-
-	  Make a request to Data API.
-
-	  The endpoint_url can be:
-
-	  - a full URL: https://data.learnosity.com/v1/itembank/items
-
-	  - a REST path, with or without version:
-
-	    - /v1/itembank/items
-
-	    - /itembank/items
-
-	Options:
-	  -r, --reference TEXT  `reference` to request (can be used multiple times
-	  --help                Show this message and exit.
 
 ## Configuration
 
-While most parameters (credentials, version, region, ...) can be specified on
+While most parameters (credentials, environment, version, region, ...) can be specified on
 the command line, they can also be set as environment variables (`LRN_...` as
 documented in the `--help` output of the main and sub-commands, if relevant).
 
-lrn-cli also supports credentials and configuration file. By default those are,
-resp., `~/.learnosity/credentials` and `˜~/.learnosity/config`. Both are
-formatted as simple INI file, with sections in square brackets, and parameters
+lrn-cli also supports credentials and configuration file. By default, those are
+`~/.learnosity/credentials` and `˜~/.learnosity/config` respectively. You may need to
+create ~/.learnosity directory first before creating files.
+
+Both are formatted as simple INI file, with sections in square brackets, and parameters
 set within the section.  Those entries can be selected for use with either the
 `--profile` command line option, or the `LRN_PROFILE` environment variable.
 
-If the profile is not found, and keys not otherwise specified, `lrn-cli` will
-default to the demo consumer keys.
+If the profile provided is not found, and keys not otherwise specified, `lrn-cli` will
+default to the learnosity-demos consumer key.
 
 ### Credentials file
 
@@ -386,11 +351,15 @@ consumer_secret=74c5fd430cf1242a527f6223aebd42d30464be22
 [some-other-consumer]
 consumer_key=X
 consumer_secret=Y
+
+[staging]
+consumer_key=X
+consumer_secret=Y
 ```
 
 ### Configuration file
 
-The config file allows to specify additional parameters such as region and
+The config file allows additional parameters to be specified, such as environment, region and
 version. By default, it is in `~/.learnosity/config`.
 
 ```ini
@@ -401,6 +370,11 @@ version=v2020.2.LTS
 [old-lts]
 version=v2020.1.LTS
 source_profile=default
+
+[staging]
+environment=staging
+version=v2020.2.LTS
+
 ```
 
 The `source_profile` allows to fetch a differently-named set of consumers
@@ -408,7 +382,7 @@ credentials.
 
 # Tests
 
-To run the tests, run `tox` from the project directory. This will run tests several different versions of python.
+To run the tests, run `tox` from the project directory. This will run tests with several different versions of python.
 
 If you don't have `tox` installed, run:
 

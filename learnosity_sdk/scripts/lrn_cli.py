@@ -290,7 +290,7 @@ def _get_profile(ctx, default_version=None):
                     profile_name = config[profile_name]['source_profile']
 
         if profile_name not in credentials:
-            logger.warning(f'Profile {profile_name} not found in credentials file {shared_credentials_file.name}, using demo credentials...')
+            logger.warning(f'Profile {profile_name} not found in credentials file {shared_credentials_file.name}, using learnosity-demos credentials...')
         else:
             for key in [ 'consumer_key', 'consumer_secret' ]:
                 if key in credentials[profile_name]:
