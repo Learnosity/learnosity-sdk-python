@@ -56,13 +56,13 @@ CONFIG_FILE = f'{DOTDIR}/config'
 @click.option('--dump-meta', '-m', is_flag=True, default=False,
               help='output meta object to stderr')
 # Environment
-@click.option('--region', '-e',
+@click.option('--region', '-r',
               help='API region to target',
               envvar='LRN_REGION', show_envvar=True)
 @click.option('--environment', '-e',
               help='API environment to target',
               envvar='LRN_ENVIRONMENT', show_envvar=True)
-@click.option('--version', '-e',
+@click.option('--version', '-v',
               help='API version to target',
               envvar='LRN_VERSION', show_envvar=True)
 # Configuration
