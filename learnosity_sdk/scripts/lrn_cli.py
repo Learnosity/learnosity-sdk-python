@@ -27,6 +27,9 @@ DEFAULT_API_AUTHOR_VERSION = 'latest'
 DEFAULT_API_DATA_URL = 'https://data{region}{environment}.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
+DEFAULT_API_REPORTS_URL = 'https://reports{region}{environment}.learnosity.com'
+DEFAULT_API_REPORTS_VERSION = 'latest'
+
 DOTDIR = os.path.expanduser('~') + '/.learnosity'
 SHARED_CREDENTIALS_FILE = f'{DOTDIR}/credentials'
 CONFIG_FILE = f'{DOTDIR}/config'
@@ -207,6 +210,26 @@ def data(ctx, endpoint_url, references=None, limit=None,
 
     _output_json(data)
     return True
+
+
+@cli.command()
+@click.argument('endpoint_url')
+@click.pass_context
+def reports(ctx, endpoint_url):
+    ''' Make a request to Author API.
+
+    The endpoint_url can be:
+
+    - a full URL: https://reports.learnosity.com/v2020.2.LTS/init
+
+    - a REST path, with or without version:
+
+      - /latest-lts/init
+
+      - /init
+
+    '''
+    return _get_api_response(ctx, 'reports', endpoint_url, DEFAULT_API_REPORTS_URL, DEFAULT_API_REPORTS_VERSION)
 
 
 def _get_profile(ctx, default_version=None):
