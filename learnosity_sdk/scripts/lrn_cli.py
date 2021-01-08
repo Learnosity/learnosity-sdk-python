@@ -143,32 +143,7 @@ def author(ctx, endpoint_url):
       - /itembank/items
 
     '''
-    ctx.ensure_object(dict)
-    logger = ctx.obj['logger']
-
-    consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, DEFAULT_API_AUTHOR_VERSION)
-
-    author_request = _get_request(ctx)
-    author_request = _add_user(author_request)
-    endpoint_url = _build_endpoint_url(endpoint_url, DEFAULT_API_AUTHOR_URL, version, region, environment)
-    action = _get_action(ctx)
-
-    try:
-        r = _send_www_encoded_request('author', endpoint_url, consumer_key, consumer_secret,
-                                      author_request, action, logger)
-    except Exception as e:
-        logger.error('Exception sending request to %s: %s' %
-                     (endpoint_url, e))
-        return False
-
-    response = _validate_response(ctx, r)
-    if response is None:
-        return False
-
-    data = response['data']
-
-    _output_json(data)
-    return True
+    return _get_api_response(ctx, 'author', endpoint_url, DEFAULT_API_AUTHOR_URL, DEFAULT_API_REPORTS_VERSION)
 
 
 @cli.command()
@@ -376,6 +351,36 @@ def _build_endpoint_url(endpoint_url, default_url, version,
 
         endpoint_url = default_url.format(region=region, environment=environment) + endpoint_url
     return endpoint_url
+
+def _get_api_response(ctx, api, endpoint_url, default_url, default_version):
+    ctx.ensure_object(dict)
+    logger = ctx.obj['logger']
+
+    consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, default_version)
+
+    api_request = _get_request(ctx)
+    # XXX: This may not be relevant to all APIs, but it's fine as long as it doesn't break.
+    api_request = _add_user(api_request)
+    endpoint_url = _build_endpoint_url(endpoint_url, default_url, version, region, environment)
+    action = _get_action(ctx)
+
+    try:
+        r = _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
+                                      api_request, action, logger)
+    except Exception as e:
+        logger.error('Exception sending request to %s: %s' %
+                     (endpoint_url, e))
+        return False
+
+    response = _validate_response(ctx, r)
+    if response is None:
+        return False
+
+    data = response['data']
+
+    _output_json(data)
+    return True
+
 
 
 def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
