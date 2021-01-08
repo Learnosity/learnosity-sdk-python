@@ -414,7 +414,7 @@ def _send_json_request(endpoint_url, consumer_key, consumer_secret,
         }
         data = None
         logger.debug('Iterating through pages of data...')
-        for r_iter in data_api.request_iter(endpoint_url, security, consumer_secret, request, action):
+        for i, r_iter in enumerate(data_api.request_iter(endpoint_url, security, consumer_secret, request, action)):
             meta = r_iter['meta']
             new_data = r_iter['data']
             if data is None:
@@ -425,7 +425,7 @@ def _send_json_request(endpoint_url, consumer_key, consumer_secret,
                 data.update(new_data)
             else:
                 raise Exception('Unexpected retun data type: not list or dict')
-            logger.debug(f'Got {len(new_data)} new objects')
+            logger.debug(f'Got page {i} with {len(new_data)} new objects')
         meta['records'] = len(data)
         r = {
             'meta': meta,
