@@ -61,6 +61,9 @@ CONFIG_FILE = f'{DOTDIR}/config'
               help='Send an UPDATE request')
 @click.option('--dump-meta', '-m', is_flag=True, default=False,
               help='output meta object to stderr')
+@click.option('--domain', '-d',
+              help=f'Domain to use for web API requests',
+              default='localhost')
 # Environment
 @click.option('--region', '-r',
               help='API region to target',
@@ -92,6 +95,7 @@ CONFIG_FILE = f'{DOTDIR}/config'
 def cli(ctx,
         consumer_key, consumer_secret,
         file, request_json=None, dump_meta=False,
+        domain='localhost',
         environment=None, region=None, version=None,
         profile=None, shared_credentials_file=None, config_file=None,
         log_level='info', requests_log_level='warning',
@@ -111,6 +115,7 @@ def cli(ctx,
     ctx.obj['do_set'] = do_set
     ctx.obj['do_update'] = do_update
     ctx.obj['dump_meta'] = dump_meta
+    ctx.obj['domain'] = domain
 
     ctx.obj['region'] = region
     ctx.obj['environment'] = environment
@@ -409,6 +414,7 @@ def _build_endpoint_url(endpoint_url, default_url, version,
 def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user_id=None):
     ctx.ensure_object(dict)
     logger = ctx.obj['logger']
+    domain = ctx.obj['domain']
 
     consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, default_version)
 
@@ -420,7 +426,7 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user
 
     try:
         r = _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
-                                      api_request, action, logger, user_id)
+                                      api_request, action, logger, user_id, domain)
     except Exception as e:
         logger.error('Exception sending request to %s: %s' %
                      (endpoint_url, e))
@@ -439,8 +445,8 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user
 
 def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
                               request, action,
-                              logger,user_id=None):
-    security = _make_security_packet(consumer_key, consumer_secret, user_id)
+                              logger, user_id=None, domain='localhost'):
+    security = _make_security_packet(consumer_key, consumer_secret, user_id, domain)
 
     init = Init(api, security, consumer_secret, request)
 
