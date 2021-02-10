@@ -27,6 +27,9 @@ DEFAULT_API_AUTHOR_VERSION = 'latest'
 DEFAULT_API_DATA_URL = 'https://data{region}{environment}.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
+DEFAULT_API_QUESTIONS_URL = 'https://questions{region}{environment}.learnosity.com'
+DEFAULT_API_QUESTIONS_VERSION = 'latest'
+
 DEFAULT_API_REPORTS_URL = 'https://reports{region}{environment}.learnosity.com'
 DEFAULT_API_REPORTS_VERSION = 'latest'
 
@@ -214,9 +217,37 @@ def data(ctx, endpoint_url, references=None, limit=None,
 
 @cli.command()
 @click.argument('endpoint_url')
+@click.option('--user-id', '-u', required=True,
+              help='`user_id` (to use in the security packet)')
+@click.pass_context
+def questions(ctx, endpoint_url, user_id):
+    ''' Make a request to Questions API.
+
+    The endpoint_url can be:
+
+    - a full URL: https://questions.learnosity.com/v2021.1.LTS/questionresponses
+
+    - a REST path, with or without version:
+
+      - /latest-lts/questionresponses
+
+      - /questionresponses
+
+    Example:
+
+    lrn-cli questions authenticate
+
+    '''
+    return _get_api_response(ctx, 'questions', endpoint_url,
+                             DEFAULT_API_QUESTIONS_URL, DEFAULT_API_QUESTIONS_VERSION,
+                             user_id)
+
+
+@cli.command()
+@click.argument('endpoint_url')
 @click.pass_context
 def reports(ctx, endpoint_url):
-    ''' Make a request to Author API.
+    ''' Make a request to Reports API.
 
     The endpoint_url can be:
 
@@ -375,7 +406,7 @@ def _build_endpoint_url(endpoint_url, default_url, version,
         endpoint_url = default_url.format(region=region, environment=environment) + endpoint_url
     return endpoint_url
 
-def _get_api_response(ctx, api, endpoint_url, default_url, default_version):
+def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user_id=None):
     ctx.ensure_object(dict)
     logger = ctx.obj['logger']
 
@@ -389,7 +420,7 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version):
 
     try:
         r = _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
-                                      api_request, action, logger)
+                                      api_request, action, logger, user_id)
     except Exception as e:
         logger.error('Exception sending request to %s: %s' %
                      (endpoint_url, e))
@@ -408,8 +439,8 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version):
 
 def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
                               request, action,
-                              logger):
-    security = _make_security_packet(consumer_key, consumer_secret)
+                              logger,user_id=None):
+    security = _make_security_packet(consumer_key, consumer_secret, user_id)
 
     init = Init(api, security, consumer_secret, request)
 
@@ -463,13 +494,18 @@ def _send_json_request(endpoint_url, consumer_key, consumer_secret,
     return r
 
 
-def _make_security_packet(consumer_key, consumer_secret,
+def _make_security_packet(consumer_key, consumer_secret, user_id=None,
                                domain='localhost'):
-    return {
+    security = {
         'consumer_key': consumer_key,
         'domain': domain,
         'timestamp': datetime.datetime.utcnow().strftime("%Y%m%d-%H%M")
     }
+
+    if user_id:
+        security['user_id'] = user_id
+
+    return security
 
 
 def _validate_response(ctx, r):
