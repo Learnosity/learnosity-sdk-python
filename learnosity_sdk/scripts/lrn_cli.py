@@ -55,6 +55,9 @@ CONFIG_FILE = f'{DOTDIR}/config'
 @click.option('--request-json', '-R', 'request_json',
               help='JSON body of the request to send,',
               metavar='JSON', default=None)
+@click.option('--usrequest-json', '-U', 'usrequest_json',
+              help='JSON body of the usrequest to send,',
+              metavar='JSON', default=None)
 @click.option('--set', '-s', 'do_set', is_flag=True, default=False,
               help='Send a SET request')
 @click.option('--update', '-u', 'do_update', is_flag=True, default=False,
@@ -94,7 +97,7 @@ CONFIG_FILE = f'{DOTDIR}/config'
 @click.pass_context
 def cli(ctx,
         consumer_key, consumer_secret,
-        file, request_json=None, dump_meta=False,
+        file, request_json=None, usrequest_json=None, dump_meta=False,
         domain='localhost',
         environment=None, region=None, version=None,
         profile=None, shared_credentials_file=None, config_file=None,
@@ -112,6 +115,7 @@ def cli(ctx,
 
     ctx.obj['file'] = file
     ctx.obj['request_json'] = request_json
+    ctx.obj['usrequest_json'] = usrequest_json
     ctx.obj['do_set'] = do_set
     ctx.obj['do_update'] = do_update
     ctx.obj['dump_meta'] = dump_meta
@@ -206,7 +210,7 @@ def data(ctx, endpoint_url, references=None, limit=None,
         r = _send_json_request(endpoint_url, consumer_key, consumer_secret, data_request, action,
                                logger, do_recurse)
     except Exception as e:
-        logger.error('Exception sending request to %s: %s' %
+        logger.error('Exception sending JSON request to %s: %s' %
                      (endpoint_url, e))
         return False
 
@@ -238,9 +242,11 @@ def questions(ctx, endpoint_url, user_id):
 
       - /questionresponses
 
+    Note that requests to this API need to go through the `usrequest`, and require a `user_id`
+
     Example:
 
-    lrn-cli questions authenticate
+        lrn-cli  -m -U '{ "questionResponseIds": [ "0034_demo-user_04c389f8-a306-4f11-b259-105dc4c6932d_f167c24c98ea6415d9a7b227714f491d"] }' questions questionresponses -u demo-user
 
     '''
     return _get_api_response(ctx, 'questions', endpoint_url,
@@ -356,20 +362,26 @@ def _get_action(ctx):
     return action
 
 
-def _get_request(ctx):
-    file = ctx.obj['file']
+def _get_request(ctx, field='request'):
+    request_file = field + '_file'
+    file = None
+    if request_file in ctx.obj:
+        file = ctx.obj[request_file]
     logger = ctx.obj['logger']
-    request_json = ctx.obj['request_json']
+    request_json = ctx.obj[field + '_json']
 
     if request_json is not None:
-        logger.debug('Using request JSON from command line argument')
+        logger.debug(f'Using {field} JSON from command line argument')
         return json.loads(request_json)
+
+    if file is None:
+        return
 
     if file.isatty():
         # Make sure the user is aware they need to enter something
-        logger.info(f'Reading request json from {file}...')
+        logger.info(f'Reading {field} JSON from {file}...')
     else:
-        logger.debug(f'Reading request json from {file}...')
+        logger.debug(f'Reading {feld} JSON from {file}...')
 
     try:
         request = json.load(file)
@@ -419,16 +431,18 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user
     consumer_key, consumer_secret, version, region, environment = _get_profile(ctx, default_version)
 
     api_request = _get_request(ctx)
+    api_usrequest = _get_request(ctx, 'usrequest')
     # XXX: This may not be relevant to all APIs, but it's fine as long as it doesn't break.
-    api_request = _add_user(api_request)
+    if api_request:
+        api_request = _add_user(api_request)
     endpoint_url = _build_endpoint_url(endpoint_url, default_url, version, region, environment)
     action = _get_action(ctx)
 
     try:
-        r = _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
-                                      api_request, action, logger, user_id, domain)
+        r = _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret, logger,
+                                      api_request, action, api_usrequest, user_id, domain)
     except Exception as e:
-        logger.error('Exception sending request to %s: %s' %
+        logger.error('Exception sending Web request to %s: %s' %
                      (endpoint_url, e))
         return False
 
@@ -443,11 +457,16 @@ def _get_api_response(ctx, api, endpoint_url, default_url, default_version, user
 
 
 
-def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
-                              request, action,
-                              logger, user_id=None, domain='localhost'):
+def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret, logger,
+                              request = None, action = 'get', usrequest = None,
+                              user_id=None, domain='localhost'
+                              ):
+    if request is None:
+        request = {}
+
     security = _make_security_packet(consumer_key, consumer_secret, user_id, domain)
 
+    Init.disable_telemetry()
     init = Init(api, security, consumer_secret, request)
 
     security['signature'] = init.generate_signature()
@@ -455,9 +474,11 @@ def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret,
     form = {
         'action': action,
         'security': json.dumps(security),
-        'request': init.generate_request_string(),
-        'usrequest': init.generate_request_string(),
     }
+    if len(request):
+        form['request'] =  init.generate_request_string(),
+    if usrequest:
+        form['usrequest'] = json.dumps(usrequest)
 
     return requests.post(endpoint_url, data=form)
 
