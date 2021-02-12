@@ -52,6 +52,9 @@ CONFIG_FILE = f'{DOTDIR}/config'
 @click.option('--file', '-f', type=click.File('r'),
               help='File containing the JSON request.',
               default='-')
+@click.option('--file-is-usrequest', is_flag=True, default=False,
+              help='Use the file as a usrequest'
+              )
 @click.option('--request-json', '-R', 'request_json',
               help='JSON body of the request to send,',
               metavar='JSON', default=None)
@@ -97,7 +100,7 @@ CONFIG_FILE = f'{DOTDIR}/config'
 @click.pass_context
 def cli(ctx,
         consumer_key, consumer_secret,
-        file, request_json=None, usrequest_json=None, dump_meta=False,
+        file, file_is_usrequest=False, request_json=None, usrequest_json=None, dump_meta=False,
         domain='localhost',
         environment=None, region=None, version=None,
         profile=None, shared_credentials_file=None, config_file=None,
@@ -113,7 +116,10 @@ def cli(ctx,
     ctx.obj['consumer_key'] = consumer_key
     ctx.obj['consumer_secret'] = consumer_secret
 
-    ctx.obj['file'] = file
+    if file_is_usrequest:
+        ctx.obj['usrequest_file'] = file
+    else:
+        ctx.obj['request_file'] = file
     ctx.obj['request_json'] = request_json
     ctx.obj['usrequest_json'] = usrequest_json
     ctx.obj['do_set'] = do_set
@@ -363,6 +369,7 @@ def _get_action(ctx):
 
 
 def _get_request(ctx, field='request'):
+    request = {}
     request_file = field + '_file'
     file = None
     if request_file in ctx.obj:
@@ -374,20 +381,17 @@ def _get_request(ctx, field='request'):
         logger.debug(f'Using {field} JSON from command line argument')
         return json.loads(request_json)
 
-    if file is None:
-        return
+    if file is not None:
+        if file.isatty():
+            # Make sure the user is aware they need to enter something
+            logger.info(f'Reading {field} JSON from {file}...')
+        else:
+            logger.debug(f'Reading {field} JSON from {file}...')
 
-    if file.isatty():
-        # Make sure the user is aware they need to enter something
-        logger.info(f'Reading {field} JSON from {file}...')
-    else:
-        logger.debug(f'Reading {feld} JSON from {file}...')
-
-    try:
-        request = json.load(file)
-    except JSONDecodeError as e:
-        logger.warning(f'Invalid JSON ({e}), using empty request')
-        request = {}
+        try:
+            request = json.load(file)
+        except JSONDecodeError as e:
+            logger.warning(f'Invalid JSON ({e}), using empty request')
 
     return request
 
