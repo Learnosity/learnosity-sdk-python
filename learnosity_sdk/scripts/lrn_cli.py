@@ -443,7 +443,9 @@ def _build_endpoint_url(endpoint_url, default_url, version,
     if not endpoint_url.startswith('http'):
         if not endpoint_url.startswith('/'):  # Prepend leading / if missing
             endpoint_url = f'/{endpoint_url}'
-        if not endpoint_url.startswith('/v'):  # API version
+        if (not endpoint_url.startswith('/v')
+                and not endpoint_url.startswith('/latest')
+            ):  # API version
             endpoint_url = f'/{version}{endpoint_url}'
 
         endpoint_url = default_url.format(region=region, environment=environment) + endpoint_url
