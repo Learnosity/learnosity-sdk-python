@@ -164,7 +164,7 @@ def author(ctx, endpoint_url):
       - /itembank/items
 
     '''
-    return _get_api_response(ctx, 'author', endpoint_url, DEFAULT_API_AUTHOR_URL, DEFAULT_API_REPORTS_VERSION)
+    return _get_api_response(ctx, 'author', endpoint_url, DEFAULT_API_AUTHOR_URL, DEFAULT_API_AUTHOR_VERSION)
 
 
 @cli.command()
