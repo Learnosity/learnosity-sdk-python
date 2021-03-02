@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- lrn-cli: Support for api-author, api-questions and api-reports
+- lrn-cli: Support for api-author, api-items, api-questions and api-reports
 - lrn-cli: Support for usrequest
 
 ## [v0.3.2] - 2020-01-08

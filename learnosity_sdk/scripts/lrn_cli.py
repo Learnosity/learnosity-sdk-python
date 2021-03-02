@@ -27,6 +27,9 @@ DEFAULT_API_AUTHOR_VERSION = 'latest'
 DEFAULT_API_DATA_URL = 'https://data{region}{environment}.learnosity.com'
 DEFAULT_API_DATA_VERSION = 'v1'
 
+DEFAULT_API_ITEMS_URL = 'https://items{region}{environment}.learnosity.com'
+DEFAULT_API_ITEMS_VERSION = 'latest'
+
 DEFAULT_API_QUESTIONS_URL = 'https://questions{region}{environment}.learnosity.com'
 DEFAULT_API_QUESTIONS_VERSION = 'latest'
 
@@ -229,6 +232,25 @@ def data(ctx, endpoint_url, references=None, limit=None,
     _output_json(data)
     return True
 
+
+@cli.command()
+@click.argument('endpoint_url')
+@click.pass_context
+def items(ctx, endpoint_url):
+    ''' Make a request to Author API.
+
+    The endpoint_url can be:
+
+    - a full URL: https://items.learnosity.com/v2021.1.LTS/activity
+
+    - a REST path, with or without version:
+
+      - /latest-lts/activity
+
+      - /activity
+
+    '''
+    return _get_api_response(ctx, 'items', endpoint_url, DEFAULT_API_ITEMS_URL, DEFAULT_API_ITEMS_VERSION)
 
 @cli.command()
 @click.argument('endpoint_url')
