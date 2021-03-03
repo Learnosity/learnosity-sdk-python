@@ -499,6 +499,14 @@ def _send_www_encoded_request(api, endpoint_url, consumer_key, consumer_secret, 
 
     security['signature'] = init.generate_signature()
 
+    # XXX: some hacks for the signed data to match
+    if api == 'items':
+        # api-items lifts the the user_id from the request into the security object
+        if 'user_id' not in security and \
+                'user_id' in request:
+            security['user_id'] = request['user_id']
+
+
     form = {
         'action': action,
         'security': json.dumps(security),
