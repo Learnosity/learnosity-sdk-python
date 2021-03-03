@@ -237,7 +237,7 @@ def data(ctx, endpoint_url, references=None, limit=None,
 @click.argument('endpoint_url')
 @click.pass_context
 def items(ctx, endpoint_url):
-    ''' Make a request to Author API.
+    ''' Make a request to Items API.
 
     The endpoint_url can be:
 
