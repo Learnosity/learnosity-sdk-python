@@ -154,11 +154,11 @@ class Init(object):
         # Validate field lengths and types
         if len(self.service) == 0:
             raise ValidationException(
-                "The \`service\` argument wasn't found or was empty")
+                "The `service` argument wasn't found or was empty")
 
         if len(self.secret) == 0:
             raise ValidationException(
-                "The \`secret\` argument wasn't found or  was empty")
+                "The `secret` argument wasn't found or  was empty")
 
         if self.action is not None and not isinstance(self.action, str):
             raise ValidationException("The action parameter must be a string")
