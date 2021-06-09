@@ -56,8 +56,7 @@ Not using Python? See the [SDKs for other languages](https://help.learnosity.com
 
 ### Supported Python Versions
 
-We support and test for [all currently supported versions of
-Python](https://devguide.python.org/#status-of-python-branches).
+We support all versions that have a status of `bugfix` or `security` on [this](https://devguide.python.org/#status-of-python-branches) list.
 
 [(Back to top)](#table-of-contents)
 

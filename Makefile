@@ -82,6 +82,10 @@ clean: test-clean distclean
 	test ! -d build || rm -r build
 	find . -path __pycache__ -delete
 	find . -name *.pyc -delete
+test-clean:
+	test ! -d .tox || rm -r .tox
+	test ! -d .pytest_cache || rm -r .pytest_cache
+	test ! -f .coverage || rm .coverage
 distclean:
 	test ! -d dist || rm -r dist
 real-clean: clean
