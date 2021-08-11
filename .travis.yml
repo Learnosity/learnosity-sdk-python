@@ -6,6 +6,10 @@ python:
   - "3.6"
   - "3.7"
 
+before_install:
+  # Login to docker hub
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
 install: "pip install .[test]"
 
 script: "pytest --cov=learnosity_sdk"
