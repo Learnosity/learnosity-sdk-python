@@ -4,7 +4,15 @@ import unittest
 import learnosity_sdk.request
 
 ServiceTestSpec = collections.namedtuple(
-    "TestSpec", ["service", "valid", "security", "request", "action", "signature"])
+    "TestSpec", [
+            "service",
+            "valid",
+            "security",  # security can be None to use the default, or an Dict to extend the default
+            "request",
+            "action",
+            "signature",
+    ]
+)
 
 ServiceTests = [
     ServiceTestSpec(
@@ -35,6 +43,11 @@ ServiceTests = [
 
     ServiceTestSpec(
         "data", True, None, {"limit": 100}, "get",
+        'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
+    ),
+    #
+    ServiceTestSpec(
+        "data", True, None, '{"limit": 100}', "get",
         'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
     ),
 
@@ -158,6 +171,7 @@ class TestServiceRequests(unittest.TestCase):
 
                 self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
                 self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
-                self.assertIsNotNone(init.generate(), 'initOptions are None')
-                self.assertEqual(type(init.generate()), type(t.request), 'initOptions type mismatch')
-
+                initOptions = init.generate(False)  # disable forced encoding to string, to make sure we output the same data structure as the input
+                self.assertIsNotNone(initOptions, 'initOptions are None')
+                if t.service != 'data':
+                    self.assertEqual(type(initOptions), type(t.request), 'initOptions type mismatch: {initOptions}')

@@ -37,7 +37,9 @@ class Init(object):
         self.service = service
         self.security = security.copy()
         self.secret = secret
-        self.request = request.copy()
+        self.request = request
+        if 'copy' in request:
+                self.request = request.copy()
         self.action = action
 
         self.validate()
