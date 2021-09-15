@@ -39,7 +39,7 @@ class Init(object):
         self.secret = secret
         self.request = request
         if 'copy' in request:
-                self.request = request.copy()
+            self.request = request.copy()
         self.action = action
 
         self.validate()
@@ -100,7 +100,7 @@ class Init(object):
             if self.action is not None:
                 output['action'] = self.action
 
-        if encode:
+        if encode or self.request_passed_as_string:
             return json.dumps(output)
         else:
             return output
@@ -150,8 +150,10 @@ class Init(object):
             self.security = json.loads(self.security)
 
         # Parse the request packet if the user provided it as a string
+        self.request_passed_as_string = False
         if isinstance(self.request, str):
             self.request = json.loads(self.request)
+            self.request_passed_as_string = True
 
         # Validate field lengths and types
         if len(self.service) == 0:
