@@ -1,5 +1,6 @@
 import collections
 import unittest
+import json
 
 import learnosity_sdk.request
 
@@ -16,7 +17,10 @@ ServiceTestSpec = collections.namedtuple(
 
 ServiceTests = [
     ServiceTestSpec(
-        "questions", True, {"user_id": "$ANONYMIZED_USER_ID"}, {
+        "questions",
+        True,
+        {"user_id": "$ANONYMIZED_USER_ID"},
+        {
             "type": "local_practice", "state": "initial",
             "questions": [
                 {
@@ -37,7 +41,8 @@ ServiceTests = [
                     }
                 }
             ]
-        }, None,
+        },
+        None,
         '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
     ),
 
@@ -45,94 +50,24 @@ ServiceTests = [
         "data", True, None, {"limit": 100}, "get",
         'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
     ),
-    #
+
     ServiceTestSpec(
-        "data", True, None, '{"limit": 100}', "get",
-        'd1f0204a9e2e1ee719c445d05a81b99bd0018e2f9113c2996d71a5a3f7cba7c8',
+        "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
+            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
     ),
 
-#     ServiceTestSpec(
-#         "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
-            # '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
-#     ),
-#         $request = [
-#             "items" => [
-#                 [
-#                     "content" => '<span class="learnosity-response question-demoscience1234"></span>',
-#                     "response_ids" => [
-#                         "demoscience1234"
-#                     ],
-#                     "workflow" => "",
-#                     "reference" => "question-demoscience1"
-#                 ],
-#                 [
-#                     "content" => '<span class="learnosity-response question-demoscience5678"></span>',
-#                     "response_ids" => [
-#                         "demoscience5678"
-#                     ],
-#                     "workflow" => "",
-#                     "reference" => "question-demoscience2"
-#                 ]
-#             ],
-#             "ui_style" =>"horizontal",
-#             "name" => "Demo (2 questions)",
-#             "state" => "initial",
-#             "metadata" => [],
-#             "navigation" => [
-#                 "show_next" => true,
-#                 "toc" => true,
-#                 "show_submit" => true,
-#                 "show_save" => false,
-#                 "show_prev" => true,
-#                 "show_title" => true,
-#                 "show_intro" => true,
-#             ],
-#             "time" => [
-#                 "max_time" => 600,
-#                 "limit_type" => "soft",
-#                 "show_pause" => true,
-#                 "warning_time" => 60,
-#                 "show_time" => true
-#             ],
-#             "configuration" => [
-#                 "onsubmit_redirect_url" => "/assessment/",
-#                 "onsave_redirect_url" => "/assessment/",
-#                 "idle_timeout" => true,
-#                 "questionsApiVersion" => "v2"
-#             ],
-#             "questionsApiActivity" => [
-#                 "user_id" => "$ANONYMIZED_USER_ID",
-#                 "type" => "submit_practice",
-#                 "state" => "initial",
-#                 "id" => "assessdemo",
-#                 "name" => "Assess API - Demo",
-#                 "questions" => [
-#                     [
-#                         "response_id" => "demoscience1234",
-#                         "type" => "sortlist",
-#                         "description" => "In this question, the student needs to sort the events, chronologically earliest to latest.",
-#                         "list" => ["Russian Revolution", "Discovery of the Americas", "Storming of the Bastille", "Battle of Plataea", "Founding of Rome", "First Crusade"],
-#                         "instant_feedback" => true,
-#                         "feedback_attempts" => 2,
-#                         "validation" => [
-#                             "valid_response" => [4, 3, 5, 1, 2, 0],
-#                             "valid_score" => 1,
-#                             "partial_scoring" => true,
-#                             "penalty_score" => -1
-#                         ]
-#                     ],
-#                     [
-#                         "response_id" => "demoscience5678",
-#                         "type" => "highlight",
-#                         "description" => "The student needs to mark one of the flowers anthers in the image.",
-#                         "img_src" => "http://www.learnosity.com/static/img/flower.jpg",
-#                         "line_color" => "rgb(255, 20, 0)",
-#                         "line_width" => "4"
-#                     ]
-#                 ]
-#             ],
-#             "type" => "activity"
-#         ];
+    ServiceTestSpec(  # string
+        "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
+        '{ "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] }',
+        None,
+        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+    ),
+    ServiceTestSpec(  # Dict
+        "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
+        { "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] },
+        None,
+        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+    ),
 
     ServiceTestSpec(
         "events", True, None,
@@ -171,7 +106,3 @@ class TestServiceRequests(unittest.TestCase):
 
                 self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
                 self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
-                initOptions = init.generate(False)  # disable forced encoding to string, to make sure we output the same data structure as the input
-                self.assertIsNotNone(initOptions, 'initOptions are None')
-                if t.service != 'data':
-                    self.assertEqual(type(initOptions), type(t.request), 'initOptions type mismatch: {initOptions}')
