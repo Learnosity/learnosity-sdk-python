@@ -140,20 +140,24 @@ class TestServiceRequests(unittest.TestCase):
     timestamp = '20140626-0528'
 
     def test_init_generate(self):
+        """ Test that Init.generate() generates the desired initOptions """
         learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
-            # TODO(cera): Much more validation
-            security = {
-                'consumer_key': self.key,
-                'domain': self.domain,
-                'timestamp': self.timestamp,
-            }
-            if t.security is not None:
-                security.update(t.security)
+            with self.subTest(repr(t), t=t):
+                # TODO(cera): Much more validation
+                security = {
+                    'consumer_key': self.key,
+                    'domain': self.domain,
+                    'timestamp': self.timestamp,
+                }
+                if t.security is not None:
+                    security.update(t.security)
 
-            init = learnosity_sdk.request.Init(
-                t.service, security, self.secret, request=t.request, action=t.action)
+                init = learnosity_sdk.request.Init(
+                    t.service, security, self.secret, request=t.request, action=t.action)
 
-            self.assertFalse(init.is_telemetry_enabled())
-            self.assertEqual(t.signature, init.generate_signature())
-            self.assertTrue(init.generate() is not None)
+                self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
+                self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
+                self.assertIsNotNone(init.generate(), 'initOptions are None')
+                self.assertEqual(type(init.generate()), type(t.request), 'initOptions type mismatch')
+

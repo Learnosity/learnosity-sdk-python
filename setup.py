@@ -20,6 +20,7 @@ DEV_REQUIRES = [
 TEST_REQUIRES = [
     'pytest >=4.6.6, <6.0',
     'pytest-cov >=2.8.1, <3.0',
+    'pytest-subtests',
     'responses >=0.8.1, <1.0',
 ]
 
