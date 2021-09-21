@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Dropped support for EoLed Python<3.6
 
+### Removed
+- Python 2.7 compat code
+
 ## [v0.3.1] - 2019-08-07
 ### Fixed
 - Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
