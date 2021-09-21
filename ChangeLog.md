@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated testing commands and dependency declaration to remove deprecated uses
   of setuptool's `tests_require` configuration and `test` command.
 
+### Added
+- Started active support for Python 3.7--3.9
+
+### Changed
+- Dropped support for EoLed Python<3.6
+
 ## [v0.3.1] - 2019-08-07
 ### Fixed
 - Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
