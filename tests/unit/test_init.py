@@ -92,17 +92,38 @@ class TestServiceRequests(unittest.TestCase):
         learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
             with self.subTest(repr(t), t=t):
-                # TODO(cera): Much more validation
-                security = {
-                    'consumer_key': self.key,
-                    'domain': self.domain,
-                    'timestamp': self.timestamp,
-                }
-                if t.security is not None:
-                    security.update(t.security)
-
+                security = self._prepare_security(t.security)
                 init = learnosity_sdk.request.Init(
                     t.service, security, self.secret, request=t.request, action=t.action)
 
                 self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
                 self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
+
+    def test_no_parameter_mangling(self):
+        """ Test that Init.generate() does not modify its parameters """
+        learnosity_sdk.request.Init.enable_telemetry()
+        for t in ServiceTests:
+            with self.subTest(repr(t), t=t):
+                request_copy = t.request
+                if hasattr(t.request, 'copy'):
+                        request_copy = t.request.copy()
+
+                security = self._prepare_security(t.security)
+                security_copy = security.copy()
+
+                init = learnosity_sdk.request.Init(
+                    t.service, security_copy, self.secret, request=request_copy, action=t.action)
+
+                self.assertEqual(security, security_copy, 'Original security modified by SDK')
+                self.assertEqual(t.request, request_copy, 'Original request modified by SDK')
+
+    def _prepare_security(self, add_security=None):
+        # TODO(cera): Much more validation
+        security = {
+            'consumer_key': self.key,
+            'domain': self.domain,
+            'timestamp': self.timestamp,
+        }
+        if add_security is not None:
+            security.update(add_security)
+        return security

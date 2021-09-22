@@ -38,7 +38,7 @@ class Init(object):
         self.security = security.copy()
         self.secret = secret
         self.request = request
-        if 'copy' in request:
+        if hasattr(request, 'copy'):
             self.request = request.copy()
         self.action = action
 
