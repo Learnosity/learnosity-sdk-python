@@ -232,7 +232,7 @@ The Jinja template is rendered by the following line, which will bring in those 
 self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
 ```
 
-There is some additional code in `standalone-assessment.php`, which runs Python's built-in web server. 
+There is some additional code in `standalone-assessment.py`, which runs Python's built-in web server. 
 
 This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects. As mentioned earlier, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 
