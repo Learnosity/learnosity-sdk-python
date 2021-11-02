@@ -46,7 +46,7 @@ There's more features, besides. See the detailed list of SDK features on the [re
 [(Back to top)](#table-of-contents)
 
 ## Requirements
-1. Runtime libraries for Python 3 installed. ([instructions](link-to-help-site-python-env-setup-article))
+1. Runtime libraries for Python 3 installed. ([instructions](https://www.python.org/downloads/))
 
 2. The [Pip](https://pip.pypa.io/en/latest/) package manager installed. You use Pip to access the Learnosity Python SDK on [Pypi](https://pypi.org/) (the [Python Package Index](https://pypi.org/)).
 
@@ -133,8 +133,8 @@ We start by including some LearnositySDK helpers - they'll make it easy to gener
 from learnosity_sdk.request import Init # Learnosity helper.
 from learnosity_sdk.utils import Uuid   # Learnosity helper.
 from http.server import BaseHTTPRequestHandler, HTTPServer # Python web server.
-import time                             # Time library, for the webserver.
-from jinja2 import Template             # Jinja template library.
+import time                             # Time library, for the Python web server.
+from jinja2 import Template             # Jinja template library - helps pull data into web pages.
 ```
 
 Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
@@ -229,7 +229,7 @@ self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generated
 
 There is some additional code in `standalone-assessment.php`, which runs Python's built-in web server. 
 
-This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects.
+This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects. As mentioned earlier, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 
 Take a look at some more in-depth options and tutorials on using Learnosity assessment functionality below.
 
