@@ -25,10 +25,6 @@ An official Learnosity open-source project.</p>
 ## Overview: what does it do?
 The Learnosity Python SDK makes it simple to interact with Learnosity APIs.
 
-This package was based on the [PHP
-SDK](https://github.com/Learnosity/learnosity-sdk-php), with some small
-adjustments to be more Pythonic.
-
 ![image-concept-overview.png](docs/images/image-concept-overview.png)
 
 It provides a number of convenience features for developers, that make it simple to do the following essential tasks:
@@ -112,7 +108,7 @@ To start up your Python web server, first find the following folder location und
 
 If installed under Pypi, navigate to this location:
 
-    ...vendor/learnosity/learnosity-sdk-python/docs/quickstart/assessment/
+    .../usr/local/lib/python3.9/site-packages/learnosity_sdk/docs/quickstart/assessment/
 
 If downloaded via another method, navigate to this location:
 
