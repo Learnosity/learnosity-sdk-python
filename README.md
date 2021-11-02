@@ -66,7 +66,7 @@ The following Python versions are tested and supported:
 ###  **Installation via Pip**
 Using Pip is the recommended way to install the Learnosity SDK for Python in production. The easiest way is to run this from your parent project folder:
 
-pip install learnosity_sdk
+    pip install learnosity_sdk
 
 WAS: You can also specify the requirement manually by adding "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
     {
