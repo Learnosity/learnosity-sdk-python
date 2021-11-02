@@ -132,9 +132,14 @@ We start by including some LearnositySDK helpers - they'll make it easy to gener
 ``` python
 from learnosity_sdk.request import Init # Learnosity helper.
 from learnosity_sdk.utils import Uuid   # Learnosity helper.
+```
+
+We also specify a few libraries to run a minimal web server, for the purposes of this example.
+
+``` python
 from http.server import BaseHTTPRequestHandler, HTTPServer # Python web server.
 import time                             # Time library, for the Python web server.
-from jinja2 import Template             # Jinja template library - helps pull data into web pages.
+from jinja2 import Template             # Jinja template library - pulls data into web pages.
 ```
 
 Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
@@ -204,7 +209,7 @@ The following example HTML/Jinja template can be found near the bottom of the `s
         <div id="learnosity_assess"></div>
         <!-- Load the Items API library. -->
         <script src="\https://items.learnosity.com/?v2021.2.LTS/\"></script>
-        <!-- Initiate Items API assessment rendering, using the JSON blob of signed parameters. -->
+        <!-- Initiate Items API assessment rendering, using the signed parameters. -->
         <script>
         var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
         </script>
@@ -223,7 +228,7 @@ The call to `init()` returns an instance of the ItemsApp, which we can use to pr
 
 The Jinja template is rendered by the following line, which will bring in those variables.
 
-``` python
+``` jinja
 self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
 ```
 
