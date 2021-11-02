@@ -145,11 +145,11 @@ The first section of code is Python and is executed server-side. It constructs a
 We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user and session IDs.
 
 ``` python
-from learnosity_sdk.request import Init
-from learnosity_sdk.utils import Uuid
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import time
-from jinja2 import Template
+from learnosity_sdk.request import Init # Learnosity helper.
+from learnosity_sdk.utils import Uuid   # Learnosity helper.
+from http.server import BaseHTTPRequestHandler, HTTPServer # Python web server.
+import time                             # Time library, for the webserver.
+from jinja2 import Template             # Jinja template library.
 ```
 
 Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
@@ -199,10 +199,6 @@ init = Init(
 )
 generatedRequest = init.generate()
 ```
-
-PYTHON STUFF /\
-===============================================
-PHP STUFF \/
 
 [(Back to top)](#table-of-contents)
 
