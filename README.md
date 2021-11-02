@@ -164,7 +164,7 @@ items_request = items_request = {
 * `rendering_type`: selects a rendering mode, `assess` mode is a "standalone" mode (loading a complete assessment player for navigation, as opposed to `inline` for embedding without).
 * `type`: selects the context for the student response storage. `submit_practice` mode means the student responses will be stored in the Learnosity cloud, allowing for grading and review.
 * `name`: human-friendly display name to be shown in reporting, via Reports API and Data API.
-* `state`: Can be set to `initial`, `resume` or `review`. Optional. `initial` is the default.
+* `state`: Optional. Can be set to `initial`, `resume` or `review`. `initial` is the default.
 
 **Note**: you can submit the configuration options either as a Python array as shown above, or a JSON string.
 
