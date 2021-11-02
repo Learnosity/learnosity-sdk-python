@@ -185,55 +185,6 @@ signed_request = events_init.generate()
 print(signed_request)
 ```
 
-
-### Init
-
-#### Init() Arguments
-
-**service**
-
-**security**
-
-**secret**
-
-**request**
-
-**action**
-
-
-### Remote
-
-#### Remote() arguments
-
-**URL**
-
-**Data**
-
-**Options**
-
-
-#### Remote methods
-
-**getBody()**
-
-**getError()**
-
-**getHeader()**
-
-**getSize()**
-
-**getStatusCode()**
-
-
-### DataApi
-
-#### request()
-
-#### requestRecursive()
-
-#### Overriding the remote options
-
-
 ## Further reading
 Thanks for reading to the end! Find more information about developing an app with Learnosity on our documentation sites: 
 <ul>
