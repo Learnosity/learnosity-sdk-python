@@ -68,21 +68,10 @@ Using Pip is the recommended way to install the Learnosity SDK for Python in pro
 
     pip install learnosity_sdk
 
-WAS: You can also specify the requirement manually by adding "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
-    {
-        "require": {
-            "learnosity/learnosity-sdk-php": "^1.0"
-        }
-    }
-Then, install the new dependency with
-    composer update learnosity/learnosity-sdk-php
-
-NEW: (Is there a comparative process here--specifying the requirement manually, in a config file--? Maybe in the project's Setup.py?)
-
 ### **Alternative method 1: download the zip file**
 Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
-Note: after installation, run this command in the 'learnosity-sdk-python' folder(?):
+Note: after installation, run this command in the SDK root folder:
 
     pip install .
 
