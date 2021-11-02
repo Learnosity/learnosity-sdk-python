@@ -197,7 +197,7 @@ We've got our set of signed configuration parameters, so now we can set up our p
 
 This example uses plain HTML in a Jinja template, served by the built-in Python web server. However, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 
-The following example HTML/Jinja template can be found near the bottom of the `standalone-assessment.php` file.
+The following example HTML/Jinja template can be found near the bottom of the `standalone-assessment.py` file.
 
 ``` html
 <!DOCTYPE html>
@@ -222,7 +222,7 @@ The important parts to be aware of in this HTML are:
 * A div with `id="learnosity_assess"`. This is where the Learnosity assessment player will be rendered to deliver the assessment.
 * The `<script src="https://items.learnosity.com/?v2021.2.LTS"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `v2021.2.LTS` will retrieve that specific [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
 * The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
-* `PHP echo` dynamically sends the contents of our signed JSON blob of $initOptions to JavaScript, so it can be passed to `init()`.
+* The variable `{{generatedRequest}}` dynamically sends the contents of our signed JSON blob of $initOptions to JavaScript, so it can be passed to `init()`.
 
 The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods. We pull in our Learnosity configuration in a variable `{{ generatedRequest }}`, that the Jinja template will import from the Python program. The variable `{{ name }}` is the page title which can be set in the same way.
 
