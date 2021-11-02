@@ -104,39 +104,29 @@ For production use, you should install the SDK using the Pip package manager for
 
 [(Back to top)](#table-of-contents)
 
-PYTHON STUFF /\
-===============================================
-PHP STUFF \/
-
 ## Quick start guide
 Let's take a look at a simple example of the SDK in action. In this example, we'll load an assessment into the browser.
 
-### **Start up your web server**
-Start up your Python web server using the following folder location under the SDK as the document root. First, change directory ('cd') to this location on the command line.
+### **Start up your web server and view the standalone assessment example**
+To start up your Python web server, first find the following folder location under the SDK. Change directory ('cd') to this location on the command line.
 
 If installed under Pypi, navigate to this location:
 
-???    vendor/learnosity/learnosity-sdk-python/docs/quickstart
+    ...vendor/learnosity/learnosity-sdk-python/docs/quickstart/assessment/
 
 If downloaded via another method, navigate to this location:
 
-    .../learnosity-sdk-python/docs/quickstart
+    .../learnosity-sdk-python/docs/quickstart/assessment/
 
 To start, run this command from that folder:
 
-    python3 -m http.server
+    python3 standalone-assessment.py
 
-If your Python web server is up, we'll assume that your web server is available at this local address (it will report the port being used when you launch it, in this case it's port 8000): 
+From this point on, we'll assume that your web server is available at this local address (it will report the port being used when you launch it, by default it's port 8000): 
 
 http://localhost:8000/
 
-(For more information about the web server configuration, [click here](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
-
-### **View the standalone assessment example**
-Now view the standalone assessment example by visiting this address in your browser: http://localhost:8000/assessment/standalone-assessment.py <br>
-(or select the "Standalone assessment" example from the [index.html](http://localhost:8000/index.html) page).
-
-This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
+The page will load. This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
 
 <img width="50%" height="50%" src="docs/images/image-quickstart-examples-assessment.png">
 
@@ -145,36 +135,36 @@ This is a basic example of an assessment loaded into a web page with Learnosity'
 ### **How it works**
 Let's walk through the code for this standalone assessment example. The source file is included under the quickstart folder, in this location:
 
-    .../learnosity-sdk-php/docs/quickstart/assessment/app.py
+    .../learnosity-sdk-python/docs/quickstart/assessment/standalone-assessment.py
 
-The first section of code is PHP and is executed server-side. It constructs a set of configuration options for Items API, and securely signs them using the consumer key. The second section is HTML and JavaScript and is executed client-side, once the page is loaded in the browser. It renders and runs the assessment functionality.
+The first section of code is Python and is executed server-side. It constructs a set of configuration options for Items API, and securely signs them using the consumer key. The second section is HTML and JavaScript and is executed client-side, once the page is loaded in the browser. It renders and runs the assessment functionality.
 
 [(Back to top)](#table-of-contents)
 
 ### **Server-side code**
 We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user and session IDs.
 
-``` php
-<?php
-    require_once __DIR__ . '/../../../../bootstrap.php';
-    use LearnositySdk\Request\Init;
-    use LearnositySdk\Utils\Uuid;
-    $user_id = Uuid::generate();
-    $session_id = Uuid::generate();
+``` python
+from learnosity_sdk.request import Init
+from learnosity_sdk.utils import Uuid
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import time
+from jinja2 import Template
 ```
 
 Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
 
-``` php
-    $request = [
-        'user_id'        => $user_id,
-        'activity_template_id' => 'quickstart_examples_activity_template_001',
-        'session_id'     => $session_id,
-        'activity_id'    => 'quickstart_examples_activity_001'
-        'rendering_type' => 'assess',
-        'type'           => 'submit_practice',
-        'name'           => 'Items API Quickstart',
-    ];
+``` python
+items_request = items_request = {
+    "user_id": user_id,
+    "activity_template_id": "quickstart_examples_activity_template_001",
+    "session_id": session_id,
+    "activity_id": "quickstart_examples_activity_001",
+    "rendering_type": "assess",
+    "type": "submit_practice",
+    "name": "Items API Quickstart",
+    "state": "initial"
+}
 ```
 
 * `user_id`: unique student identifier. Note: we never send or save student's names or other personally identifiable information in these requests. The unique identifier should be used to look up the entry in a database of students accessible within your system only. [Learn more](https://help.learnosity.com/hc/en-us/articles/360002309578-Student-Privacy-and-Personally-Identifiable-Information-PII-).
@@ -184,61 +174,61 @@ Now we'll declare the configuration options for Items API. These specify which a
 * `rendering_type`: selects a rendering mode, `assess` mode is a "standalone" mode (loading a complete assessment player for navigation, as opposed to `inline` for embedding without).
 * `type`: selects the context for the student response storage. `submit_practice` mode means the student responses will be stored in the Learnosity cloud, allowing for grading and review.
 * `name`: human-friendly display name to be shown in reporting, via Reports API and Data API.
+* `state`: Can be set to `initial`, `resume` or `review`. Optional. `initial` is the default.
 
-**Note**: you can submit the configuration options either as a PHP array as shown above, or a JSON string.
+**Note**: you can submit the configuration options either as a Python array as shown above, or a JSON string.
 
-Next, we declare the Learnosity consumer credentials we'll use to authorize this request. The consumer key and consumer secret in this example are for Learnosity's public "demos" account. Once Learnosity provides your own consumer credentials, your Item bank and assessment data will be tied to your own consumer key and secret. 
+Next, we declare the Learnosity consumer credentials we'll use to authorize this request. We also construct security settings that ensure the report is initialized on the intended domain. The value provided to the domain property must match the domain from which the file is actually served. The consumer key and consumer secret in this example are for Learnosity's public "demos" account. Once Learnosity provides your own consumer credentials, your Item bank and assessment data will be tied to your own consumer key and secret.
 
-``` php
-    $consumerKey = 'yis0TYCu7U9V4o7M';
-    $consumerSecret = '74c5fd430cf1242a527f6223aebd42d30464be22';
+``` python
+security = {
+    'consumer_key': 'yis0TYCu7U9V4o7M',
+    'domain': 'localhost',
+}
+consumerSecret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 ```
 
-<i>(of course, you should never normally check passwords into version control)</i>
+<i>(of course, you should never normally put passwords into version control)</i>
 
-Here, we construct security settings that ensure the report is initialized on the intended domain. The value provided to the domain property must match the domain from which the file is actually served.
+Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `security`, `request` and `consumerSecret` parameters. `init.generate()` returns us a JSON blob of signed configuration parameters.
 
-``` php
-    $security = [
-        'domain'       => $_SERVER['SERVER_NAME'],
-        'consumer_key' => $consumerKey
-    ];
+``` python
+init = Init(
+    'items', security, consumerSecret,
+    request=items_request
+)
+generatedRequest = init.generate()
 ```
 
-Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `$security` and `$consumerSecret` parameters. `$init->generate()` returns us a JSON blob of signed configuration parameters.
-
-``` php
-    $init = new Init(
-        'items',
-        $security,
-        $consumerSecret,
-        $request);
-    $initOptions = $init->generate();
-?>
-```
+PYTHON STUFF /\
+===============================================
+PHP STUFF \/
 
 [(Back to top)](#table-of-contents)
 
 ### **Web page content**
 We've got our set of signed configuration parameters, so now we can set up our page content for output. The page can be as simple or as complex as needed, using your own HTML, JavaScript and your frameworks of choice to render the desired product experience.
 
-This example uses plain HTML in a PHP page for simplicity. The following example HTML can be found at the bottom of the `standalone-assessment.php` file.
+This example uses plain HTML in a Jinja template, served by the built-in Python web server. However, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
+
+The following example HTML/Jinja template can be found near the bottom of the `standalone-assessment.php` file.
 
 ``` html
 <!DOCTYPE html>
-<html>
-    <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
-    <body>
-        <h1>Standalone Assessment Example</h1>
+        <html>
+        <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
+        <body>
+        <h1>{{ name }}</title></h1>
+        <!-- Items API will render the assessment app into this div. -->
         <div id="learnosity_assess"></div>
-        <script src="https://items.learnosity.com/?v2021.2.LTS"></script>
+        <!-- Load the Items API library. -->
+        <script src="\https://items.learnosity.com/?v2021.2.LTS/\"></script>
+        <!-- Initiate Items API assessment rendering, using the JSON blob of signed parameters. -->
         <script>
-            var itemsApp = LearnosityItems.init(
-                <?php echo $initOptions; ?>
-            );
+        var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
         </script>
-    </body>
-</html>
+        </body>
+        </html>
 ```
 
 The important parts to be aware of in this HTML are:
@@ -248,7 +238,15 @@ The important parts to be aware of in this HTML are:
 * The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
 * `PHP echo` dynamically sends the contents of our signed JSON blob of $initOptions to JavaScript, so it can be passed to `init()`.
 
-The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods.
+The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods. We pull in our Learnosity configuration in a variable `{{ generatedRequest }}`, that the Jinja template will import from the Python program. The variable `{{ name }}` is the page title which can be set in the same way.
+
+The Jinja template is rendered by the following line, which will bring in those variables.
+
+``` python
+self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
+```
+
+There is some additional code in `standalone-assessment.php`, which runs Python's built-in web server. 
 
 This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects.
 
