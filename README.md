@@ -80,7 +80,7 @@ To install from the terminal, run this command:
 
     git clone git@github.com:Learnosity/learnosity-sdk-python.git
 
-Note: after installation, run this command in the 'learnosity-sdk-python' folder:
+Note: after installation, run this command in the SDK root folder:
 
     pip install .
 
