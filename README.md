@@ -50,6 +50,8 @@ There's more features, besides. See the detailed list of SDK features on the [re
 
 2. The [Pip](https://pip.pypa.io/en/latest/) package manager installed. You use Pip to access the Learnosity Python SDK on [Pypi](https://pypi.org/) (the [Python Package Index](https://pypi.org/)).
 
+3. The Jinja templating library. 
+
 Not using Python? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
 
 ### Supported Python Versions
@@ -68,12 +70,20 @@ Using Pip is the recommended way to install the Learnosity SDK for Python in pro
 
     pip install learnosity_sdk
 
+Then run
+
+    pip install Jinja2
+
 ### **Alternative method 1: download the zip file**
 Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
 Note: after installation, run this command in the SDK root folder:
 
     pip install .
+
+Then run
+
+    pip install Jinja2
 
 ### **Alternative 2: development install from a git clone**
 To install from the terminal, run this command:
@@ -83,6 +93,10 @@ To install from the terminal, run this command:
 Note: after installation, run this command in the SDK root folder:
 
     pip install .
+
+Then run
+
+    pip install Jinja2
 
 Note that these manual installation methods are for development and testing only.
 For production use, you should install the SDK using the Pip package manager for Python, as described above.
