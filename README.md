@@ -50,7 +50,7 @@ There's more features, besides. See the detailed list of SDK features on the [re
 
 2. The [Pip](https://pip.pypa.io/en/latest/) package manager installed. You use Pip to access the Learnosity Python SDK on [Pypi](https://pypi.org/) (the [Python Package Index](https://pypi.org/)).
 
-3. The Jinja templating library. 
+3. The [Jinja](https://jinja.palletsprojects.com/) templating library. Jinja helps in rendering HTML templates, and importing Python variables into web pages.
 
 Not using Python? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
 
