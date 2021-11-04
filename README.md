@@ -109,7 +109,7 @@ Let's take a look at a simple example of the SDK in action. In this example, we'
 ### **Start up your web server and view the standalone assessment example**
 To start up your Python web server, first find the following folder location under the SDK. Change directory ('cd') to this location on the command line.
 
-If installed under Pypi, navigate to this location:
+If installed under Pypi, and your Python version is 3.9 (for example), you should navigate to this location:
 
     .../usr/local/lib/python3.9/site-packages/learnosity_sdk/docs/quickstart/assessment/
 
@@ -245,7 +245,7 @@ The call to `init()` returns an instance of the ItemsApp, which we can use to pr
 
 The Jinja template is rendered by the following line, which will bring in those variables.
 
-``` jinja
+``` python
 self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
 ```
 
