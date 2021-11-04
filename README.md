@@ -134,7 +134,7 @@ The page will load. This is a basic example of an assessment loaded into a web p
 ### **How it works**
 Let's walk through the code for this standalone assessment example. The source file is included under the quickstart folder, in this location:
 
-    .../learnosity-sdk-python/docs/quickstart/assessment/standalone-assessment.py
+    /learnosity-sdk-python/docs/quickstart/assessment/standalone-assessment.py
 
 The first section of code is Python and is executed server-side. It constructs a set of configuration options for Items API, and securely signs them using the consumer key. The second section is HTML and JavaScript and is executed client-side, once the page is loaded in the browser. It renders and runs the assessment functionality.
 
