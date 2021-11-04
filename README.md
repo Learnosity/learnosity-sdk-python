@@ -243,7 +243,7 @@ The call to `init()` returns an instance of the ItemsApp, which we can use to pr
 The Jinja template is rendered by the following line, which will bring in those variables.
 
 ``` jinja
-self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
+self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
 ```
 
 There is some additional code in `standalone-assessment.py`, which runs Python's built-in web server. 
