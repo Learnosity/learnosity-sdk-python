@@ -73,18 +73,20 @@ class LearnosityServer(BaseHTTPRequestHandler):
         # Define the page HTML, as a Jinja template, with {{variables}} passed in.
         template = Template("""<!DOCTYPE html>
         <html>
-        <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
-        <body>
-        <h1>{{ name }}</title></h1>
-        <!-- Items API will render the assessment app into this div. -->
-        <div id="learnosity_assess"></div>
-        <!-- Load the Items API library. -->
-        <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
-        <!-- Initiate Items API assessment rendering, using the JSON blob of signed parameters. -->
-        <script>
-        var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
-        </script>
-        </body>
+            <head>
+                <link rel="stylesheet" type="text/css" href="../css/style.css">
+            </head>
+            <body>
+                <h1>{{ name }}</title></h1>
+                <!-- Items API will render the assessment app into this div. -->
+                <div id="learnosity_assess"></div>
+                <!-- Load the Items API library. -->
+                <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
+                <!-- Initiate Items API assessment rendering, using the signed parameters. -->
+                <script>
+                    var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
+                </script>
+            </body>
         </html>
         """)
         # Render the page template, grab variables needed and send them to the web server.

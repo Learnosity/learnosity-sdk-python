@@ -213,22 +213,25 @@ This example uses plain HTML in a Jinja template, served by the built-in Python 
 
 The following example HTML/Jinja template can be found near the bottom of the `standalone-assessment.py` file.
 
-``` html
-<!DOCTYPE html>
+``` python
+        template = Template("""<!DOCTYPE html>
         <html>
-        <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
-        <body>
-        <h1>{{ name }}</title></h1>
-        <!-- Items API will render the assessment app into this div. -->
-        <div id="learnosity_assess"></div>
-        <!-- Load the Items API library. -->
-        <script src="\https://items.learnosity.com/?v2021.2.LTS/\"></script>
-        <!-- Initiate Items API assessment rendering, using the signed parameters. -->
-        <script>
-        var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
-        </script>
-        </body>
+            <head>
+                <link rel="stylesheet" type="text/css" href="../css/style.css">
+            </head>
+            <body>
+                <h1>{{ name }}</title></h1>
+                <!-- Items API will render the assessment app into this div. -->
+                <div id="learnosity_assess"></div>
+                <!-- Load the Items API library. -->
+                <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
+                <!-- Initiate Items API assessment rendering, using the signed parameters. -->
+                <script>
+                    var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
+                </script>
+            </body>
         </html>
+        """)
 ```
 
 The important parts to be aware of in this HTML are:
