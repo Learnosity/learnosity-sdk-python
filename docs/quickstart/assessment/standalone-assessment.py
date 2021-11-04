@@ -71,7 +71,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         # Define the page HTML, as a Jinja template, with {{variables}} passed in.
-        tm = Template("""<!DOCTYPE html>
+        template = Template("""<!DOCTYPE html>
         <html>
         <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
         <body>
@@ -88,7 +88,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
         </html>
         """)
         # Render the page template, grab variables needed and send them to the web server.
-        self.wfile.write(bytes(tm.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
+        self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
 
 # Run the web server.
 if __name__ == "__main__":
