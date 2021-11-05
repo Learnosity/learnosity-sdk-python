@@ -74,6 +74,8 @@ Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
 
+*Note*:  Jinja is only required for the tutorial on this page.
+
 ### **Alternative method 1: download the zip file**
 Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
@@ -84,6 +86,8 @@ Note: after installation, run this command in the SDK root folder:
 Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
+
+*Note*:  Jinja is only required for the tutorial on this page.
 
 ### **Alternative 2: development install from a git clone**
 To install from the terminal, run this command:
@@ -97,6 +101,8 @@ Note: after installation, run this command in the SDK root folder:
 Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
+
+*Note*:  Jinja is only required for the tutorial on this page.
 
 Note that these manual installation methods are for development and testing only.
 For production use, you should install the SDK using the Pip package manager for Python, as described above.
