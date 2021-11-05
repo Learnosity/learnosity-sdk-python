@@ -1,3 +1,28 @@
+DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
+PYTHON_VERSION = 3.9
+
+TARGETS = build build-clean devbuild prodbuild \
+	dist dist-check-version dist-upload dist-upload-twine release \
+	pip-requirements-dev pip-requirements-test venv \
+	test test-clean test-integration-dev test-integration-env test-unit \
+	clean distclean real-clean
+.PHONY: $(TARGETS)
+
+ifneq (,$(DOCKER))
+# Re-run the make command in a container
+DKR = docker container run -t --rm \
+		-v $(CURDIR):/srv/sdk/python \
+		-v lrn-sdk-python_cache:/root/.cache \
+		-w /srv/sdk/python \
+		-e LRN_SDK_NO_DOCKER=1 \
+		-e ENV -e REGION -e VER \
+		python:$(PYTHON_VERSION)
+
+$(TARGETS):
+	$(DKR) make -e MAKEFLAGS="$(MAKEFLAGS)" $@
+
+else
+# The primary make targets
 PYTHON=python3
 VENV=.venv
 VENVPATH=$(VENV)/$(shell uname)-$(shell uname -m)-sdk-python
@@ -69,7 +94,7 @@ real-clean: clean
 # Python environment and dependencies
 venv: $(VENVPATH)
 $(VENVPATH):
-	unset PYTHONPATH; $(VIRTUALENV) $(VENVPATH)
+	$(VIRTUALENV) $(VENVPATH)
 	$(call venv-activate); \
 		pip install -e .
 
@@ -80,5 +105,4 @@ pip-requirements-dev: venv
 pip-requirements-test: venv
 	$(call venv-activate); \
 		pip install -e ".[test]" > /dev/null
-
-.PHONY: dist
+endif
