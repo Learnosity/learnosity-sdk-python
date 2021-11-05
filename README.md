@@ -50,7 +50,7 @@ There's more features, besides. See the detailed list of SDK features on the [re
 
 2. The [Pip](https://pip.pypa.io/en/latest/) package manager installed. You use Pip to access the Learnosity Python SDK on [Pypi](https://pypi.org/) (the [Python Package Index](https://pypi.org/)).
 
-3. The [Jinja](https://jinja.palletsprojects.com/) templating library. Jinja helps in rendering HTML templates, and importing Python variables into web pages.
+3. The [Jinja](https://jinja.palletsprojects.com/)** templating library. For the tutorial on this page, you will also need [Jinja](https://jinja.palletsprojects.com/) installed. Jinja helps in rendering HTML templates, and importing Python variables into web pages. It's not actually a requirement of the SDK itself, so if your app doesn't use Jinja, no need to install it. **  Jinja is only required for the tutorial on this page.
 
 Not using Python? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
 
@@ -70,7 +70,7 @@ Using Pip is the recommended way to install the Learnosity SDK for Python in pro
 
     pip install learnosity_sdk
 
-Then run
+Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
 
@@ -81,7 +81,7 @@ Note: after installation, run this command in the SDK root folder:
 
     pip install .
 
-Then run
+Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
 
@@ -94,7 +94,7 @@ Note: after installation, run this command in the SDK root folder:
 
     pip install .
 
-Then run
+Then, if you're following the tutorial on this page, also run:
 
     pip install Jinja2
 
