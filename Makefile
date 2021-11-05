@@ -1,6 +1,7 @@
 PYTHON=python3
 VENV=.venv
 VENVPATH=$(VENV)/$(shell uname)-$(shell uname -m)-sdk-python
+VIRTUALENV = $(PYTHON) -m venv
 
 ENV=prod
 REGION=.learnosity.com
@@ -68,7 +69,7 @@ real-clean: clean
 # Python environment and dependencies
 venv: $(VENVPATH)
 $(VENVPATH):
-	unset PYTHONPATH; virtualenv -p$(PYTHON) $(VENVPATH)
+	unset PYTHONPATH; $(VIRTUALENV) $(VENVPATH)
 	$(call venv-activate); \
 		pip install -e .
 
