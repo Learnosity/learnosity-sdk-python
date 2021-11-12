@@ -22,3 +22,6 @@ Alternatively, if you only care about the version you're currently running, you 
 Run `make release` and follow the instructions to deploy the distributions to PyPi
 
 You will need to be set up as a maintainer in order to do this.
+
+[Issues]: https://github.com/Learnosity/learnosity-sdk-python/issues/new
+[PRs]: https://github.com/Learnosity/learnosity-sdk-python/compare

@@ -72,9 +72,7 @@ Using Pip is the recommended way to install the Learnosity SDK for Python in pro
 
 Then, if you're following the tutorial on this page, also run:
 
-    pip install Jinja2
-
-*Note*:  Jinja is only required for the tutorial on this page.
+    pip install learnosity_sdk[quickstart]
 
 ### **Alternative method 1: download the zip file**
 Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
@@ -85,24 +83,22 @@ Note: after installation, run this command in the SDK root folder:
 
 Then, if you're following the tutorial on this page, also run:
 
-    pip install Jinja2
-
-*Note*:  Jinja is only required for the tutorial on this page.
+    pip install .[quickstart]
 
 ### **Alternative 2: development install from a git clone**
-To install from the terminal, run this command:
+To install from the terminal, run the following command:
 
     git clone git@github.com:Learnosity/learnosity-sdk-python.git
 
-Note: after installation, run this command in the SDK root folder:
+To set up up your local development environment, use the following:
 
-    pip install .
+    python3 -m venv .venv/learnosity-sdk-python
+    source .venv/learnosity-sdk-python/bin/activate
+    pip install -e .
 
 Then, if you're following the tutorial on this page, also run:
 
-    pip install Jinja2
-
-*Note*:  Jinja is only required for the tutorial on this page.
+    pip install -e .[quickstart]
 
 Note that these manual installation methods are for development and testing only.
 For production use, you should install the SDK using the Pip package manager for Python, as described above.
@@ -113,34 +109,24 @@ For production use, you should install the SDK using the Pip package manager for
 Let's take a look at a simple example of the SDK in action. In this example, we'll load an assessment into the browser.
 
 ### **Start up your web server and view the standalone assessment example**
-To start up your Python web server, first find the following folder location under the SDK. Change directory ('cd') to this location on the command line.
+To start up your Python web server, run the following command:
 
-If installed under Pypi, and your Python version is 3.9 (for example), you should navigate to this location:
+    learnosity-sdk-assessment-quickstart
 
-    .../usr/local/lib/python3.9/site-packages/learnosity_sdk/docs/quickstart/assessment/
+Note: this will run the code in [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py).
 
-If downloaded via another method, navigate to this location:
-
-    .../learnosity-sdk-python/docs/quickstart/assessment/
-
-To start, run this command from that folder:
-
-    python3 standalone-assessment.py
-
-From this point on, we'll assume that your web server is available at this local address (it will report the port being used when you launch it, by default it's port 8000): 
+From this point on, we'll assume that your web server is available at this local address (it will report the port being used when you launch it, by default it's port 8000).
 
 http://localhost:8000/
 
-The page will load. This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
+Open this page with your web browser. This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
 
 <img width="50%" height="50%" src="docs/images/image-quickstart-examples-assessment.png">
 
 [(Back to top)](#table-of-contents)
 
 ### **How it works**
-Let's walk through the code for this standalone assessment example. The source file is included under the quickstart folder, in this location:
-
-    /learnosity-sdk-python/docs/quickstart/assessment/standalone-assessment.py
+Let's walk through the code for this standalone assessment example. The source file is included under the quickstart folder: [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py).
 
 The first section of code is Python and is executed server-side. It constructs a set of configuration options for Items API, and securely signs them using the consumer key. The second section is HTML and JavaScript and is executed client-side, once the page is loaded in the browser. It renders and runs the assessment functionality.
 
@@ -152,6 +138,7 @@ We start by including some LearnositySDK helpers - they'll make it easy to gener
 ``` python
 from learnosity_sdk.request import Init # Learnosity helper.
 from learnosity_sdk.utils import Uuid   # Learnosity helper.
+from .. import config                   # config.py, which stores the consumer key and secret.
 ```
 
 We also specify a few libraries to run a minimal web server, for the purposes of this example.
@@ -195,19 +182,19 @@ security = {
     'consumer_key': 'yis0TYCu7U9V4o7M',
     'domain': 'localhost',
 }
-consumerSecret = '74c5fd430cf1242a527f6223aebd42d30464be22'
+consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 ```
 
 <i>(of course, you should never normally put passwords into version control)</i>
 
-Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `security`, `request` and `consumerSecret` parameters. `init.generate()` returns us a JSON blob of signed configuration parameters.
+Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `security`, `request` and `consumer_secret` parameters. `init.generate()` returns us a JSON blob of signed configuration parameters.
 
 ``` python
 init = Init(
-    'items', security, consumerSecret,
+    'items', security, consumer_secret,
     request=items_request
 )
-generatedRequest = init.generate()
+generated_request = init.generate()
 ```
 
 [(Back to top)](#table-of-contents)
@@ -217,7 +204,7 @@ We've got our set of signed configuration parameters, so now we can set up our p
 
 This example uses plain HTML in a Jinja template, served by the built-in Python web server. However, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 
-The following example HTML/Jinja template can be found near the bottom of the `standalone-assessment.py` file.
+The following example HTML/Jinja template can be found near the bottom of the [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py) file.
 
 ``` python
         template = Template("""<!DOCTYPE html>
@@ -233,7 +220,7 @@ The following example HTML/Jinja template can be found near the bottom of the `s
                 <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
                 <!-- Initiate Items API assessment rendering, using the signed parameters. -->
                 <script>
-                    var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
+                    var itemsApp = LearnosityItems.init( {{ generated_request }} );
                 </script>
             </body>
         </html>
@@ -245,17 +232,17 @@ The important parts to be aware of in this HTML are:
 * A div with `id="learnosity_assess"`. This is where the Learnosity assessment player will be rendered to deliver the assessment.
 * The `<script src="https://items.learnosity.com/?v2021.2.LTS"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `v2021.2.LTS` will retrieve that specific [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
 * The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
-* The variable `{{generatedRequest}}` dynamically sends the contents of our init options to JavaScript, so it can be passed to `init()`.
+* The variable `{{generated_request}}` dynamically sends the contents of our init options to JavaScript, so it can be passed to `init()`.
 
-The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods. We pull in our Learnosity configuration in a variable `{{ generatedRequest }}`, that the Jinja template will import from the Python program. The variable `{{ name }}` is the page title which can be set in the same way.
+The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods. We pull in our Learnosity configuration in a variable `{{ generated_request }}`, that the Jinja template will import from the Python program. The variable `{{ name }}` is the page title which can be set in the same way.
 
 The Jinja template is rendered by the following line, which will bring in those variables.
 
 ``` python
-self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
+self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generated_request=generated_request), "utf-8"))  
 ```
 
-There is some additional code in `standalone-assessment.py`, which runs Python's built-in web server. 
+There is some additional code in [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py), which runs Python's built-in web server. 
 
 This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects. As mentioned earlier, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 

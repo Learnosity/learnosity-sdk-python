@@ -6,6 +6,8 @@
 # Include server side Learnosity SDK, and set up variables related to user access
 from learnosity_sdk.request import Init
 from learnosity_sdk.utils import Uuid
+from .. import config
+# Include web server, time, and Jinja templating libraries.
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 from jinja2 import Template
@@ -49,27 +51,23 @@ items_request = items_request = {
 # data. These keys grant access to Learnosity's public demos account.
 # Learnosity will provide keys for your own account.
 security = {
-    'consumer_key': 'yis0TYCu7U9V4o7M', # To do -- rewrite in Python to pull this from a config file.
+    'consumer_key': config.consumer_key,
     # Change to your domain, e.g. 127.0.0.1, learnosity.com
     'domain': 'localhost',
-}
-consumerSecret = '74c5fd430cf1242a527f6223aebd42d30464be22' # To do -- rewrite in Python to pull this from a config file. 
+} 
 
 # Set up Learnosity initialization data.
 init = Init(
-    'items', security, consumerSecret,
+    'items', security, config.consumer_secret,
     request=items_request
 )
-generatedRequest = init.generate()
+generated_request = init.generate()
 
 # - - - - - - Section 2: your web page configuration - - - - - -#
 
 # Set up the HTML page template, for serving to the built-in Python web server
 class LearnosityServer(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
         # Define the page HTML, as a Jinja template, with {{variables}} passed in.
         template = Template("""<!DOCTYPE html>
         <html>
@@ -84,22 +82,29 @@ class LearnosityServer(BaseHTTPRequestHandler):
                 <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
                 <!-- Initiate Items API assessment rendering, using the signed parameters. -->
                 <script>
-                    var itemsApp = LearnosityItems.init( {{ generatedRequest }} );
+                    var itemsApp = LearnosityItems.init( {{ generated_request }} );
                 </script>
             </body>
         </html>
         """)
-        # Render the page template, grab variables needed and send them to the web server.
-        self.wfile.write(bytes(template.render(name='Standalone Assessment Example', generatedRequest=generatedRequest), "utf-8"))  
+
+        # Render the page template and grab the variables needed.
+        response = template.render(name='Standalone Assessment Example', generated_request=generated_request)
+        # Send headers and data back to the client.
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        # Send the response to the client.
+        self.wfile.write(response.encode("utf-8"))
+
+def main():
+    web_server = HTTPServer((host, port), LearnosityServer)
+    print("Server started http://%s:%s. Press Ctrl-c to quit." % (host, port))
+    try:
+        web_server.serve_forever()
+    except KeyboardInterrupt:
+        web_server.server_close()
 
 # Run the web server.
 if __name__ == "__main__":
-    webServer = HTTPServer((host, port), LearnosityServer)
-    print("Server started http://%s:%s" % (host, port))
-
-    try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
-
-    webServer.server_close()
+    main()

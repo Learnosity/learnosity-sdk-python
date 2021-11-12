@@ -43,5 +43,11 @@ setuptools.setup(
     extras_require={
         'dev': DEV_REQUIRES,
         'test': TEST_REQUIRES,
+        'quickstart': ['jinja2'],
+    },
+    entry_points={
+    'console_scripts': [
+        'learnosity-sdk-assessment-quickstart=docs.quickstart.assessment.standalone_assessment:main [quickstart]',
+    ],
     },
 )
