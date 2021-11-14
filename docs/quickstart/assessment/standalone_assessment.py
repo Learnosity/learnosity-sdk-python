@@ -53,7 +53,7 @@ items_request = items_request = {
 security = {
     'consumer_key': config.consumer_key,
     # Change to your domain, e.g. 127.0.0.1, learnosity.com
-    'domain': 'localhost',
+    'domain': host,
 } 
 
 # Set up Learnosity initialization data.

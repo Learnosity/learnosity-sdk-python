@@ -133,7 +133,7 @@ The first section of code is Python and is executed server-side. It constructs a
 [(Back to top)](#table-of-contents)
 
 ### **Server-side code**
-We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user and session IDs.
+We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and generate unique user and session IDs.
 
 ``` python
 from learnosity_sdk.request import Init # Learnosity helper.
@@ -149,7 +149,21 @@ import time                             # Time library, for the Python web serve
 from jinja2 import Template             # Jinja template library - pulls data into web pages.
 ```
 
-Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
+We generate UUIDs for the user ID and session ID.
+
+``` python
+user_id = Uuid.generate()
+session_id = Uuid.generate()
+```
+
+We choose the host domain and port number for our local web server.
+
+``` python
+host = "localhost"
+port = 8000
+```
+
+Now we'll declare the configuration parameters for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
 
 ``` python
 items_request = items_request = {
@@ -179,19 +193,18 @@ Next, we declare the Learnosity consumer credentials we'll use to authorize this
 
 ``` python
 security = {
-    'consumer_key': 'yis0TYCu7U9V4o7M',
-    'domain': 'localhost',
+    'consumer_key': config.consumer_key,
+    'domain': host,
 }
-consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 ```
 
 <i>(of course, you should never normally put passwords into version control)</i>
 
-Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `security`, `request` and `consumer_secret` parameters. `init.generate()` returns us a JSON blob of signed configuration parameters.
+Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `security`, `request` and `config.consumer_secret` parameters. `init.generate()` returns us a JSON blob of signed configuration parameters.
 
 ``` python
 init = Init(
-    'items', security, consumer_secret,
+    'items', security, config.consumer_secret,
     request=items_request
 )
 generated_request = init.generate()
