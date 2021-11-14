@@ -1,4 +1,5 @@
-# Copyright (c) 2021 Learnosity, MIT License
+# Copyright (c) 2021 Learnosity, Apache 2.0 License
+# SPDX-License-Identifier: Apache-2.0
 #
 # Basic example of embedding a standalone assessment using Items API
 # with `rendering_type: "assess"`.
