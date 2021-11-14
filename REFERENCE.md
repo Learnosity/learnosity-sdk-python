@@ -2,20 +2,33 @@
 
 ## Usage
 
+The following examples show how to use the SDK with the various Learnosity APIs.
+
 ## Questions API
 
 ```python
 import learnosity_sdk.request
+from learnosity_sdk.utils import Uuid
+from .. import config
+
+# Generate the user ID and session ID as UUIDs.
+user_id = Uuid.generate()
+session_id = Uuid.generate()
+
+# Set variables for the web server.
+# Change to your domain, e.g. 127.0.0.1, learnosity.com
+host = 'localhost'
+port = 8000
 
 # Security packet including consumer key
 security = {
-  'consumer_key': 'MY_API_KEY',
-  'domain': 'localhost',
-  'user_id': '$ANONYMIZED_USER_ID'
+  'consumer_key': config.consumer_key,
+  'domain': host,
+  'user_id': user_id
 }
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
-secret = 'MY_API_SECRET'
+secret = config.consumer_secret
 
 # request data for Questions API
 questions_request = {
@@ -57,22 +70,31 @@ Request packet generation containing signature could look as follows:
 #!/usr/bin/env python
 from learnosity_sdk.request import Init
 from learnosity_sdk.utils import Uuid
+from .. import config
+
+# Generate the user ID and session ID as UUIDs.
+user_id = Uuid.generate()
+session_id = Uuid.generate()
+
+# Set variables for the web server.
+# Change to your domain, e.g. 127.0.0.1, learnosity.com
+host = 'localhost'
+port = 8000
 
 # Security packet including consumer key
 security = {
-  'consumer_key': 'yis0TYCu7U9V4o7M',
-  # Change to your domain, e.g. 127.0.0.1, learnosity.com
-  'domain': 'localhost',
+  'consumer_key': config.consumer_key,
+  'domain': host,
 }
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
-secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
+secret = config.consumer_secret
 
 # example request data for Items API
 items_request = items_request = {
     "rendering_type": "inline",
-    "user_id": "$ANONYMIZED_USER_ID",
-    "session_id": Uuid.generate(),
+    "user_id": user_id,
+    "session_id": session_id,
     "type": "submit_practice",
     "activity_id": "exampleActivity",
     "name": "Items API demo - inline activity.",
@@ -112,15 +134,25 @@ Corresponding HTML template (using Django template markup):
 
 ```python
 import json
-
 from learnosity_sdk.request import DataApi
+from learnosity_sdk.utils import Uuid
+from .. import config
+
+# Generate the user ID and session ID as UUIDs.
+user_id = Uuid.generate()
+session_id = Uuid.generate()
+
+# Set variables for the web server.
+# Change to your domain, e.g. 127.0.0.1, learnosity.com
+host = 'localhost'
+port = 8000
 
 security = {
-    'consumer_key': 'MY_API_KEY',
-    'domain': 'localhost'
+    'consumer_key': config.consumer_key,
+    'domain': host
 }
 # WARNING: The consumer secret should not be committed to source control.
-consumer_secret = 'MY_API_SECRET'
+consumer_secret = config.consumer_secret
 
 endpoint = 'https://data.learnosity.com/latest/itembank/items'
 data_request = {
@@ -159,20 +191,32 @@ for result in client.request_iter(endpoint, security, consumer_secret, data_requ
 
 ```python
 import learnosity_sdk.request
+from learnosity_sdk.utils import Uuid
+from .. import config
+
+# Generate the user ID and session ID as UUIDs.
+user_id_1 = Uuid.generate()
+user_id_2 = Uuid.generate()
+user_id_3 = Uuid.generate()
+session_id = Uuid.generate()
+
+# Set variables for the web server.
+host = 'localhost'
+port = 8000
 
 # Security packet including consumer key
 security = {
-  'consumer_key': 'MY_API_KEY',
-  'domain': 'localhost',
-  'user_id': '$ANONYMIZED_USER_ID'
+  'consumer_key': config.consumer_key,
+  'domain': host,
+  'user_id': user_id
 }
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
-secret = 'MY_API_SECRET'
+secret = config.consumer_secret
 
 # request data for Questions API
 events_request = {
-	"users": [ "$ANONYMIZED_USER_ID_1", "$ANONYMIZED_USER_ID_2", "$ANONYMIZED_USER_ID_3"  ]
+	"users": [ user_id_1, user_id_2, user_id_3  ]
 }
 
 events_init = learnosity_sdk.request.Init(
