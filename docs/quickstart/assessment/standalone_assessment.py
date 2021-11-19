@@ -25,13 +25,13 @@ port = 8000
 
 # Items API configuration parameters.
 items_request = items_request = {
-    # Unique student identifier, a UUID generated on line 16.
+    # Unique student identifier, a UUID generated above.
     "user_id": user_id,
     # A reference of the Activity to retrieve from the Item bank, defining
     # which Items will be served in this assessment.
     "activity_template_id": "quickstart_examples_activity_template_001",
     # Uniquely identifies this specific assessment attempt session for 
-    # save/resume, data retrieval and reporting purposes. A UUID generated on line 17.
+    # save/resume, data retrieval and reporting purposes. A UUID generated above.
     "session_id": session_id,
     # Used in data retrieval and reporting to compare results
     # with other users submitting the same assessment.
