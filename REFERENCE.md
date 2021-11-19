@@ -9,7 +9,7 @@ The following examples show how to use the SDK with the various Learnosity APIs.
 ```python
 import learnosity_sdk.request
 from learnosity_sdk.utils import Uuid
-from .. import config
+from .. import config # Load config.py, which stores the consumer key and secret.
 
 # Generate the user ID and session ID as UUIDs.
 user_id = Uuid.generate()
@@ -26,6 +26,7 @@ security = {
   'domain': host,
   'user_id': user_id
 }
+
 # consumer secret for API access
 # WARNING: The consumer secret should not be committed to source control.
 secret = config.consumer_secret
@@ -70,7 +71,7 @@ Request packet generation containing signature could look as follows:
 #!/usr/bin/env python
 from learnosity_sdk.request import Init
 from learnosity_sdk.utils import Uuid
-from .. import config
+from .. import config # Load config.py, which stores the consumer key and secret.
 
 # Generate the user ID and session ID as UUIDs.
 user_id = Uuid.generate()
@@ -136,7 +137,7 @@ Corresponding HTML template (using Django template markup):
 import json
 from learnosity_sdk.request import DataApi
 from learnosity_sdk.utils import Uuid
-from .. import config
+from .. import config # Load config.py, which stores the consumer key and secret.
 
 # Generate the user ID and session ID as UUIDs.
 user_id = Uuid.generate()
@@ -192,7 +193,7 @@ for result in client.request_iter(endpoint, security, consumer_secret, data_requ
 ```python
 import learnosity_sdk.request
 from learnosity_sdk.utils import Uuid
-from .. import config
+from .. import config # Load config.py, which stores the consumer key and secret.
 
 # Generate the user ID and session ID as UUIDs.
 user_id_1 = Uuid.generate()

@@ -138,7 +138,7 @@ We start by including some LearnositySDK helpers - they'll make it easy to gener
 ``` python
 from learnosity_sdk.request import Init # Learnosity helper.
 from learnosity_sdk.utils import Uuid   # Learnosity helper.
-from .. import config                   # config.py, which stores the consumer key and secret.
+from .. import config          # config.py, which stores the consumer key and secret.
 ```
 
 We also specify a few libraries to run a minimal web server, for the purposes of this example.

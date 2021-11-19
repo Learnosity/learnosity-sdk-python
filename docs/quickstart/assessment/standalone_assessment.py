@@ -7,7 +7,7 @@
 # Include server side Learnosity SDK, and set up variables related to user access
 from learnosity_sdk.request import Init
 from learnosity_sdk.utils import Uuid
-from .. import config
+from .. import config # Load consumer key and secret from config.py
 # Include web server, time, and Jinja templating libraries.
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
