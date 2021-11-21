@@ -131,7 +131,7 @@ Corresponding HTML template (using Django template markup):
 ```
 
 
-## Data API
+## Data API 1
 
 ```python
 import json
@@ -148,6 +148,7 @@ session_id = Uuid.generate()
 host = 'localhost'
 port = 8000
 
+# consumer key for API access, and domain
 security = {
     'consumer_key': config.consumer_key,
     'domain': host
@@ -186,6 +187,66 @@ print(len(items))
 for result in client.request_iter(endpoint, security, consumer_secret, data_request, action):
     # print the length of each page of the items list (will print a line for each page in the results)
     print(len(result['data']))
+```
+
+## Data API 2
+
+``` python
+#!/usr/bin/env python
+import json
+
+from learnosity_sdk.request import DataApi # Load Learnosity SDK
+from .. import config # Load config.py, which stores the consumer key and secret.
+
+# Set variables for the web server.
+# Change to your domain, e.g. 127.0.0.1, learnosity.com
+host = 'localhost'
+port = 8000
+
+# consumer key for API access, and domain
+security = {
+    # XXX: This is a Learnosity Demos consumer; replace it with your own consumer key
+    'consumer_key': config.consumer_key,
+    'domain': host
+}
+# consumer secret for API access
+# WARNING: The consumer secret should not be committed to source control.
+consumer_secret = consumer_secret = config.consumer_secret
+
+data_request = { 'limit': 1 }
+
+action = 'get'
+itembankUri = 'https://data.learnosity.com/latest/itembank/items'
+
+client = DataApi()
+
+# iterate over all results
+# this returns an iterator of results, abstracting away the paging
+i = 0
+for item in client.results_iter(itembankUri, security, consumer_secret, data_request, action):
+    i += 1
+    print(">>> [%s (%d)] %s" % (
+        itembankUri,
+        i,
+        json.dumps(item)
+        ))
+    if i > 5:
+        break
+
+# iterate over each page of results
+# this can be useful if the result set is too big to practically fit in memory all at once
+i = 0
+data_request = { "limit": 2 }
+for result in client.request_iter(itembankUri, security, consumer_secret, data_request, action):
+    i+=1
+    # print the length of each page of the items list (will print a line for each page in the results)
+    print(">>> [%s (%d)] %s" % (
+        itembankUri,
+        i,
+        json.dumps(item)
+        ))
+    if i > 5:
+        break
 ```
 
 ## Events API
