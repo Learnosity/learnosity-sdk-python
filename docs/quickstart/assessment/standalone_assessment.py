@@ -8,9 +8,8 @@
 from learnosity_sdk.request import Init
 from learnosity_sdk.utils import Uuid
 from .. import config # Load consumer key and secret from config.py
-# Include web server, time, and Jinja templating libraries.
+# Include web server and Jinja templating libraries.
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import time
 from jinja2 import Template
 
 # - - - - - - Section 1: Learnosity server-side configuration - - - - - - #
@@ -91,7 +90,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
         # Render the page template and grab the variables needed.
         response = template.render(name='Standalone Assessment Example', generated_request=generated_request)
-        
+
         # Send headers and data back to the client.
         self.send_response(200)
         self.send_header("Content-type", "text/html")

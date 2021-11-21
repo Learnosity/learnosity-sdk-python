@@ -145,7 +145,6 @@ We also specify a few libraries to run a minimal web server, for the purposes of
 
 ``` python
 from http.server import BaseHTTPRequestHandler, HTTPServer # Python web server.
-import time                             # Time library, for the Python web server.
 from jinja2 import Template             # Jinja template library - pulls data into web pages.
 ```
 
