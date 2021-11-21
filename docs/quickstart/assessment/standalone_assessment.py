@@ -91,6 +91,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
         # Render the page template and grab the variables needed.
         response = template.render(name='Standalone Assessment Example', generated_request=generated_request)
+        
         # Send headers and data back to the client.
         self.send_response(200)
         self.send_header("Content-type", "text/html")
