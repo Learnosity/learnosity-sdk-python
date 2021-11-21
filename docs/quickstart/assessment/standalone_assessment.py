@@ -53,7 +53,7 @@ items_request = {
 # Learnosity will provide keys for your own account.
 security = {
     'consumer_key': config.consumer_key,
-    # Change to your domain, e.g. 127.0.0.1, learnosity.com
+    # Change to the domain used in the browser, e.g. 127.0.0.1, learnosity.com
     'domain': host,
 } 
 
