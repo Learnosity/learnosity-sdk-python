@@ -24,7 +24,7 @@ host = "localhost"
 port = 8000
 
 # Items API configuration parameters.
-items_request = items_request = {
+items_request = {
     # Unique student identifier, a UUID generated above.
     "user_id": user_id,
     # A reference of the Activity to retrieve from the Item bank, defining
