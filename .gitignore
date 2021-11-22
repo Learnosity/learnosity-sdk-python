@@ -9,3 +9,5 @@ dist
 .python-version
 .venv/*
 .coverage
+__pycache__
+.DS_Store
