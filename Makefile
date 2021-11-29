@@ -48,7 +48,7 @@ release:
 	@./release.sh
 	@echo '*** You can now use \`make dist-upload\` to publish the new version to PyPI'
 
-test: test-unit test-integration-dev dist-check-version
+test: test-unit test-integration-dev test-integration-env
 test-unit: venv pip-requirements-test
 	$(call venv-activate); \
 		pytest --pyargs tests.unit
@@ -60,7 +60,7 @@ test-integration-env: venv pip-requirements-test
 
 test-integration-dev: venv pip-requirements-dev pip-requirements-test
 	$(call venv-activate); \
-		tox
+		pytest --cov=learnosity_sdk
 
 build-clean: real-clean
 
@@ -83,8 +83,6 @@ clean: test-clean distclean
 	test ! -d build || rm -r build
 	find . -path __pycache__ -delete
 	find . -name *.pyc -delete
-test-clean:
-	test ! -d .tox || rm -r .tox
 distclean:
 	test ! -d dist || rm -r dist
 real-clean: clean
