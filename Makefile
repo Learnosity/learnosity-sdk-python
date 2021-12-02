@@ -1,6 +1,32 @@
+DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
+PYTHON_VERSION = 3.9
+
+TARGETS = build build-clean devbuild prodbuild \
+	dist dist-check-version dist-upload dist-upload-twine release \
+	pip-requirements-dev pip-requirements-test venv \
+	test test-clean test-integration-dev test-integration-env test-unit \
+	clean distclean real-clean
+.PHONY: $(TARGETS)
+
+ifneq (,$(DOCKER))
+# Re-run the make command in a container
+DKR = docker container run -t --rm \
+		-v $(CURDIR):/srv/sdk/python \
+		-v lrn-sdk-python_cache:/root/.cache \
+		-w /srv/sdk/python \
+		-e LRN_SDK_NO_DOCKER=1 \
+		-e ENV -e REGION -e VER \
+		python:$(PYTHON_VERSION)
+
+$(TARGETS):
+	$(DKR) make -e MAKEFLAGS="$(MAKEFLAGS)" $@
+
+else
+# The primary make targets
 PYTHON=python3
 VENV=.venv
 VENVPATH=$(VENV)/$(shell uname)-$(shell uname -m)-sdk-python
+VIRTUALENV = $(PYTHON) -m venv
 
 ENV=prod
 REGION=.learnosity.com
@@ -22,7 +48,7 @@ release:
 	@./release.sh
 	@echo '*** You can now use \`make dist-upload\` to publish the new version to PyPI'
 
-test: test-unit test-integration-dev dist-check-version
+test: test-unit test-integration-dev test-integration-env
 test-unit: venv pip-requirements-test
 	$(call venv-activate); \
 		pytest --pyargs tests.unit
@@ -34,7 +60,7 @@ test-integration-env: venv pip-requirements-test
 
 test-integration-dev: venv pip-requirements-dev pip-requirements-test
 	$(call venv-activate); \
-		tox
+		pytest --cov=learnosity_sdk
 
 build-clean: real-clean
 
@@ -57,8 +83,6 @@ clean: test-clean distclean
 	test ! -d build || rm -r build
 	find . -path __pycache__ -delete
 	find . -name *.pyc -delete
-test-clean:
-	test ! -d .tox || rm -r .tox
 distclean:
 	test ! -d dist || rm -r dist
 real-clean: clean
@@ -68,7 +92,7 @@ real-clean: clean
 # Python environment and dependencies
 venv: $(VENVPATH)
 $(VENVPATH):
-	unset PYTHONPATH; virtualenv -p$(PYTHON) $(VENVPATH)
+	$(VIRTUALENV) $(VENVPATH)
 	$(call venv-activate); \
 		pip install -e .
 
@@ -79,5 +103,4 @@ pip-requirements-dev: venv
 pip-requirements-test: venv
 	$(call venv-activate); \
 		pip install -e ".[test]" > /dev/null
-
-.PHONY: dist
+endif

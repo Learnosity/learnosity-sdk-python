@@ -13,7 +13,6 @@ INSTALL_REQUIRES = [
 
 DEV_REQUIRES = [
     'setuptools',
-    'tox',
     'twine',
     'wheel',
 ]
