@@ -100,7 +100,4 @@ pip-requirements-dev: venv
 	$(call venv-activate); \
 		pip install -e ".[dev]" > /dev/null
 
-pip-requirements-test: venv
-	$(call venv-activate); \
-		pip install -e ".[test]" > /dev/null
 endif
