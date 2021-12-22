@@ -60,7 +60,7 @@ class DataApi(object):
                                           secret, request_packet,
                                           action):
             if type(response['data']) == dict:
-                for key, value in self.__iteritems(response['data']):
+                for key, value in response['data'].iteritems():
                     yield {key: value}
             else:
                 for result in response['data']:
@@ -128,24 +128,3 @@ class DataApi(object):
                     'server returned unsuccessful status: ' + res.text)
             else:
                 yield data
-
-    """
-    This helper method allows the .items method of Python 3
-    to be wrapped to the equivalent .iteritems method
-    of Python 2.7
-
-    The code for this method was sourced from Python Future:
-    https://python-future.org/
-
-    Python Future is licenced under the MIT Licence. Full licence details
-    and credits can be found here:
-    https://python-future.org/credits.html
-    """
-    @staticmethod
-    def __iteritems(obj, **kwargs):
-        func = getattr(obj, "iteritems", None)
-
-        if not func:
-            func = obj.items
-
-        return func(**kwargs)

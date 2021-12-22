@@ -34,8 +34,7 @@ REGION=.learnosity.com
 VER=v1
 
 define venv-activate
-	. $(VENVPATH)/bin/activate; \
-	unset PYTHONPATH
+	. $(VENVPATH)/bin/activate
 endef
 
 devbuild: build
@@ -96,11 +95,13 @@ $(VENVPATH):
 	$(call venv-activate); \
 		pip install -e .
 
-pip-requirements-dev: venv
+pip-requirements-dev:
 	$(call venv-activate); \
-		pip install -e ".[dev]" > /dev/null
+		pip install -e ".[dev]"
 
-pip-requirements-test: venv
+pip-requirements-test:
 	$(call venv-activate); \
-		pip install -e ".[test]" > /dev/null
+		pip install -e ".[test]"
+
 endif
+.PHONY: dist venv pip-requirements-dev pip-requirements-test

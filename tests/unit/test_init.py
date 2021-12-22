@@ -4,11 +4,22 @@ import unittest
 import learnosity_sdk.request
 
 ServiceTestSpec = collections.namedtuple(
-    "TestSpec", ["service", "valid", "security", "request", "action", "signature"])
+    "TestSpec", [
+            "service",
+            "valid",
+            "security",  # security can be None to use the default, or an Dict to extend the default
+            "request",
+            "action",
+            "signature",
+    ]
+)
 
 ServiceTests = [
     ServiceTestSpec(
-        "questions", True, {"user_id": "$ANONYMIZED_USER_ID"}, {
+        "questions",
+        True,
+        {"user_id": "$ANONYMIZED_USER_ID"},
+        {
             "type": "local_practice", "state": "initial",
             "questions": [
                 {
@@ -29,7 +40,8 @@ ServiceTests = [
                     }
                 }
             ]
-        }, None,
+        },
+        None,
         '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
     ),
 
@@ -38,88 +50,23 @@ ServiceTests = [
         'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
     ),
 
-#     ServiceTestSpec(
-#         "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
-            # '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
-#     ),
-#         $request = [
-#             "items" => [
-#                 [
-#                     "content" => '<span class="learnosity-response question-demoscience1234"></span>',
-#                     "response_ids" => [
-#                         "demoscience1234"
-#                     ],
-#                     "workflow" => "",
-#                     "reference" => "question-demoscience1"
-#                 ],
-#                 [
-#                     "content" => '<span class="learnosity-response question-demoscience5678"></span>',
-#                     "response_ids" => [
-#                         "demoscience5678"
-#                     ],
-#                     "workflow" => "",
-#                     "reference" => "question-demoscience2"
-#                 ]
-#             ],
-#             "ui_style" =>"horizontal",
-#             "name" => "Demo (2 questions)",
-#             "state" => "initial",
-#             "metadata" => [],
-#             "navigation" => [
-#                 "show_next" => true,
-#                 "toc" => true,
-#                 "show_submit" => true,
-#                 "show_save" => false,
-#                 "show_prev" => true,
-#                 "show_title" => true,
-#                 "show_intro" => true,
-#             ],
-#             "time" => [
-#                 "max_time" => 600,
-#                 "limit_type" => "soft",
-#                 "show_pause" => true,
-#                 "warning_time" => 60,
-#                 "show_time" => true
-#             ],
-#             "configuration" => [
-#                 "onsubmit_redirect_url" => "/assessment/",
-#                 "onsave_redirect_url" => "/assessment/",
-#                 "idle_timeout" => true,
-#                 "questionsApiVersion" => "v2"
-#             ],
-#             "questionsApiActivity" => [
-#                 "user_id" => "$ANONYMIZED_USER_ID",
-#                 "type" => "submit_practice",
-#                 "state" => "initial",
-#                 "id" => "assessdemo",
-#                 "name" => "Assess API - Demo",
-#                 "questions" => [
-#                     [
-#                         "response_id" => "demoscience1234",
-#                         "type" => "sortlist",
-#                         "description" => "In this question, the student needs to sort the events, chronologically earliest to latest.",
-#                         "list" => ["Russian Revolution", "Discovery of the Americas", "Storming of the Bastille", "Battle of Plataea", "Founding of Rome", "First Crusade"],
-#                         "instant_feedback" => true,
-#                         "feedback_attempts" => 2,
-#                         "validation" => [
-#                             "valid_response" => [4, 3, 5, 1, 2, 0],
-#                             "valid_score" => 1,
-#                             "partial_scoring" => true,
-#                             "penalty_score" => -1
-#                         ]
-#                     ],
-#                     [
-#                         "response_id" => "demoscience5678",
-#                         "type" => "highlight",
-#                         "description" => "The student needs to mark one of the flowers anthers in the image.",
-#                         "img_src" => "http://www.learnosity.com/static/img/flower.jpg",
-#                         "line_color" => "rgb(255, 20, 0)",
-#                         "line_width" => "4"
-#                     ]
-#                 ]
-#             ],
-#             "type" => "activity"
-#         ];
+    ServiceTestSpec(
+        "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
+            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
+    ),
+
+    ServiceTestSpec(  # string
+        "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
+        '{ "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] }',
+        None,
+        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+    ),
+    ServiceTestSpec(  # Dict
+        "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
+        { "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] },
+        None,
+        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+    ),
 
     ServiceTestSpec(
         "events", True, None,
@@ -140,20 +87,44 @@ class TestServiceRequests(unittest.TestCase):
     timestamp = '20140626-0528'
 
     def test_init_generate(self):
+        """
+        Test that Init.generate() generates the desired initOptions
+        """
         learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
-            # TODO(cera): Much more validation
-            security = {
-                'consumer_key': self.key,
-                'domain': self.domain,
-                'timestamp': self.timestamp,
-            }
-            if t.security is not None:
-                security.update(t.security)
+            with self.subTest(repr(t), t=t):
+                security = self._prepare_security(t.security)
+                init = learnosity_sdk.request.Init(
+                    t.service, security, self.secret, request=t.request, action=t.action)
 
-            init = learnosity_sdk.request.Init(
-                t.service, security, self.secret, request=t.request, action=t.action)
+                self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
+                self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
 
-            self.assertFalse(init.is_telemetry_enabled())
-            self.assertEqual(t.signature, init.generate_signature())
-            self.assertTrue(init.generate() is not None)
+    def test_no_parameter_mangling(self):
+        """ Test that Init.generate() does not modify its parameters """
+        learnosity_sdk.request.Init.enable_telemetry()
+        for t in ServiceTests:
+            with self.subTest(repr(t), t=t):
+                request_copy = t.request
+                if hasattr(t.request, 'copy'):
+                        request_copy = t.request.copy()
+
+                security = self._prepare_security(t.security)
+                security_copy = security.copy()
+
+                learnosity_sdk.request.Init(
+                    t.service, security_copy, self.secret, request=request_copy, action=t.action)
+
+                self.assertEqual(security, security_copy, 'Original security modified by SDK')
+                self.assertEqual(t.request, request_copy, 'Original request modified by SDK')
+
+    def _prepare_security(self, add_security=None):
+        # TODO(cera): Much more validation
+        security = {
+            'consumer_key': self.key,
+            'domain': self.domain,
+            'timestamp': self.timestamp,
+        }
+        if add_security is not None:
+            security.update(add_security)
+        return security

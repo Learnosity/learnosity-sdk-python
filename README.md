@@ -55,12 +55,9 @@ There's more features, besides. See the detailed list of SDK features on the [re
 Not using Python? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
 
 ### Supported Python Versions
-The following Python versions are tested and supported:
 
-* 3.6.x
-* 3.5.x
-* 3.4.x
-* 3.3.x
+We support and test for [all currently supported versions of
+Python](https://devguide.python.org/#status-of-python-branches).
 
 [(Back to top)](#table-of-contents)
 
