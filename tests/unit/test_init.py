@@ -1,6 +1,5 @@
 import collections
 import unittest
-import json
 
 import learnosity_sdk.request
 
@@ -88,7 +87,9 @@ class TestServiceRequests(unittest.TestCase):
     timestamp = '20140626-0528'
 
     def test_init_generate(self):
-        """ Test that Init.generate() generates the desired initOptions """
+        """
+        Test that Init.generate() generates the desired initOptions
+        """
         learnosity_sdk.request.Init.disable_telemetry()
         for t in ServiceTests:
             with self.subTest(repr(t), t=t):
@@ -111,7 +112,7 @@ class TestServiceRequests(unittest.TestCase):
                 security = self._prepare_security(t.security)
                 security_copy = security.copy()
 
-                init = learnosity_sdk.request.Init(
+                learnosity_sdk.request.Init(
                     t.service, security_copy, self.secret, request=request_copy, action=t.action)
 
                 self.assertEqual(security, security_copy, 'Original security modified by SDK')
