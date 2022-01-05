@@ -186,6 +186,8 @@ class Init(object):
     def set_service_options(self):
         if self.service == 'questions':
             self.sign_request_data = False
+        elif self.service == 'author':
+            self.sign_request_data = False
         elif self.service == 'assess':
             self.sign_request_data = False
 
