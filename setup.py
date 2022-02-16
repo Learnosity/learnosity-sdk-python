@@ -18,14 +18,14 @@ DEV_REQUIRES = [
 ]
 
 TEST_REQUIRES = [
-    'pytest >=4.6.6, <6.0',
-    'pytest-cov >=2.8.1, <3.0',
+    'pytest >=4.6.6',
+    'pytest-cov >=2.8.1',
     'pytest-subtests',
-    'responses >=0.8.1, <1.0',
+    'responses >=0.8.1',
 ]
 
 # Extract the markdown content of the README to be sent to Pypi as the project description page.
-with open("README.md", "r") as f: 
+with open("README.md", "r") as f:
     readmeText = f.read()
 
 setuptools.setup(
