@@ -120,7 +120,7 @@ class Init(object):
     def generate_request_string(self):
         if self.request is None:
             return None
-        return json.dumps(self.request, separators=(',', ':'))
+        return json.dumps(self.request, separators=(',', ':'), ensure_ascii=False)
 
     def generate_signature(self):
 
