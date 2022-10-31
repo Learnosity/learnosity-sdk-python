@@ -10,7 +10,7 @@ TARGETS = build build-clean devbuild prodbuild \
 
 ifneq (,$(DOCKER))
 # Re-run the make command in a container
-DKR = docker container run -t --rm \
+DKR = docker container run -it --rm \
 		-v $(CURDIR):/srv/sdk/python \
 		-v lrn-sdk-python_cache:/root/.cache \
 		-w /srv/sdk/python \
