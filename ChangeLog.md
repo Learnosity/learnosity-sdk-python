@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v0.3.3] - 2022-11-01
+### Fixed
+- Fixed a bug where non-ASCII characters are escaped which causes `Signature Mismatch` this is resolved by setting `ensure_ascii=False`.
+
 ### Security
 - Update dependencies
 
