@@ -61,27 +61,7 @@ We support all versions that have a status of `bugfix` or `security` on [this](h
 [(Back to top)](#table-of-contents)
 
 ## Installation
-###  **Installation via Pip**
-Using Pip is the recommended way to install the Learnosity SDK for Python in production. The easiest way is to run this from your parent project folder:
-
-    pip install learnosity_sdk
-
-Then, if you're following the tutorial on this page, also run:
-
-    pip install learnosity_sdk[quickstart]
-
-### **Alternative method 1: download the zip file**
-Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
-
-Note: after installation, run this command in the SDK root folder:
-
-    pip install .
-
-Then, if you're following the tutorial on this page, also run:
-
-    pip install .[quickstart]
-
-### **Alternative 2: development install from a git clone**
+### Method 1: development install from a git clone**
 To install from the terminal, run the following command:
 
     git clone git@github.com:Learnosity/learnosity-sdk-python.git
@@ -95,9 +75,17 @@ To set up up your local development environment, use the following:
 Then, if you're following the tutorial on this page, also run:
 
     pip install -e .[quickstart]
+    
+### Method 2: download the zip file**
+Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
-Note that these manual installation methods are for development and testing only.
-For production use, you should install the SDK using the Pip package manager for Python, as described above.
+Note: after installation, run this command in the SDK root folder:
+
+    pip install .
+
+Then, if you're following the tutorial on this page, also run:
+
+    pip install .[quickstart]
 
 [(Back to top)](#table-of-contents)
 
