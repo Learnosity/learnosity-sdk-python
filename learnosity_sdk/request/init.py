@@ -1,6 +1,7 @@
 
 import datetime
 import hashlib
+import hmac
 import json
 import platform
 from learnosity_sdk._version import __version__
@@ -132,9 +133,6 @@ class Init(object):
             if key in self.security:
                 vals.append(self.security[key])
 
-        # Add the secret.
-        vals.append(self.secret)
-
         # Add the request if necessary
         if self.sign_request_data and self.request_string is not None:
             vals.append(self.request_string)
@@ -239,7 +237,9 @@ class Init(object):
 
     def hash_list(self, l):
         "Hash a list by concatenating values with an underscore"
-        return hashlib.sha256("_".join(l).encode('utf-8')).hexdigest()
+        concatValues = "_".join(l)
+        signature =  hmac.new(bytes(str(self.secret),'utf_8'), msg = bytes(str(concatValues) , 'utf-8'), digestmod = hashlib.sha256).hexdigest()
+        return '$02$' + signature
 
     def add_telemetry_data(self):
         if self.__telemetry_enabled:
