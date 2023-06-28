@@ -42,36 +42,36 @@ ServiceTests = [
             ]
         },
         None,
-        '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
+        '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
     ),
 
     ServiceTestSpec(
         "data", True, None, {"limit": 100}, "get",
-        'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
+        '$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197',
     ),
 
     ServiceTestSpec(
         "assess", True, {"user_id": "$ANONYMIZED_USER_ID"}, {"foo": "bar"}, None,
-            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
+            '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
     ),
 
     ServiceTestSpec(  # string
         "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
         '{ "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] }',
         None,
-        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+        '$02$57bfc14e7d1c66d1f370546120dda2195b3ad8ad866c5fcd818c4051389f6df2',
     ),
     ServiceTestSpec(  # Dict
         "items", True, {"user_id": "$ANONYMIZED_USER_ID"},
         { "user_id" : "$ANONYMIZED_USER_ID", "activity_id": "8E9859C2-CBCF-427B-A478-B8FFC5222DEB", "session_id": "E637AC08-7BF1-48AF-B264-0F40D5BF8898", "rendering_type": "assess", "items": [ "item_1" ] },
         None,
-        '584e9c7cae8530e92b258b3ac4361e58484a5e604f0b17d0acd8d7298cb8230a',
+        '$02$57bfc14e7d1c66d1f370546120dda2195b3ad8ad866c5fcd818c4051389f6df2',
     ),
 
     ServiceTestSpec(
         "events", True, None,
         {"users": [ "$ANONYMIZED_USER_ID_1", "$ANONYMIZED_USER_ID_2", "$ANONYMIZED_USER_ID_3", "$ANONYMIZED_USER_ID_4" ] }, None,
-        '20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf'
+        '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349'
     ),
 ]
 

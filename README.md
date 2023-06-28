@@ -77,10 +77,6 @@ Note: after installation, run this command in the SDK root folder:
 
     pip install .
 
-Then, if you're following the tutorial on this page, also run:
-
-    pip install .[quickstart]
-
 ### **Alternative 2: development install from a git clone**
 To install from the terminal, run the following command:
 
@@ -91,10 +87,6 @@ To set up up your local development environment, use the following:
     python3 -m venv .venv/learnosity-sdk-python
     source .venv/learnosity-sdk-python/bin/activate
     pip install -e .
-
-Then, if you're following the tutorial on this page, also run:
-
-    pip install -e .[quickstart]
 
 Note that these manual installation methods are for development and testing only.
 For production use, you should install the SDK using the Pip package manager for Python, as described above.
@@ -115,7 +107,19 @@ From this point on, we'll assume that your web server is available at this local
 
 http://localhost:8000/
 
-Open this page with your web browser. This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
+You can now access the APIs using the following URL [click here](http://localhost:8000).
+
+<img width="50%" height="50%" src="docs/images/image-quickstart-index.png">
+
+Following are the routes to access our APIs.
+
+* Author API : http://localhost:8000/authorapi
+* Questions API : http://localhost:8000/questionsapi
+* Items API : http://localhost:8000/itemsapi
+* Reports API : http://localhost:8000/reportsapi
+* Question Editor API : http://localhost:8000/questioneditorapi
+
+Open these pages with your web browser. These are all basic examples of Learnosity's integration. You can interact with these demo pages to try out the various APIs. The Items API example is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
 
 <img width="50%" height="50%" src="docs/images/image-quickstart-examples-assessment.png">
 
@@ -225,7 +229,7 @@ The following example HTML/Jinja template can be found near the bottom of the [s
                 <!-- Items API will render the assessment app into this div. -->
                 <div id="learnosity_assess"></div>
                 <!-- Load the Items API library. -->
-                <script src=\"https://items.learnosity.com/?v2021.2.LTS/\"></script>
+                <script src=\"https://items.learnosity.com/?latest-lts/\"></script>
                 <!-- Initiate Items API assessment rendering, using the signed parameters. -->
                 <script>
                     var itemsApp = LearnosityItems.init( {{ generated_request }} );
@@ -238,7 +242,7 @@ The following example HTML/Jinja template can be found near the bottom of the [s
 The important parts to be aware of in this HTML are:
 
 * A div with `id="learnosity_assess"`. This is where the Learnosity assessment player will be rendered to deliver the assessment.
-* The `<script src="https://items.learnosity.com/?v2021.2.LTS"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `v2021.2.LTS` will retrieve that specific [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
+* The `<script src="https://items.learnosity.com/?latest-lts"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `latest-lts` will retrieve the latest version supported. To know more about switching to specific LTS version visit [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
 * The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
 * The variable `{{generated_request}}` dynamically sends the contents of our init options to JavaScript, so it can be passed to `init()`.
 
