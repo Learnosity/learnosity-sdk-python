@@ -22,7 +22,7 @@ class Init(object):
     """
 
     services = [
-        'assess', 'author', 'data', 'events', 'items', 'questions',
+        'annotations', 'assess', 'author', 'data', 'events', 'items', 'questions',
         'reports'
     ]
 
