@@ -73,6 +73,13 @@ ServiceTests = [
         {"users": [ "$ANONYMIZED_USER_ID_1", "$ANONYMIZED_USER_ID_2", "$ANONYMIZED_USER_ID_3", "$ANONYMIZED_USER_ID_4" ] }, None,
         '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349'
     ),
+
+    ServiceTestSpec(
+        "annotations", True, None,
+            {"group_id":"a91faa6e-8bd2-4365-872d-f644f1f41853","modules":{"drawing":True},"editable":True},
+            "get",
+            '$02$13592f855c1f52f8d1c534c3816b54790786555e217be62db46117899df8387e',
+    ),
 ]
 
 
