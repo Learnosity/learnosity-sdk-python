@@ -165,7 +165,7 @@ port = 8000
 Now we'll declare the configuration parameters for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
 
 ``` python
-items_request = items_request = {
+items_request = {
     "user_id": user_id,
     "activity_template_id": "quickstart_examples_activity_template_001",
     "session_id": session_id,
