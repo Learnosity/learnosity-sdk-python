@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add Annotations API as a service
 
 ## [v0.3.3] - 2023-06-28
+### Fixed
+- Fixed a bug where non-ASCII characters are escaped which causes `Signature Mismatch` this is resolved by setting `ensure_ascii=False`.
+
 ### Security
 - Upgraded signature to match the security standard.
 
