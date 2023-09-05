@@ -9,6 +9,7 @@ if '__version__' not in version:
 
 INSTALL_REQUIRES = [
     'requests >=2.21.0',
+    'certifi >=2023.7.22',
 ]
 
 DEV_REQUIRES = [
