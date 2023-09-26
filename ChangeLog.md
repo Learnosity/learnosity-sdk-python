@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Added support for expiry date in security object.
+
 ## [v0.3.4] - 2023-09-05
 ### Added
 - Add Annotations API as a service
