@@ -27,7 +27,7 @@ class Init(object):
     ]
 
     security_keys = [
-        'consumer_key', 'domain', 'timestamp', 'user_id'
+        'consumer_key', 'domain', 'timestamp', 'expires', 'user_id'
     ]
 
     __telemetry_enabled = True
