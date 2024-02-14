@@ -16,6 +16,10 @@ DKR = docker container run -it --rm \
 		-w /srv/sdk/python \
 		-e LRN_SDK_NO_DOCKER=1 \
 		-e ENV -e REGION -e VER \
+		-e GIT_AUTHOR_EMAIL=licenses@learnosity.com \
+		-e GIT_AUTHOR_NAME=learnosity \
+		-e GIT_COMMITTER_EMAIL=licenses@learnosity.com \
+		-e GIT_COMMITTER_NAME=learnosity \
 		python:$(PYTHON_VERSION)
 
 $(TARGETS):
