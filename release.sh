@@ -47,7 +47,7 @@ get_hash () {
 list_last_tags () {
 	n_tags=5
 	echo "Last ${n_tags} tags:"
-	git tag --sort=tag | tail -n $n_tags
+	git tag --sort=v:refname | tail -n $n_tags
 }
 
 get_new_version () {
