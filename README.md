@@ -1,4 +1,4 @@
-<p align="center"><img width="50%" height="50%" src="docs/images/image-logo-graphic.png"></p>
+<p align="center"><img width="50%" height="50%" src="https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-logo-graphic.png?raw=true"></p>
 <h1 align="center">Learnosity SDK - Python</h1>
 <p align="center">Everything you need to start building your app in Learnosity, with the Python programming language.<br> 
 (Prefer another language? <a href="https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs">Click here</a>)<br>
@@ -6,9 +6,10 @@ An official Learnosity open-source project.</p>
 
 [![Latest Stable Version](https://badge.fury.io/gh/Learnosity%2Flearnosity-sdk-python.svg)](https://pypi.org/project/learnosity_sdk/)
 [![Build Status](https://app.travis-ci.com/Learnosity/learnosity-sdk-python.svg?branch=master)](https://app.travis-ci.com/Learnosity/learnosity-sdk-python)
-[![License](docs/images/apache-license.svg)](LICENSE.md)
-[![Downloads](docs/images/downloads.svg)](https://github.com/Learnosity/learnosity-sdk-python/releases)
+[![License](https://github.com/Learnosity/learnosity-sdk-python/raw/master/docs/images/apache-license.svg)](https://github.com/Learnosity/learnosity-sdk-python/blob/master/LICENSE.md)
+[![Downloads](https://github.com/Learnosity/learnosity-sdk-python/raw/master/docs/images/downloads.svg)](https://github.com/Learnosity/learnosity-sdk-python/releases)
 ---
+
 
 ## Table of Contents
 
@@ -25,7 +26,7 @@ An official Learnosity open-source project.</p>
 ## Overview: what does it do?
 The Learnosity Python SDK makes it simple to interact with Learnosity APIs.
 
-![image-concept-overview.png](docs/images/image-concept-overview.png)
+![image-concept-overview.png](https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-concept-overview.png?raw=true)
 
 It provides a number of convenience features for developers, that make it simple to do the following essential tasks:
 * Creating signed security requests for API initialization, and
@@ -33,11 +34,11 @@ It provides a number of convenience features for developers, that make it simple
 
 For example, the SDK helps with creating a signed request for Learnosity:
 
-![image-signed-request-creation.png](docs/images/image-signed-request-creation.png)
+![image-signed-request-creation.png](https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-signed-request-creation.png?raw=true)
 
 Once the SDK has created the signed request for you, your app sends that on to an API in the Learnosity cloud, which then retrieves the assessment you are asking for, as seen in the diagram below:
 
-![image-assessment-retrieval.png](docs/images/image-assessment-retrieval.png)
+![image-assessment-retrieval.png](https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-assessment-retrieval.png?raw=true)
 
 This scenario is what you can see running in the Quick start guide example ([see below](#quick-start-guide)).
 
@@ -109,7 +110,7 @@ http://localhost:8000/
 
 You can now access the APIs using the following URL [click here](http://localhost:8000).
 
-<img width="50%" height="50%" src="docs/images/image-quickstart-index.png">
+<img width="50%" height="50%" src="https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-quickstart-index.png?raw=true">
 
 Following are the routes to access our APIs.
 
@@ -121,7 +122,7 @@ Following are the routes to access our APIs.
 
 Open these pages with your web browser. These are all basic examples of Learnosity's integration. You can interact with these demo pages to try out the various APIs. The Items API example is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
 
-<img width="50%" height="50%" src="docs/images/image-quickstart-examples-assessment.png">
+<img width="50%" height="50%" src="https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-quickstart-examples-assessment.png?raw=true">
 
 [(Back to top)](#table-of-contents)
 
