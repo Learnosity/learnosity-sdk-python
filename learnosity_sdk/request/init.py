@@ -23,7 +23,7 @@ class Init(object):
 
     services = [
         'annotations', 'assess', 'author', 'data', 'events', 'items', 'questions',
-        'reports'
+        'reports', 'authoraide'
     ]
 
     security_keys = [
