@@ -80,6 +80,24 @@ ServiceTests = [
             "get",
             '$02$13592f855c1f52f8d1c534c3816b54790786555e217be62db46117899df8387e',
     ),
+    ServiceTestSpec(
+        "authoraide",
+        True,
+        {
+            "consumer_key": "yis0TYCu7U9V4o7M",
+            "domain": "labs.dev.learnosity.com"
+        },
+        {
+            "user": {
+                "id": "$ANONYMIZED_USER_ID",
+                "firstname": "test_fn",
+                "lastname": "test_ln",
+                "email": "test@learnosity.com"
+            }
+        },
+        None,
+        '$02$1d86da491734ddf1dbc16b4fe039fb1fd1be9babe3af52c4a0a916b4ede47a58',
+    ),
 ]
 
 
