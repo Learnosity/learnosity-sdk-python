@@ -32,6 +32,13 @@ security = {
     "domain": host,
 }
 
+# Author Aide does not accept user_id so we need a separate security object
+authorAideSecurity = {
+    "consumer_key": config.consumer_key,
+    # Change to the domain used in the browser, e.g. 127.0.0.1, learnosity.com
+    "domain": host,
+}
+
 # Items API configuration parameters.
 items_request = {
        # Unique student identifier, a UUID generated above.
@@ -261,6 +268,16 @@ question_editor_request = {
     }
 }
 
+# Author Aide API configuration parameters.
+author_aide_request = {
+    "user": {
+        "id": 'python-demo-user',
+        "firstname": 'Demos',
+        "lastname": 'User',
+        "email": 'demos@learnosity.com'
+    }
+}
+
 # Set up Learnosity initialization data.
 initItems = Init(
     "items", security, config.consumer_secret,
@@ -287,12 +304,18 @@ initQuestionEditor = Init(
     request = question_editor_request
 )
 
+initAuthorAide = Init(
+    "authoraide", authorAideSecurity, config.consumer_secret,
+    request = author_aide_request
+)
+
 # Generated request(initOptions) w.r.t all apis
 generated_request_Items = initItems.generate()
 generated_request_Questions = initQuestions.generate()
 generated_request_Author = initAuthor.generate()
 generated_request_Reports = initReports.generate()
 generated_request_QuestionEditor = initQuestionEditor.generate()
+generated_request_AuthorAide = initAuthorAide.generate()
 
 # - - - - - - Section 2: your web page configuration - - - - - -#
 
@@ -347,6 +370,10 @@ class LearnosityServer(BaseHTTPRequestHandler):
                         <tr>
                             <td>Question Editor API</td>
                             <td><a href="/questioneditorapi">Here</a></td>
+                        </tr>
+                        <tr>
+                            <td>Author Aide API</td>
+                            <td><a href="/authoraideapi">Here</a></td>
                         </tr>
                     </table>
                 </body>
@@ -491,6 +518,29 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
              response = template.render(name='Standalone Question Editor API Example', generated_request=generated_request_QuestionEditor)
              self.createResponse(response)
+
+        if self.path.endswith("/authoraideapi"):
+                # Define the page HTML, as a Jinja template, with {{variables}} passed in.
+                    template = Template("""<!DOCTYPE html>
+                    <html>
+                        <body>
+                            <h1>{{ name }}</title></h1>
+                            <!-- Author Aide API will render into this div. -->
+                            <div id="aiApp"></div>
+                            <!-- Load the Author Aide API library. -->
+                            <script src=\"https://authoraide.learnosity.com\"></script>
+                            <!-- Initiate Author Aide API  -->
+                            <script>
+                                var authorAideApp = LearnosityAuthorAide.init( {{ generated_request }}, '#aiApp' );
+                            </script>
+                        </body>
+                    </html>
+                    """)
+
+                    # Render the page template and grab the variables needed.
+                    response = template.render(name='Author Aide API Example', generated_request=generated_request_AuthorAide)
+
+                    self.createResponse(response)
 
 def main():
     web_server = HTTPServer((host, port), LearnosityServer)
