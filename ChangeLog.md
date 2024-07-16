@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [v0.3.8] - 2024-05-28
+### Added
+- Added a quickstart demo for Authoraide API.
+
 ## [v0.3.7] - 2024-05-28
 ### Fixed
 - Added the authoraide key in the services array of Init class.
