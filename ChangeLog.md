@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## Fixed
+- Fixed quickstart tutorial when installed via pip
+
 ## [v0.3.8] - 2024-05-28
 ### Added
 - Added a quickstart demo for Authoraide API.
