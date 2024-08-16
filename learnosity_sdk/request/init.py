@@ -4,12 +4,13 @@ import hashlib
 import hmac
 import json
 import platform
+from typing import Any, Dict, Iterable, Union
 from learnosity_sdk._version import __version__
 
 from learnosity_sdk.exceptions import ValidationException
 
 
-def format_utc_time():
+def format_utc_time() -> str:
     "Get the current UTC time, formatted for a security timestamp"
     now = datetime.datetime.utcnow()
     return now.strftime("%Y%m%d-%H%M")
@@ -33,8 +34,8 @@ class Init(object):
     __telemetry_enabled = True
 
     def __init__(
-            self, service, security, secret,
-            request=None, action=None):
+            self, service: str, security: Dict[str, Any], secret: str,
+            request: Dict[str, Any], action:str) -> None:
         self.service = service
         self.security = security.copy()
         self.secret = secret
@@ -50,10 +51,10 @@ class Init(object):
         self.set_service_options()
         self.security['signature'] = self.generate_signature()
 
-    def is_telemetry_enabled(self):
+    def is_telemetry_enabled(self) -> bool:
         return self.__telemetry_enabled
 
-    def generate(self, encode=True):
+    def generate(self, encode: bool = True) -> Union[str, Dict[str, Any]]:
         """
         Generate the data necessary to make a request to one of the Learnosity
         products/services.
@@ -106,7 +107,7 @@ class Init(object):
         else:
             return output
 
-    def get_sdk_meta(self):
+    def get_sdk_meta(self) -> Dict[str, str]:
         return {
             'version': self.get_sdk_version(),
             'lang': 'python',
@@ -115,15 +116,15 @@ class Init(object):
             'platform_version': platform.release()
         }
 
-    def get_sdk_version(self):
+    def get_sdk_version(self) -> str:
         return __version__
 
-    def generate_request_string(self):
+    def generate_request_string(self) -> Union[str, None]:
         if self.request is None:
             return None
         return json.dumps(self.request, separators=(',', ':'), ensure_ascii=False)
 
-    def generate_signature(self):
+    def generate_signature(self) -> str:
 
         vals = []
 
@@ -142,7 +143,7 @@ class Init(object):
 
         return self.hash_list(vals)
 
-    def validate(self):
+    def validate(self) -> None:
         # Parse the security packet if the user provided it as a string
         if isinstance(self.security, str):
             self.security = json.loads(self.security)
@@ -185,7 +186,7 @@ class Init(object):
                 'user_id' not in self.security:
             raise ValidationException("questions API requires a user id")
 
-    def set_service_options(self):
+    def set_service_options(self) -> None:
         if self.service == 'questions':
             self.sign_request_data = False
         elif self.service == 'assess':
@@ -235,13 +236,13 @@ class Init(object):
             if len(hashed_users) > 0:
                 self.security['users'] = hashed_users
 
-    def hash_list(self, l):
+    def hash_list(self, l: Iterable[Any]) -> str:
         "Hash a list by concatenating values with an underscore"
         concatValues = "_".join(l)
         signature =  hmac.new(bytes(str(self.secret),'utf_8'), msg = bytes(str(concatValues) , 'utf-8'), digestmod = hashlib.sha256).hexdigest()
         return '$02$' + signature
 
-    def add_telemetry_data(self):
+    def add_telemetry_data(self) -> None:
         if self.__telemetry_enabled:
             if 'meta' in self.request:
                 self.request['meta']['sdk'] = self.get_sdk_meta()
@@ -256,9 +257,9 @@ class Init(object):
     """
 
     @classmethod
-    def disable_telemetry(cls):
+    def disable_telemetry(cls) -> None:
         cls.__telemetry_enabled = False
 
     @classmethod
-    def enable_telemetry(cls):
+    def enable_telemetry(cls) -> None:
         cls.__telemetry_enabled = True

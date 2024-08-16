@@ -1,3 +1,5 @@
+from typing import Any, Dict, Generator
+from requests import Response
 import requests
 import copy
 
@@ -7,8 +9,8 @@ from learnosity_sdk.request import Init
 
 class DataApi(object):
 
-    def request(self, endpoint, security_packet,
-                secret, request_packet={}, action='get'):
+    def request(self, endpoint: str, security_packet: Dict[str, str],
+                secret: str, request_packet:Dict[str, Any] = {}, action: str = 'get') -> Response:
         """
         Make a request to Data API
 
@@ -33,9 +35,9 @@ class DataApi(object):
         init = Init('data', security_packet, secret, request_packet, action)
         return requests.post(endpoint, data=init.generate())
 
-    def results_iter(self, endpoint, security_packet,
-                     secret, request_packet={},
-                     action='get'):
+    def results_iter(self, endpoint: str, security_packet: Dict[str, str],
+                     secret: str, request_packet: Dict[str, Any] = {},
+                     action:str = 'get') -> Generator[Dict[str, Any], None, None]:
         """
         Return an iterator of all results from a request to Data API
 
@@ -60,15 +62,15 @@ class DataApi(object):
                                           secret, request_packet,
                                           action):
             if type(response['data']) == dict:
-                for key, value in response['data'].iteritems():
+                for key, value in response['data'].items():
                     yield {key: value}
             else:
                 for result in response['data']:
                     yield result
 
-    def request_iter(self, endpoint, security_packet,
-                     secret, request_packet={},
-                     action='get'):
+    def request_iter(self, endpoint: str, security_packet: Dict[str, str],
+                     secret: str, request_packet: Dict[str, Any] = {},
+                     action: str = 'get') -> Generator[Dict[str, Any], None, None]:
         """
         Iterate over the pages of results of a query to data api
 
