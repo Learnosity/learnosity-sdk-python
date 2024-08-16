@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import json
 import platform
-from typing import Any, Dict, Iterable, Union
+from typing import Any, Dict, Iterable, Optional, Union
 from learnosity_sdk._version import __version__
 
 from learnosity_sdk.exceptions import ValidationException
@@ -35,7 +35,8 @@ class Init(object):
 
     def __init__(
             self, service: str, security: Dict[str, Any], secret: str,
-            request: Dict[str, Any], action:str) -> None:
+            request: Optional[Dict[str, Any]] = None, action:Optional[str] = None) -> None:
+        # Using None as a default value will throw mypy typecheck issues. This should be addressed
         self.service = service
         self.security = security.copy()
         self.secret = secret

@@ -97,7 +97,7 @@ class UnitTestDataApiClient(unittest.TestCase):
         with self.assertRaises(DataApiException) as cm:
             list(client.results_iter(self.endpoint, self.security, self.consumer_secret,
                                      self.request, self.action))
-            
+
             self.assertEqual("server returned HTTP status 500", str(cm.exception))
 
     @responses.activate
