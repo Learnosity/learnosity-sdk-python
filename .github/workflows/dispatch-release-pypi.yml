@@ -11,9 +11,10 @@ permissions:
   contents: read
 
 jobs:
-  pypi-publish:
+  publish_pypi:
     name: upload release to PyPI
     runs-on: ubuntu-latest
+    environment: release
     permissions:
       id-token: write
     steps:
