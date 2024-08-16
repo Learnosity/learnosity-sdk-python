@@ -94,11 +94,9 @@ class UnitTestDataApiClient(unittest.TestCase):
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json={}, status=500)
         client = DataApi()
-        with self.assertRaises(DataApiException) as cm:
+        with self.assertRaisesRegex(DataApiException, "server returned HTTP status 500"):
             list(client.results_iter(self.endpoint, self.security, self.consumer_secret,
                                      self.request, self.action))
-
-            self.assertEqual("server returned HTTP status 500", str(cm.exception))
 
     @responses.activate
     def test_results_iter_no_meta_status(self):
@@ -109,11 +107,9 @@ class UnitTestDataApiClient(unittest.TestCase):
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json=dummy)
         client = DataApi()
-        with self.assertRaises(DataApiException) as cm:
+        with self.assertRaisesRegex(DataApiException, "server returned unsuccessful status:"):
             list(client.results_iter(self.endpoint, self.security, self.consumer_secret,
                                      self.request, self.action))
-            
-            self.assertEqual("server returned unsuccessful status:", str(cm.exception))
 
     @responses.activate
     def test_results_iter_invalid_response_data(self):
@@ -121,8 +117,6 @@ class UnitTestDataApiClient(unittest.TestCase):
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json=None)
         client = DataApi()
-        with self.assertRaises(DataApiException) as cm:
+        with self.assertRaisesRegex(DataApiException, "server returned invalid json: "):
             list(client.results_iter(self.endpoint, self.security, self.consumer_secret,
                                      self.request, self.action))
-            
-            self.assertEqual("server returned invalid json: ", str(cm.exception))
