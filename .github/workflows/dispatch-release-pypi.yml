@@ -3,8 +3,9 @@
 name: Release to PyPi
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +31,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
+
+      - name: Set Library Version as ${{ github.ref_name }}
+        run: |
+          echo "__version__ = \"${{ github.ref_name }}\"" > learnosity_sdk/_version.py
 
       - name: Build and check Python distributions
         run: |
