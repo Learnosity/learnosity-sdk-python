@@ -2,5 +2,5 @@ import uuid
 
 class Uuid:
     @staticmethod
-    def generate():
+    def generate() -> str:
         return str(uuid.uuid4())
