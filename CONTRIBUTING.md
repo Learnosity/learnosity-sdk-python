@@ -19,9 +19,10 @@ Alternatively, if you only care about the version you're currently running, you 
 
 # Deploying to PyPi
 
-Run `make release` and follow the instructions to deploy the distributions to PyPi
-
-You will need to be set up as a maintainer in order to do this.
+1. Add a new entry to the [Changelog.md](./ChangeLog.md)
+1. Merge your pull request after approval.
+2. Create a new Release[https://github.com/Learnosity/learnosity-sdk-python/releases] with a new tag, and this tag will
+be used as the new library version. Please autogenerate release notes to show differences.
 
 [Issues]: https://github.com/Learnosity/learnosity-sdk-python/issues/new
 [PRs]: https://github.com/Learnosity/learnosity-sdk-python/compare
