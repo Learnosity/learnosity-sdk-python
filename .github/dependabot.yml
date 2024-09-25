@@ -4,6 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "09":00"
+      time: "09:00"
     reviewers: 
       - "@Learnosity/ai-labs-dev"
