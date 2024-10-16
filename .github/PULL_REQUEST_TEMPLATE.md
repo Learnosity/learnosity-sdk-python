@@ -12,3 +12,4 @@
 - [ ] Tests added
 - [ ] All testsuites passed
 - [ ] `make dist` completed successfully
+- [ ] Bump package version if release coming
