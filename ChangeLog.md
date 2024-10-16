@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v0.3.10] - 2024-10-16
 ### Security
 - Bump certifi minimum version to 2024.07.04
+
+### Added
+- Add py.typed marker for usage with type checkers
 
 ## [v0.3.9] - 2024-08-29
 ### Added
