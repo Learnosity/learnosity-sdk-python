@@ -12,7 +12,7 @@ from learnosity_sdk.exceptions import ValidationException
 
 def format_utc_time() -> str:
     "Get the current UTC time, formatted for a security timestamp"
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     return now.strftime("%Y%m%d-%H%M")
 
 
