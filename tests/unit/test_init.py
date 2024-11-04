@@ -1,10 +1,11 @@
 import collections
+from typing import Dict, Optional
 import unittest
 
 import learnosity_sdk.request
 
 ServiceTestSpec = collections.namedtuple(
-    "TestSpec", [
+    "ServiceTestSpec", [
             "service",
             "valid",
             "security",  # security can be None to use the default, or an Dict to extend the default
@@ -111,7 +112,7 @@ class TestServiceRequests(unittest.TestCase):
     domain = 'localhost'
     timestamp = '20140626-0528'
 
-    def test_init_generate(self):
+    def test_init_generate(self) -> None:
         """
         Test that Init.generate() generates the desired initOptions
         """
@@ -125,7 +126,7 @@ class TestServiceRequests(unittest.TestCase):
                 self.assertFalse(init.is_telemetry_enabled(), 'Telemetry still enabled')
                 self.assertEqual(t.signature, init.generate_signature(), 'Signature mismatch')
 
-    def test_no_parameter_mangling(self):
+    def test_no_parameter_mangling(self) -> None:
         """ Test that Init.generate() does not modify its parameters """
         learnosity_sdk.request.Init.enable_telemetry()
         for t in ServiceTests:
@@ -143,7 +144,7 @@ class TestServiceRequests(unittest.TestCase):
                 self.assertEqual(security, security_copy, 'Original security modified by SDK')
                 self.assertEqual(t.request, request_copy, 'Original request modified by SDK')
 
-    def _prepare_security(self, add_security=None):
+    def _prepare_security(self, add_security: Optional[Dict[str, str]]=None) -> Dict[str, str]:
         # TODO(cera): Much more validation
         security = {
             'consumer_key': self.key,

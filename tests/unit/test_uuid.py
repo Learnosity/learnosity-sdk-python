@@ -1,9 +1,10 @@
+from typing import cast
 import unittest
 import re
 from learnosity_sdk.utils import Uuid
 
 class TestUuid(unittest.TestCase):
-    def test_generate(self):
+    def test_generate(self) -> None:
         """
         Tests correctness of the generate() method in Uuid.
         """
@@ -13,4 +14,5 @@ class TestUuid(unittest.TestCase):
         result = prog.match(generated)
 
         assert result != None
+        result = cast(re.Match[str], result)
         assert result.group() == generated

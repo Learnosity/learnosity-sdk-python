@@ -1,3 +1,4 @@
+from typing import Any, Dict, cast
 import unittest
 import responses
 from learnosity_sdk.request import DataApi
@@ -8,7 +9,7 @@ class UnitTestDataApiClient(unittest.TestCase):
     Tests to ensure that the Data API client functions correctly.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         # This test uses the consumer key and secret for the demos consumer
         # this is the only consumer with publicly available keys
         self.security = {
@@ -44,7 +45,7 @@ class UnitTestDataApiClient(unittest.TestCase):
         self.invalid_json = "This is not valid JSON!"
 
     @responses.activate
-    def test_request(self):
+    def test_request(self) -> None:
         """
         Verify that `request` sends a request after it has been signed
         """
@@ -55,10 +56,10 @@ class UnitTestDataApiClient(unittest.TestCase):
                              self.action)
         assert res.json() == self.dummy_responses[0]
         assert responses.calls[0].request.url == self.endpoint
-        assert 'signature' in responses.calls[0].request.body
+        assert 'signature' in cast(Dict[str, Any], responses.calls[0].request.body)
 
     @responses.activate
-    def test_request_iter(self):
+    def test_request_iter(self) -> None:
         """Verify that `request_iter` returns an iterator of pages"""
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json=dummy)
@@ -74,7 +75,7 @@ class UnitTestDataApiClient(unittest.TestCase):
         assert results[1]['data'][0]['id'] == 'b'
 
     @responses.activate
-    def test_results_iter(self):
+    def test_results_iter(self) -> None:
         """Verify that `result_iter` returns an iterator of results"""
         self.dummy_responses[1]['data'] = {'id': 'b'}
         for dummy in self.dummy_responses:
@@ -89,7 +90,7 @@ class UnitTestDataApiClient(unittest.TestCase):
         assert results[1]['id'] == 'b'
 
     @responses.activate
-    def test_results_iter_error_status(self):
+    def test_results_iter_error_status(self) -> None:
         """Verify that a DataApiException is raised http status is not ok"""
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json={}, status=500)
@@ -99,10 +100,12 @@ class UnitTestDataApiClient(unittest.TestCase):
                                      self.request, self.action))
 
     @responses.activate
-    def test_results_iter_no_meta_status(self):
+    def test_results_iter_no_meta_status(self) -> None:
         """Verify that a DataApiException is raised when 'meta' 'status' is None"""
         for response in self.dummy_responses:
-            response['meta']['status'] = None
+            # This is for typing purposes only, and should always be True
+            if isinstance(response['meta'], dict):
+                response['meta']['status'] = None
 
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json=dummy)
@@ -112,7 +115,7 @@ class UnitTestDataApiClient(unittest.TestCase):
                                      self.request, self.action))
 
     @responses.activate
-    def test_results_iter_invalid_response_data(self):
+    def test_results_iter_invalid_response_data(self) -> None:
         """Verify that a DataApiException is raised response data isn't valid JSON"""
         for dummy in self.dummy_responses:
             responses.add(responses.POST, self.endpoint, json=None)

@@ -35,13 +35,12 @@ class Init(object):
 
     def __init__(
             self, service: str, security: Dict[str, Any], secret: str,
-            request: Optional[Dict[str, Any]] = None, action:Optional[str] = None) -> None:
-        # Using None as a default value will throw mypy typecheck issues. This should be addressed
+            request: Optional[Union[Dict[str, Any], str]] = None, action:Optional[str] = None) -> None:
         self.service = service
         self.security = security.copy()
         self.secret = secret
         self.request = request
-        if hasattr(request, 'copy'):
+        if request is not None and hasattr(request, 'copy'):
             self.request = request.copy()
         self.action = action
 
@@ -193,7 +192,7 @@ class Init(object):
         elif self.service == 'assess':
             self.sign_request_data = False
 
-            if 'questionsApiActivity' in self.request:
+            if self.request is not None and 'questionsApiActivity' in self.request:
                 questionsApi = self.request['questionsApiActivity']
 
                 if 'domain' in self.security:
@@ -223,14 +222,14 @@ class Init(object):
                 self.request['questionsApiActivity'].update(questionsApi)
 
         elif self.service == 'items' or self.service == 'reports':
-            if 'user_id' not in self.security and \
-                    'user_id' in self.request:
+            if self.request is not None and ('user_id' not in self.security and 'user_id' in self.request):
                 self.security['user_id'] = self.request['user_id']
 
         elif self.service == 'events':
             self.sign_request_data = False
             hashed_users = {}
-            for user in self.request.get('users', []):
+            users = self.request.get('users', []) if self.request is not None else []
+            for user in users:
                 concat = "{}{}".format(user, self.secret)
                 hashed_users[user] = hashlib.sha256(concat.encode('utf-8')).hexdigest()
 
@@ -244,7 +243,7 @@ class Init(object):
         return '$02$' + signature
 
     def add_telemetry_data(self) -> None:
-        if self.__telemetry_enabled:
+        if self.request is not None and self.__telemetry_enabled:
             if 'meta' in self.request:
                 self.request['meta']['sdk'] = self.get_sdk_meta()
             else:

@@ -322,7 +322,7 @@ generated_request_AuthorAide = initAuthorAide.generate()
 # Set up the HTML page template, for serving to the built-in Python web server
 class LearnosityServer(BaseHTTPRequestHandler):
 
-    def createResponse(self,response):
+    def createResponse(self, response: str) -> None:
          # Send headers and data back to the client.
             self.send_response(200)
             self.send_header("Content-type", "text/html")
@@ -330,7 +330,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
             # Send the response to the client.
             self.wfile.write(response.encode("utf-8"))
 
-    def do_GET(self):
+    def do_GET(self) -> None:
 
         if self.path.endswith("/"):
 
@@ -542,7 +542,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
                     self.createResponse(response)
 
-def main():
+def main() -> None:
     web_server = HTTPServer((host, port), LearnosityServer)
     print("Server started http://%s:%s. Press Ctrl-c to quit." % (host, port))
     try:
