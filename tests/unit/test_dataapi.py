@@ -16,7 +16,7 @@ class UnitTestDataApiClient(unittest.TestCase):
             'domain': 'demos.learnosity.com'
         }
         # WARNING: Normally the consumer secret should not be committed to a public
-        # repository like this one. Only this specific key is publically available.
+        # repository like this one. Only this specific key is publicly available.
         self.consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
         self.request = {
             # These items should already exist for the demos consumer

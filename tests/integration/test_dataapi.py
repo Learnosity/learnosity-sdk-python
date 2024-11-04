@@ -11,7 +11,7 @@ security = {
 }
 
 # WARNING: Normally the consumer secret should not be committed to a public
-# repository like this one. Only this specific key is publically available.
+# repository like this one. Only this specific key is publicly available.
 consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22'
 action = 'get'
 
