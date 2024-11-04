@@ -24,6 +24,8 @@ TEST_REQUIRES = [
     'pytest-cov >=2.8.1',
     'pytest-subtests',
     'responses >=0.8.1',
+    'types-requests',
+    'mypy',
 ]
 
 # Extract the markdown content of the README to be sent to Pypi as the project description page.
