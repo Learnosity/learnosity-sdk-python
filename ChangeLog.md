@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Deprecation warning for `datetime.utcnow()`
 
+### Added
+- Added pre-commit hooks and Github CI action for code formatting and linting.
+
 ## [v0.3.10] - 2024-10-16
 ### Security
 - Bump certifi minimum version to 2024.07.04
@@ -74,9 +77,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [v0.3.1] - 2019-08-07
 ### Fixed
-- Fixed an issue where the `DataApi` class's `results_iter` method would return no data 
+- Fixed an issue where the `DataApi` class's `results_iter` method would return no data
   when receiving responses from Data API endpoints that set the "`data`" field of the
-  response to an object (like the [itembank/questions endpoint](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getQuestions) 
+  response to an object (like the [itembank/questions endpoint](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getQuestions)
   when `item_references` is included in the request).
 
 ## [v0.3.0] - 2019-06-17

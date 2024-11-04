@@ -13,6 +13,7 @@ INSTALL_REQUIRES = [
 ]
 
 DEV_REQUIRES = [
+    'pre-commit',
     'setuptools',
     'twine',
     'wheel',
