@@ -34,8 +34,8 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install Mypy Dependencies
-        run: pip install mypy
+      - name: Install Test Dependencies
+        run: pip install .[test]
 
       - name: Type Checking with Mypy
         run: mypy

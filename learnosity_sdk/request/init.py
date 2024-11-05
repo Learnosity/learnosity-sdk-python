@@ -40,7 +40,8 @@ class Init(object):
         self.security = security.copy()
         self.secret = secret
         self.request = request
-        if request is not None and hasattr(request, 'copy'):
+        # TODO: Fix improper handling when request is a string
+        if isinstance(request, dict):
             self.request = request.copy()
         self.action = action
 

@@ -25,6 +25,7 @@ TEST_REQUIRES = [
     'pytest-subtests',
     'responses >=0.8.1',
     'types-requests',
+    'types-Jinja2',
     'mypy',
 ]
 
