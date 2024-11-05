@@ -6,11 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [unreleased] - 2024-11-01
-### Fixed
-- Deprecation warning for `datetime.utcnow()`
-
 ### Added
 - Added pre-commit hooks and Github CI action for code formatting and linting.
+
+## [v0.3.11] - 2024-11-01
+### Fixed
+- Deprecation warning for `datetime.utcnow()`
 
 ## [v0.3.10] - 2024-10-16
 ### Security
