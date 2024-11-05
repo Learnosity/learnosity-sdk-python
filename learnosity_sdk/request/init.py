@@ -130,7 +130,7 @@ class Init(object):
         vals = []
 
         # Add each valid security field.
-        # The order is signifcant.
+        # The order is significant.
         for key in self.security_keys:
             if key in self.security:
                 vals.append(self.security[key])

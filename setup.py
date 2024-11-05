@@ -19,6 +19,7 @@ DEV_REQUIRES = [
 ]
 
 TEST_REQUIRES = [
+    'pre-commit',
     'pytest >=4.6.6',
     'pytest-cov >=2.8.1',
     'pytest-subtests',

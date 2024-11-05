@@ -2,7 +2,7 @@
 
 Contribution in the form of [PRs] are welcome.
 
-Why We Are No Longer Accepting Public Issues  
+Why We Are No Longer Accepting Public Issues
 After careful consideration, we’ve decided to discontinue accepting issues via GitHub Issues for our public repositories.
 
 Here’s why:

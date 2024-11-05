@@ -1,6 +1,6 @@
 <p align="center"><img width="50%" height="50%" src="https://github.com/Learnosity/learnosity-sdk-python/blob/master/docs/images/image-logo-graphic.png?raw=true"></p>
 <h1 align="center">Learnosity SDK - Python</h1>
-<p align="center">Everything you need to start building your app in Learnosity, with the Python programming language.<br> 
+<p align="center">Everything you need to start building your app in Learnosity, with the Python programming language.<br>
 (Prefer another language? <a href="https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs">Click here</a>)<br>
 An official Learnosity open-source project.</p>
 
@@ -72,7 +72,7 @@ Then, if you're following the tutorial on this page, also run:
     pip install learnosity_sdk[quickstart]
 
 ### **Alternative method 1: download the zip file**
-Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies. 
+Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-python/releases) page. The distribution ZIP file contains all the necessary dependencies.
 
 Note: after installation, run this command in the SDK root folder:
 
@@ -163,7 +163,7 @@ host = "localhost"
 port = 8000
 ```
 
-Now we'll declare the configuration parameters for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
+Now we'll declare the configuration parameters for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored.
 
 ``` python
 items_request = {
@@ -252,10 +252,10 @@ The call to `init()` returns an instance of the ItemsApp, which we can use to pr
 The Jinja template is rendered by the following line, which will bring in those variables.
 
 ``` python
-    response = template.render(name='Standalone Assessment Example', generated_request=generated_request) 
+    response = template.render(name='Standalone Assessment Example', generated_request=generated_request)
 ```
 
-There is some additional code in [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py), which runs Python's built-in web server. 
+There is some additional code in [standalone_assessment.py](docs/quickstart/assessment/standalone_assessment.py), which runs Python's built-in web server.
 
 This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects. As mentioned earlier, the Jinja template used here can be easily re-used in another framework, for example Python Flask or Django.
 
@@ -271,7 +271,7 @@ See a more detailed breakdown of all the SDK features, and examples of how to us
 ### **Additional quick start guides**
 There are more quick start guides, going beyond the initial quick start topic of loading an assessment, these further tutorials show how to set up authoring and analytics:
 * [Authoring Items quick start guide](https://help.learnosity.com/hc/en-us/articles/360000754958-Getting-Started-With-the-Author-API) (Author API) - create and edit new Questions and Items for your Item bank, then group your assessment Items into Activities, and
-* [Analytics / student reporting quick start guide](https://help.learnosity.com/hc/en-us/articles/360000755838-Getting-Started-With-the-Reports-API) (Reports API) - view the results and scores from an assessment Activity. 
+* [Analytics / student reporting quick start guide](https://help.learnosity.com/hc/en-us/articles/360000755838-Getting-Started-With-the-Reports-API) (Reports API) - view the results and scores from an assessment Activity.
 
 ### **Learnosity demos repository**
 On our [demo site](https://demos.learnosity.com/), browse through many examples of Learnosity API integration. You can also download the entire demo site source code, the code for any single demo, or browse the codebase directly on GitHub.
@@ -318,7 +318,7 @@ We use this data to enable better support and feature planning.
 [(Back to top)](#table-of-contents)
 
 ## Further reading
-Thanks for reading to the end! Find more information about developing an app with Learnosity on our documentation sites: 
+Thanks for reading to the end! Find more information about developing an app with Learnosity on our documentation sites:
 
 * [help.learnosity.com](http://help.learnosity.com/hc/en-us) -- general help portal and tutorials,
 * [reference.learnosity.com](http://reference.learnosity.com) -- developer reference site, and

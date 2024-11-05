@@ -5,5 +5,5 @@ updates:
     schedule:
       interval: "daily"
       time: "09:00"
-    reviewers: 
+    reviewers:
       - "@Learnosity/ai-labs-dev"
