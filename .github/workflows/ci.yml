@@ -23,6 +23,23 @@ jobs:
       - name: Run Pre-commit Hooks
         run: pre-commit run --all-files
 
+  type_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install Test Dependencies
+        run: pip install .[test]
+
+      - name: Type Checking with Mypy
+        run: mypy
+
   tests:
     runs-on: ubuntu-latest
     strategy:

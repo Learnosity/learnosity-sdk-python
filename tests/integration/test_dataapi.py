@@ -1,3 +1,4 @@
+from typing import Any, Dict, List, cast
 import unittest
 import os
 from learnosity_sdk.request import DataApi
@@ -33,7 +34,7 @@ questions_endpoint = '/itembank/questions'
 class IntegrationTestDataApiClient(unittest.TestCase):
 
     @staticmethod
-    def __build_base_url():
+    def __build_base_url() -> str:
         env = os.environ
         env_domain = ''
         region_domain = '.learnosity.com'
@@ -52,7 +53,7 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         return base_url
 
-    def test_real_request(self):
+    def test_real_request(self) -> None:
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
         res = client.request(self.__build_base_url() + items_endpoint, security, consumer_secret, items_request,
@@ -62,9 +63,10 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         assert len(returned_json['data']) > 0
 
         returned_ref = returned_json['data'][0]['reference']
-        assert returned_ref in items_request['references']
+        references: List[str] = cast(List[str], items_request['references'])
+        assert returned_ref in references
 
-    def test_paging(self):
+    def test_paging(self) -> None:
         """Verify that paging works"""
         client = DataApi()
         pages = client.request_iter(self.__build_base_url() + items_endpoint, security, consumer_secret,
@@ -78,14 +80,14 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         assert len(results) == 2
         assert results == {'item_2', 'item_3'}
 
-    def test_real_request_with_special_characters(self):
+    def test_real_request_with_special_characters(self) -> None:
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
 
         # Add a reference containing special characters to ensure
         # signature creation works with special characters in the request
-        local_items_request = items_request.copy()  # prevent modifying the base fixture
-        local_items_request['references'] = items_request['references'].copy()  # prevent modifying the base fixture's list
+        local_items_request: Dict[str, Any] = items_request.copy()  # prevent modifying the base fixture
+        local_items_request['references'] = cast(List[str], items_request['references'])[:]  # prevent modifying the base fixture's list
         local_items_request['references'].append('тест')
 
         res = client.request(self.__build_base_url() + items_endpoint, security, consumer_secret, items_request,
@@ -95,9 +97,9 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         assert len(returned_json['data']) > 0
 
         returned_ref = returned_json['data'][0]['reference']
-        assert returned_ref in items_request['references']
+        assert returned_ref in cast(List[str], items_request['references'])
 
-    def test_real_question_request(self):
+    def test_real_question_request(self) -> None:
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
 
@@ -114,7 +116,7 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         assert keys == {'py-sdk-test-2019-1', 'py-sdk-test-2019-2'}
 
-    def test_question_paging(self):
+    def test_question_paging(self) -> None:
         """Verify that paging works"""
         client = DataApi()
 

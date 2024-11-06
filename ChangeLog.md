@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [unreleased] - 2024-11-01
 ### Added
 - Added pre-commit hooks and Github CI action for code formatting and linting.
+- Added MyPy with strict settings to enforce type hints (and Github CI action).
 
 ## [v0.3.11] - 2024-11-01
 ### Fixed

@@ -1,8 +1,9 @@
 import collections
+from typing import Any, Dict
 import unittest
 
 SdkTestSpec = collections.namedtuple(
-    "TestSpec", ["import_line", "object"])
+    "SdkTestSpec", ["import_line", "object"])
 
 SdkImportTests = [
     SdkTestSpec(
@@ -34,9 +35,9 @@ SdkModuleTests = [
     ),
 ]
 
-def _run_test(t):
-    globals = {}
-    locals = {}
+def _run_test(t: Any) -> None:
+    globals: Dict[str, Any] = {}
+    locals: Dict[str, Any] = {}
     exec(t.import_line, globals, locals)
     eval(t.object, globals, locals)
 
@@ -45,15 +46,15 @@ class TestSdkImport(unittest.TestCase):
     Tests importing the SDK
     """
 
-    def test_sdk_imports(self):
+    def test_sdk_imports(self) -> None:
         for t in SdkImportTests:
             _run_test(t)
 
-class TestSdkImport(unittest.TestCase):
+class TestSdkModuleImport(unittest.TestCase):
     """
     Tests importing the modules
     """
 
-    def test_sdk_imports(self):
+    def test_sdk_imports(self) -> None:
         for t in SdkModuleTests:
             _run_test(t)
