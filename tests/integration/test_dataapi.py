@@ -103,8 +103,9 @@ class IntegrationTestDataApiClient(unittest.TestCase):
         """Make a request against Data Api to ensure the SDK works"""
         client = DataApi()
 
-        questions_request['limit'] = 3
-        res = client.request(self.__build_base_url() + questions_endpoint, security, consumer_secret, questions_request,
+        local_questions_request = questions_request.copy()
+        local_questions_request['limit'] = 3
+        res = client.request(self.__build_base_url() + questions_endpoint, security, consumer_secret, local_questions_request,
                              action)
 
         returned_json = res.json()

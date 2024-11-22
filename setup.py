@@ -23,6 +23,7 @@ TEST_REQUIRES = [
     'pytest >=4.6.6',
     'pytest-cov >=2.8.1',
     'pytest-subtests',
+    'pytest-randomly',
     'responses >=0.8.1',
     'types-requests',
     'types-Jinja2',
