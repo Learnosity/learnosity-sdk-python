@@ -19,7 +19,7 @@ jobs:
       id-token: write
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # grep exits with a non-zero exit code if a match is not found
       - name: Check Library Version matches ${{ github.ref_name }}
