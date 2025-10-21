@@ -2,12 +2,57 @@ from typing import Any, Dict, Generator
 from requests import Response
 import requests
 import copy
+import re
+from urllib.parse import urlparse
 
 from learnosity_sdk.exceptions import DataApiException
 from learnosity_sdk.request import Init
 
 
 class DataApi(object):
+
+    def _extract_consumer(self, security_packet: Dict[str, str]) -> str:
+        """
+        Extract the consumer key from the security packet.
+
+        Args:
+            security_packet (dict): The security object
+
+        Returns:
+            string: The consumer key
+        """
+        return security_packet.get('consumer_key', '')
+
+    def _derive_action(self, endpoint: str, action: str) -> str:
+        """
+        Derive the action metadata from the endpoint and action parameter.
+
+        The action format is: {action}_{endpoint_path}
+        For example: 'get_/itembank/items' or 'set_/itembank/activities'
+
+        Args:
+            endpoint (string): The full url to the endpoint
+            action (string): 'get', 'set', 'update', etc.
+
+        Returns:
+            string: The derived action string
+        """
+        # Parse the URL to extract the path
+        parsed_url = urlparse(endpoint)
+        path = parsed_url.path.rstrip("/")
+
+        # Remove version prefix if present (e.g., /v1, /v2, /latest)
+        # Only match 'v' followed by digits (v1, v2, etc.) or 'latest'
+        path_parts = path.split('/')
+        if len(path_parts) > 1:
+            first_segment = path_parts[1].lower()
+            # Match version patterns: v1, v2, v2023.1.lts, etc.
+            # Also match: latest, latest-lts, developer
+            if (re.fullmatch(r"v[\d.]+(?:\.lts)?", first_segment) or
+                first_segment in ("latest", "latest-lts", "developer")):
+                path = '/' + '/'.join(path_parts[2:])
+
+        return f"{action}_{path}"
 
     def request(self, endpoint: str, security_packet: Dict[str, str],
                 secret: str, request_packet:Dict[str, Any] = {}, action: str = 'get') -> Response:
@@ -33,7 +78,18 @@ class DataApi(object):
             see http://docs.python-requests.org/en/master/api/#requests.Request
         """
         init = Init('data', security_packet, secret, request_packet, action)
-        return requests.post(endpoint, data=init.generate())
+
+        # Extract metadata for routing
+        consumer = self._extract_consumer(security_packet)
+        derived_action = self._derive_action(endpoint, action)
+
+        # Add metadata as HTTP headers for ALB routing
+        headers = {
+            'X-Learnosity-Consumer': consumer,
+            'X-Learnosity-Action': derived_action
+        }
+
+        return requests.post(endpoint, data=init.generate(), headers=headers)
 
     def results_iter(self, endpoint: str, security_packet: Dict[str, str],
                      secret: str, request_packet: Dict[str, Any] = {},
