@@ -119,6 +119,7 @@ Following are the routes to access our APIs.
 * Items API : http://localhost:8000/itemsapi
 * Reports API : http://localhost:8000/reportsapi
 * Question Editor API : http://localhost:8000/questioneditorapi
+* Data API : http://localhost:8000/dataapi
 
 Open these pages with your web browser. These are all basic examples of Learnosity's integration. You can interact with these demo pages to try out the various APIs. The Items API example is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
 

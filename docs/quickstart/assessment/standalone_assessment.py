@@ -5,12 +5,14 @@
 # with `rendering_type: "assess"`.
 
 # Include server side Learnosity SDK, and set up variables related to user access
-from learnosity_sdk.request import Init
+from learnosity_sdk.request import Init, DataApi
 from learnosity_sdk.utils import Uuid
 from .. import config # Load consumer key and secret from config.py
 # Include web server and Jinja templating libraries.
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from jinja2 import Template
+import json
+import os
 
 # - - - - - - Section 1: Learnosity server-side configuration - - - - - - #
 
@@ -27,13 +29,6 @@ port = 8000
 # Learnosity will provide keys for your own account.
 security = {
     "user_id" : "abc",
-    "consumer_key": config.consumer_key,
-    # Change to the domain used in the browser, e.g. 127.0.0.1, learnosity.com
-    "domain": host,
-}
-
-# Author Aide does not accept user_id so we need a separate security object
-authorAideSecurity = {
     "consumer_key": config.consumer_key,
     # Change to the domain used in the browser, e.g. 127.0.0.1, learnosity.com
     "domain": host,
@@ -268,16 +263,6 @@ question_editor_request = {
     }
 }
 
-# Author Aide API configuration parameters.
-author_aide_request = {
-    "user": {
-        "id": 'python-demo-user',
-        "firstname": 'Demos',
-        "lastname": 'User',
-        "email": 'demos@learnosity.com'
-    }
-}
-
 # Set up Learnosity initialization data.
 initItems = Init(
     "items", security, config.consumer_secret,
@@ -304,18 +289,12 @@ initQuestionEditor = Init(
     request = question_editor_request
 )
 
-initAuthorAide = Init(
-    "authoraide", authorAideSecurity, config.consumer_secret,
-    request = author_aide_request
-)
-
 # Generated request(initOptions) w.r.t all apis
 generated_request_Items = initItems.generate()
 generated_request_Questions = initQuestions.generate()
 generated_request_Author = initAuthor.generate()
 generated_request_Reports = initReports.generate()
 generated_request_QuestionEditor = initQuestionEditor.generate()
-generated_request_AuthorAide = initAuthorAide.generate()
 
 # - - - - - - Section 2: your web page configuration - - - - - -#
 
@@ -332,12 +311,36 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
 
+        # Serve CSS file
+        if self.path == "/css/style.css":
+            try:
+                # Get the directory where this script is located
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                # Navigate to the CSS file location
+                css_path = os.path.join(script_dir, "..", "css", "style.css")
+
+                with open(css_path, 'r') as f:
+                    css_content = f.read()
+
+                self.send_response(200)
+                self.send_header("Content-type", "text/css")
+                self.end_headers()
+                self.wfile.write(css_content.encode("utf-8"))
+                return
+            except FileNotFoundError:
+                self.send_response(404)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"CSS file not found")
+                return
+
         if self.path.endswith("/"):
 
         # Define the page HTML, as a Jinja template, with {{variables}} passed in.
             template = Template("""<!DOCTYPE html>
             <html>
                 <head>
+                    <link rel="stylesheet" type="text/css" href="/css/style.css">
                     <style>
                       .tb { border-collapse: collapse; }
                       .tb th, .tb td { padding: 5px; border: solid 1px #777; text-align: center;}
@@ -372,8 +375,8 @@ class LearnosityServer(BaseHTTPRequestHandler):
                             <td><a href="/questioneditorapi">Here</a></td>
                         </tr>
                         <tr>
-                            <td>Author Aide API</td>
-                            <td><a href="/authoraideapi">Here</a></td>
+                            <td>Data API</td>
+                            <td><a href="/dataapi">Here</a></td>
                         </tr>
                     </table>
                 </body>
@@ -388,6 +391,9 @@ class LearnosityServer(BaseHTTPRequestHandler):
         # Define the page HTML, as a Jinja template, with {{variables}} passed in.
             template = Template("""<!DOCTYPE html>
             <html>
+                <head>
+                    <link rel="stylesheet" type="text/css" href="/css/style.css">
+                </head>
                 <body>
                     <h1>{{ name }}</title></h1>
                     <!-- Items API will render the assessment app into this div. -->
@@ -411,6 +417,9 @@ class LearnosityServer(BaseHTTPRequestHandler):
             # Define the page HTML, as a Jinja template, with {{variables}} passed in.
              template = Template("""<!DOCTYPE html>
                                 <html>
+                                    <head>
+                                        <link rel="stylesheet" type="text/css" href="/css/style.css">
+                                    </head>
                                     <body>
                                         <h1>{{ name }}</title></h1>
                                         <!-- Questions API  will render here -->
@@ -432,6 +441,9 @@ class LearnosityServer(BaseHTTPRequestHandler):
             # Define the page HTML, as a Jinja template, with {{variables}} passed in.
              template = Template("""<!DOCTYPE html>
                                 <html>
+                                    <head>
+                                        <link rel="stylesheet" type="text/css" href="/css/style.css">
+                                    </head>
                                     <body>
                                         <h1>{{ name }}</title></h1>
                                         <!-- Author API will render here into the div -->
@@ -461,6 +473,9 @@ class LearnosityServer(BaseHTTPRequestHandler):
             # Define the page HTML, as a Jinja template, with {{variables}} passed in.
              template = Template("""<!DOCTYPE html>
                                 <html>
+                                    <head>
+                                        <link rel="stylesheet" type="text/css" href="/css/style.css">
+                                    </head>
                                     <body>
                                         <h1>{{ name }}</title></h1>
                                         <!-- Reports API will render into this span -->
@@ -490,6 +505,9 @@ class LearnosityServer(BaseHTTPRequestHandler):
             # Define the page HTML, as a Jinja template, with {{variables}} passed in.
              template = Template("""<!DOCTYPE html>
                                 <html>
+                                    <head>
+                                        <link rel="stylesheet" type="text/css" href="/css/style.css">
+                                    </head>
                                     <body>
                                         <h1>{{ name }}</title></h1>
                                         <!-- Question Editor API will render into this div. -->
@@ -519,28 +537,126 @@ class LearnosityServer(BaseHTTPRequestHandler):
              response = template.render(name='Standalone Question Editor API Example', generated_request=generated_request_QuestionEditor)
              self.createResponse(response)
 
-        if self.path.endswith("/authoraideapi"):
-                # Define the page HTML, as a Jinja template, with {{variables}} passed in.
-                    template = Template("""<!DOCTYPE html>
-                    <html>
-                        <body>
-                            <h1>{{ name }}</title></h1>
-                            <!-- Author Aide API will render into this div. -->
-                            <div id="aiApp"></div>
-                            <!-- Load the Author Aide API library. -->
-                            <script src=\"https://authoraide.learnosity.com\"></script>
-                            <!-- Initiate Author Aide API  -->
-                            <script>
-                                var authorAideApp = LearnosityAuthorAide.init( {{ generated_request }}, '#aiApp' );
-                            </script>
-                        </body>
-                    </html>
-                    """)
+        if self.path.endswith("/dataapi"):
+            # Data API demo - retrieve items from the itembank
+            template = Template("""<!DOCTYPE html>
+            <html>
+                <head>
+                    <link rel="stylesheet" type="text/css" href="/css/style.css">
+                </head>
+                <body>
+                    <h1>{{ name }}</h1>
+                    <p>This demo shows how to use the Data API to retrieve items from the Learnosity itembank.</p>
 
-                    # Render the page template and grab the variables needed.
-                    response = template.render(name='Author Aide API Example', generated_request=generated_request_AuthorAide)
+                    <div class="demo-section">
+                        <h2>Demo 1: Manual Iteration (5 items)</h2>
+                        <p>Using <code>request()</code> method with manual pagination via the 'next' pointer.</p>
+                        {{ demo1_output }}
+                    </div>
 
-                    self.createResponse(response)
+                    <div class="demo-section">
+                        <h2>Demo 2: Page Iteration (5 pages)</h2>
+                        <p>Using <code>request_iter()</code> method to automatically iterate over pages.</p>
+                        {{ demo2_output }}
+                    </div>
+
+                    <div class="demo-section">
+                        <h2>Demo 3: Results Iteration (5 items)</h2>
+                        <p>Using <code>results_iter()</code> method to automatically iterate over individual items.</p>
+                        {{ demo3_output }}
+                    </div>
+
+                    <p><a href="/">Back to API Examples</a></p>
+                </body>
+            </html>
+            """)
+
+            # Run the Data API demos
+            itembank_uri = 'https://data.learnosity.com/latest-lts/itembank/items'
+            security_packet = {
+                'consumer_key': config.consumer_key,
+                'domain': host,
+            }
+            data_api = DataApi()
+
+            # Demo 1: Manual iteration
+            demo1_html = ""
+            try:
+                data_request = {'limit': 1}
+                for i in range(5):
+                    result = data_api.request(itembank_uri, security_packet,
+                                             config.consumer_secret, data_request, 'get')
+                    response = result.json()
+
+                    if response.get('data'):
+                        item = response['data'][0]
+                        demo1_html += f"""
+                        <div class="item">
+                            <div class="item-reference">Item {i+1}: {item.get('reference', 'N/A')}</div>
+                            <div class="item-status">Status: {item.get('status', 'N/A')}</div>
+                        </div>
+                        """
+
+                    if response.get('meta', {}).get('next'):
+                        data_request['next'] = response['meta']['next']
+                    else:
+                        break
+            except Exception as e:
+                demo1_html = f'<div class="error">Error: {str(e)}</div>'
+
+            # Demo 2: Page iteration
+            demo2_html = ""
+            try:
+                data_request = {'limit': 1}
+                page_count = 0
+                for page in data_api.request_iter(itembank_uri, security_packet,
+                                                  config.consumer_secret, data_request, 'get'):
+                    page_count += 1
+                    demo2_html += f"""
+                    <div class="meta-info">
+                        Page {page_count}: {len(page.get('data', []))} items
+                    </div>
+                    """
+                    if page.get('data'):
+                        for item in page['data']:
+                            demo2_html += f"""
+                            <div class="item">
+                                <div class="item-reference">{item.get('reference', 'N/A')}</div>
+                                <div class="item-status">Status: {item.get('status', 'N/A')}</div>
+                            </div>
+                            """
+                    if page_count >= 5:
+                        break
+            except Exception as e:
+                demo2_html = f'<div class="error">Error: {str(e)}</div>'
+
+            # Demo 3: Results iteration
+            demo3_html = ""
+            try:
+                data_request = {'limit': 1}
+                result_count = 0
+                for item in data_api.results_iter(itembank_uri, security_packet,
+                                                  config.consumer_secret, data_request, 'get'):
+                    result_count += 1
+                    demo3_html += f"""
+                    <div class="item">
+                        <div class="item-reference">Item {result_count}: {item.get('reference', 'N/A')}</div>
+                        <div class="item-status">Status: {item.get('status', 'N/A')}</div>
+                        <pre>{json.dumps(item, indent=2)[:500]}...</pre>
+                    </div>
+                    """
+                    if result_count >= 5:
+                        break
+            except Exception as e:
+                demo3_html = f'<div class="error">Error: {str(e)}</div>'
+
+            response = template.render(
+                name='Data API Example',
+                demo1_output=demo1_html,
+                demo2_output=demo2_html,
+                demo3_output=demo3_html
+            )
+            self.createResponse(response)
 
 def main() -> None:
     web_server = HTTPServer((host, port), LearnosityServer)
