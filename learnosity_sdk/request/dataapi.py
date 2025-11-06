@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 
 from learnosity_sdk.exceptions import DataApiException
 from learnosity_sdk.request import Init
+from learnosity_sdk._version import __version__
 
 
 class DataApi(object):
@@ -46,9 +47,9 @@ class DataApi(object):
         path_parts = path.split('/')
         if len(path_parts) > 1:
             first_segment = path_parts[1].lower()
-            # Match version patterns: v1, v2, v2023.1.lts, etc.
+            # Match version patterns: v1, v2, v2023.1.lts, v2025.3.preview1, etc.
             # Also match: latest, latest-lts, developer
-            if (re.fullmatch(r"v[\d.]+(?:\.lts)?", first_segment) or
+            if (re.fullmatch(r"v[\d.]+(?:\.(?:lts|preview\d+))?", first_segment) or
                 first_segment in ("latest", "latest-lts", "developer")):
                 path = '/' + '/'.join(path_parts[2:])
 
@@ -84,9 +85,11 @@ class DataApi(object):
         derived_action = self._derive_action(endpoint, action)
 
         # Add metadata as HTTP headers for ALB routing
+        sdk_version = __version__.lstrip('v')
         headers = {
             'X-Learnosity-Consumer': consumer,
-            'X-Learnosity-Action': derived_action
+            'X-Learnosity-Action': derived_action,
+            'X-Learnosity-SDK': f'Python:{sdk_version}'
         }
 
         return requests.post(endpoint, data=init.generate(), headers=headers)

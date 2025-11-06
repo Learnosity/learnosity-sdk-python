@@ -63,6 +63,11 @@ class UnitTestDataApiClient(unittest.TestCase):
         assert responses.calls[0].request.headers['X-Learnosity-Consumer'] == 'yis0TYCu7U9V4o7M'
         assert 'X-Learnosity-Action' in responses.calls[0].request.headers
         assert responses.calls[0].request.headers['X-Learnosity-Action'] == 'get_/itembank/items'
+        assert 'X-Learnosity-SDK' in responses.calls[0].request.headers
+        # Verify SDK header format is "Python:X.Y.Z" (without 'v' prefix)
+        sdk_header = responses.calls[0].request.headers['X-Learnosity-SDK']
+        assert sdk_header.startswith('Python:')
+        assert not sdk_header.startswith('Python:v')
 
     @responses.activate
     def test_request_iter(self) -> None:
@@ -203,6 +208,19 @@ class UnitTestDataApiClient(unittest.TestCase):
         action = client._derive_action('https://data.learnosity.com/developer/sessions/responses', 'get')
         assert action == 'get_/sessions/responses'
 
+    def test_derive_action_with_preview_version(self) -> None:
+        """Verify that preview version format like v2025.3.preview1 is correctly stripped"""
+        client = DataApi()
+        action = client._derive_action('https://data.learnosity.com/v2025.3.preview1/itembank/items', 'get')
+        assert action == 'get_/itembank/items'
+
+    def test_derive_action_with_preview_version_multi_digit(self) -> None:
+        """Verify that preview version with multi-digit preview number is correctly stripped"""
+        client = DataApi()
+        action = client._derive_action('https://data.learnosity.com/v2025.1.preview123/itembank/questions', 'get')
+        assert action == 'get_/itembank/questions'
+
+
     @responses.activate
     def test_metadata_headers_in_paginated_requests(self) -> None:
         """Verify that metadata headers are sent in all paginated requests"""
@@ -220,3 +238,8 @@ class UnitTestDataApiClient(unittest.TestCase):
             assert call.request.headers['X-Learnosity-Consumer'] == 'yis0TYCu7U9V4o7M'
             assert 'X-Learnosity-Action' in call.request.headers
             assert call.request.headers['X-Learnosity-Action'] == 'get_/itembank/items'
+            assert 'X-Learnosity-SDK' in call.request.headers
+            # Verify SDK header format is "Python:X.Y.Z" (without 'v' prefix)
+            sdk_header = call.request.headers['X-Learnosity-SDK']
+            assert sdk_header.startswith('Python:')
+            assert not sdk_header.startswith('Python:v')
