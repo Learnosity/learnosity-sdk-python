@@ -7,6 +7,7 @@
 # Include server side Learnosity SDK, and set up variables related to user access
 from learnosity_sdk.request import Init, DataApi
 from learnosity_sdk.utils import Uuid
+from learnosity_sdk._version import __version__
 from .. import config # Load consumer key and secret from config.py
 # Include web server and Jinja templating libraries.
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -547,7 +548,6 @@ class LearnosityServer(BaseHTTPRequestHandler):
                 <body>
                     <h1>{{ name }}</h1>
                     <p>This demo shows how to use the Data API to retrieve items from the Learnosity itembank.</p>
-
                     <div class="demo-section">
                         <h2>Demo 1: Manual Iteration (5 items)</h2>
                         <p>Using <code>request()</code> method with manual pagination via the 'next' pointer.</p>
@@ -565,7 +565,10 @@ class LearnosityServer(BaseHTTPRequestHandler):
                         <p>Using <code>results_iter()</code> method to automatically iterate over individual items.</p>
                         {{ demo3_output }}
                     </div>
-
+                    <div class="demo-section">
+                      <h2>Request Metadata</h2>
+                      {{ metadata_info }}
+                    </div>
                     <p><a href="/">Back to API Examples</a></p>
                 </body>
             </html>
@@ -578,6 +581,22 @@ class LearnosityServer(BaseHTTPRequestHandler):
                 'domain': host,
             }
             data_api = DataApi()
+
+            # Extract and display metadata that will be sent with requests
+            consumer = data_api._extract_consumer(security_packet)
+            action = data_api._derive_action(itembank_uri, 'get')
+            sdk_version = __version__.lstrip('v')
+            sdk_info = f'Python:{sdk_version}'
+
+            metadata_html = f"""
+            <div>
+              <strong>SDK:</strong> {sdk_info}
+              <br>
+              <strong>Consumer:</strong> {consumer}
+              <br>
+              <strong>Action:</strong> {action}
+            </div>
+            """
 
             # Demo 1: Manual iteration
             demo1_html = ""
@@ -652,6 +671,7 @@ class LearnosityServer(BaseHTTPRequestHandler):
 
             response = template.render(
                 name='Data API Example',
+                metadata_info=metadata_html,
                 demo1_output=demo1_html,
                 demo2_output=demo2_html,
                 demo3_output=demo3_html
