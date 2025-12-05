@@ -1,8 +1,5 @@
-# Minimal server exposing two pages: Reports and Items
-# Copyright (c) 2025 Learnosity, Apache 2.0 License
-# SPDX-License-Identifier: Apache-2.0
-
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse, parse_qs
 from jinja2 import Template
 
 from learnosity_sdk.request import Init
@@ -17,14 +14,14 @@ security = {
     "domain": host,
 }
 
-# Simple example reports request (adjust with real session/user as needed)
-report_request = {
-    "reports": [
+def build_report_request(user_id: str, session_id: str):
+    return {
+        "reports": [
         {
             "id": "session-detail",
             "type": "session-detail-by-item",
-            "user_id": "2985e2d7-426d-4576-8015-56de188923e8",
-            "session_id": "41cc9e84-6176-48a6-ac14-38f4c34705af"
+            "user_id": user_id,
+            "session_id": session_id,
         }
     ]
 }
@@ -41,10 +38,8 @@ items_request = {
     "state": "initial",
 }
 
-initReports = Init("reports", security, config.consumer_secret, request=report_request)
 initItems = Init("items", security, config.consumer_secret, request=items_request)
-
-generated_request_Reports = initReports.generate()
+# Build reports init per request using query parameters
 generated_request_Items = initItems.generate()
 
 
@@ -56,59 +51,51 @@ class Server(BaseHTTPRequestHandler):
         self.wfile.write(body.encode("utf-8"))
 
     def do_GET(self):
-        if self.path == "/reports":
-            tpl = Template(
-                """<!DOCTYPE html>
-                <html>
-                  <body>
-                    <h1>Reports Page</h1>
-                    <div id="reports-container">
-                      <span class="learnosity-report" id="session-detail"></span>
-                    </div>
-                    <div id="secondary-container"></div>
-                    <script src="https://reports.learnosity.com?latest-lts"></script>
-                    <script>
-                      var reportsApp = LearnosityReports.init({{ generated_request }});
-                    </script>
-                  </body>
-                </html>
-                """
+        parsed = urlparse(self.path)
+        if parsed.path == "/api-report":
+            qs = parse_qs(parsed.query)
+            user_id = (qs.get("user_id") or ["demo-user"]).pop(0)
+            session_id = (qs.get("session_id") or ["demo-session"]).pop(0)
+
+            initReports = Init(
+                "reports",
+                security,
+                config.consumer_secret,
+                request=build_report_request(user_id, session_id),
             )
+            generated_request_Reports = initReports.generate()
+            with open('sandbox/views/report.html', 'r', encoding='utf-8') as f:
+                tpl = Template(f.read())
+            self._ok(tpl.render(generated_request=generated_request_Reports))
+            return
+        
+        if parsed.path == "/report-feedback":
+            qs = parse_qs(parsed.query)
+            user_id = (qs.get("user_id") or ["demo-user"]).pop(0)
+            session_id = (qs.get("session_id") or ["demo-session"]).pop(0)
+
+            initReports = Init(
+                "reports",
+                security,
+                config.consumer_secret,
+                request=build_report_request(user_id, session_id),
+            )
+            generated_request_Reports = initReports.generate()
+
+            with open('sandbox/views/report_feedback.html', 'r', encoding='utf-8') as f:
+                tpl = Template(f.read())
             self._ok(tpl.render(generated_request=generated_request_Reports))
             return
 
-        if self.path == "/items":
-            tpl = Template(
-                """<!DOCTYPE html>
-                <html>
-                  <body>
-                    <h1>Items Page</h1>
-                    <div id="learnosity_assess"></div>
-                    <script src="https://items.learnosity.com/?latest-lts"></script>
-                    <script>
-                      var itemsApp = LearnosityItems.init({{ generated_request }});
-                    </script>
-                  </body>
-                </html>
-                """
-            )
+        if parsed.path == "/items":
+            with open('sandbox/views/items.html', 'r', encoding='utf-8') as f:
+                tpl = Template(f.read())
             self._ok(tpl.render(generated_request=generated_request_Items))
             return
 
-        # Index
-        tpl = Template(
-            """<!DOCTYPE html>
-            <html>
-              <body>
-                <h1>Demo Server</h1>
-                <ul>
-                  <li><a href="/reports">Reports Page</a></li>
-                  <li><a href="/items">Items Page</a></li>
-                </ul>
-              </body>
-            </html>
-            """
-        )
+        # Index with simple form submitting to /reports
+        with open('sandbox/views/index.html', 'r', encoding='utf-8') as f:
+            tpl = Template(f.read())
         self._ok(tpl.render())
 
 

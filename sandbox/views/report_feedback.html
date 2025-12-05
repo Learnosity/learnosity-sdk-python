@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Report and Feedback Page</h1>
+    <style>
+      .reports-layout { display: flex; gap: 16px; align-items: flex-start; }
+      #reports-container, #feedback-container { flex: 1 1 50%; min-width: 0; }
+      #reports-container { border: 1px solid #ddd; padding: 8px; }
+      #feedback-container { border: 1px dashed #ccc; padding: 8px; }
+    </style>
+    <div class="reports-layout">
+      <div id="reports-container">
+        <span class="learnosity-report" id="session-detail"></span>
+      </div>
+      <div id="feedback-container">Feedback goes here!</div>
+    </div>
+    <script src="https://reports.learnosity.com?latest-lts"></script>
+    <script>
+      var reportsApp = LearnosityReports.init({{ generated_request }});
+    </script>
+  </body>
+</html>

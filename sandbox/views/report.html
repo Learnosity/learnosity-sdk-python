@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <h1 style="margin:0;">Reports Page</h1>
+      <button type="button" onclick="(function(){ var qs = window.location.search || ''; window.location.href = '/report-feedback' + qs; })()">Generate feedback</button>
+    </div>
+    <div class="reports-layout">
+      <div id="reports-container">
+        <span class="learnosity-report" id="session-detail"></span>
+      </div>
+    </div>
+    <script src="https://reports.learnosity.com?latest-lts"></script>
+    <script>
+      var reportsApp = LearnosityReports.init({{ generated_request }});
+    </script>
+    
+  </body>
+</html>
