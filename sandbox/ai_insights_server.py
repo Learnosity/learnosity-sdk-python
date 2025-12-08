@@ -1,9 +1,16 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 from jinja2 import Template
 
 from learnosity_sdk.request import Init
 from docs.quickstart import config
+
+from sandbox.utils.llm_utils import get_llm_feedback
+from sandbox.utils.lrn_api_utils import get_report_data
 
 
 host = "localhost"
@@ -82,9 +89,12 @@ class Server(BaseHTTPRequestHandler):
             )
             generated_request_Reports = initReports.generate()
 
+            report_data = get_report_data(user_id, session_id)
+            llm_response = get_llm_feedback(report_data)
+
             with open('sandbox/views/report_feedback.html', 'r', encoding='utf-8') as f:
                 tpl = Template(f.read())
-            self._ok(tpl.render(generated_request=generated_request_Reports))
+            self._ok(tpl.render(generated_request=generated_request_Reports, llm_response=llm_response))
             return
 
         if parsed.path == "/items":

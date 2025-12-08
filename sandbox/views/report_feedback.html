@@ -7,16 +7,67 @@
       #reports-container, #feedback-container { flex: 1 1 50%; min-width: 0; }
       #reports-container { border: 1px solid #ddd; padding: 8px; }
       #feedback-container { border: 1px dashed #ccc; padding: 8px; }
+      .box { border: 1px solid #bbb; border-radius: 6px; padding: 12px; margin-bottom: 16px; background: #fafafa; }
+      .box h2 { margin: 0 0 8px 0; font-size: 18px; }
+      .comment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+      .comment-card { border: 1px solid #ddd; border-radius: 6px; padding: 8px; background: #fff; }
+      .comment-type { font-weight: 600; }
+      .question-title { font-weight: 700; margin: 0 0 6px 0; }
+      .question-list { margin: 0; padding-left: 18px; }
     </style>
     <div class="reports-layout">
       <div id="reports-container">
         <span class="learnosity-report" id="session-detail"></span>
       </div>
-      <div id="feedback-container">Feedback goes here!</div>
+      <div id="feedback-container">
+        {% if llm_response %}
+          <div class="box">
+            <h2>Overall Feedback</h2>
+            {% set overall_labels = {
+              'overall_question_item_summary': 'Summary',
+              'overall_question_item_strength': 'Strength',
+              'overall_question_item_weakness': 'Weakness',
+              'overall_question_item_recommendation': 'Recommendation'
+            } %}
+            <div class="comment-grid">
+              {% for item in llm_response.get('Overall_Question_Answers', []) %}
+                <div class="comment-card">
+                  <div class="comment-type">{{ overall_labels.get(item.type, item.type|replace('_',' ')|title) }}</div>
+                  <div class="comment-text">{{ item.comment }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="box">
+            <h2>Per-Question Feedback</h2>
+            {% for key, comments in llm_response.items() %}
+              {% if key != 'Overall_Question_Answers' %}
+                {% set qnum = loop.index %}
+                <div class="comment-card" style="margin-bottom: 8px;">
+                  <div class="question-title">Question {{ qnum }}</div>
+                  <ul class="question-list">
+                    {% for entry in comments %}
+                      <li><span class="comment-type">{{ entry.type|capitalize }}:</span> {{ entry.comment }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <em>No LLM feedback available.</em>
+        {% endif %}
+      </div>
     </div>
     <script src="https://reports.learnosity.com?latest-lts"></script>
+    <script type="application/json" id="lrn-init-options">{{ generated_request | tojson }}</script>
     <script>
-      var reportsApp = LearnosityReports.init({{ generated_request }});
+      (function(){
+        var json = document.getElementById('lrn-init-options').textContent;
+        var initOptions = JSON.parse(json);
+        window.reportsApp = LearnosityReports.init(initOptions);
+      })();
     </script>
   </body>
 </html>
