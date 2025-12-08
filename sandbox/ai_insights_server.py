@@ -3,6 +3,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from uuid import uuid4
 from urllib.parse import urlparse, parse_qs
 from jinja2 import Template
 
@@ -34,11 +35,13 @@ def build_report_request(user_id: str, session_id: str):
 }
 
 # Simple example items request
+items_session_id = uuid4()
+print(f"{items_session_id=}")
 items_request = {
     "user_id": "demo-user",
     "activity_id": "quickstart_examples_activity_001",
     "activity_template_id": "quickstart_examples_activity_template_001",
-    "session_id": "demo-session",
+    "session_id": str(items_session_id),
     "rendering_type": "assess",
     "type": "submit_practice",
     "name": "Items API Quickstart",
