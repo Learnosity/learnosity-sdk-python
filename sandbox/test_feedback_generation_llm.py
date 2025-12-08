@@ -81,11 +81,6 @@ Your output must strictly follow this schema:
     {"type": "overall_question_item_recommendation", "comment": "..."}
   ]
 }
-
-# INPUT DATA
-###
-[INSERT_YOUR_JSON_DATA_HERE]
-###
 """
 
 # 3. Construct the Message
