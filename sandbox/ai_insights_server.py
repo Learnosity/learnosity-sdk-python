@@ -11,7 +11,7 @@ from jinja2 import Template
 from learnosity_sdk.request import Init
 from docs.quickstart import config
 
-from sandbox.utils.llm_utils import get_llm_feedback
+from sandbox.utils.llm_utils import generate_practice_activity, get_llm_feedback
 from sandbox.utils.lrn_api_utils import get_report_data
 
 
@@ -52,8 +52,6 @@ initItems = Init("items", security, config.consumer_secret, request=items_reques
 # Build reports init per request using query parameters
 generated_request_Items = initItems.generate()
 
-with open('sandbox/json/activity_payload.json', 'r', encoding='utf-8') as f:
-    assess_request = json.loads(f.read())
 
 class Server(BaseHTTPRequestHandler):
     def _ok(self, body: str):
@@ -119,7 +117,8 @@ class Server(BaseHTTPRequestHandler):
                 "domain": host,
                 "user_id": str(uuid4())
             }
-            initAssess = Init("assess", assess_security, config.consumer_secret, request=assess_request)
+            assess_data = generate_practice_activity()
+            initAssess = Init("assess", assess_security, config.consumer_secret, request=assess_data)
             generated_request_Assess = initAssess.generate()
 
             with open('sandbox/views/assess.html', 'r', encoding='utf-8') as f:
