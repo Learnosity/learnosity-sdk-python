@@ -212,7 +212,6 @@ class Init(object):
                         'domain': domain,
                         'timestamp': self.security['timestamp'],
                         'user_id': self.security['user_id'],
-                        'secret': self.secret
                     }.values())
                 }
 
