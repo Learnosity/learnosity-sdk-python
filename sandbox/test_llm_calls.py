@@ -1,11 +1,16 @@
 import argparse
 import json
 import os
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, cast
 
 from dotenv import load_dotenv
 from openai import OpenAI
+
+DEFAULT_JSON_PATH = Path("/Users/palashshinde/learnosity/learnosity-sdk-python/sandbox/question_answer_dump.json")
+DEFAULT_MODEL_NAME = "gpt-5"
+OUTPUT_ACTIVITY_PATH = Path(__file__).resolve().parent / "json" / "activity_payload.json"
 
 
 def parse_args() -> argparse.Namespace:
@@ -31,13 +36,13 @@ def configure_openai() -> tuple[OpenAI, str]:
         raise RuntimeError("OPENAI_API_KEY not set; update your .env file before running this script.")
 
     client = OpenAI(api_key=api_key)
-    model_name = os.getenv("OPENAI_MODEL")
+    model_name = os.getenv("OPENAI_MODEL", DEFAULT_MODEL_NAME)
     return client, model_name
 
 
 def resolve_student_data_path(arg_path: str | None) -> Path:
     candidate = arg_path or os.getenv("STUDENT_DATA_PATH")
-    data_path = Path(candidate).expanduser() if candidate else Path("DEFAULT_JSON_PATH")
+    data_path = Path(candidate).expanduser() if candidate else DEFAULT_JSON_PATH
 
     if not data_path.is_file():
         raise FileNotFoundError(f"Student data file not found at {data_path}")
@@ -47,6 +52,79 @@ def resolve_student_data_path(arg_path: str | None) -> Path:
 
 def load_student_data(data_path: Path) -> str:
     return data_path.read_text(encoding="utf-8")
+
+
+def _extract_question_entries(raw_payload: Any) -> list[dict[str, Any]]:
+  """Return a list of question entries from various payload layouts."""
+
+  candidates: list[Any] | None = None
+
+  if isinstance(raw_payload, list):
+    candidates = raw_payload
+  elif isinstance(raw_payload, dict):
+    for key in ("questions", "result", "items", "data"):
+      value = raw_payload.get(key)
+      if isinstance(value, list):
+        candidates = value
+        break
+  else:
+    raise ValueError("Unsupported payload type; expected dict or list.")
+
+  if candidates is None:
+    raise ValueError("Payload must include a list under 'questions', 'result', 'items', or 'data'.")
+
+  for entry in candidates:
+    if not isinstance(entry, dict):
+      raise ValueError("Each question entry must be a dictionary.")
+
+  return cast(list[dict[str, Any]], candidates)
+
+
+def convert_questions_to_activity(new_questions_payload: dict[str, Any] | list[Any]) -> dict[str, Any]:
+  """Convert generated question data into a Learnosity activity payload."""
+
+  items: list[dict[str, Any]] = []
+  questions: list[dict[str, Any]] = []
+
+  for question_entry in _extract_question_entries(new_questions_payload):
+    question_id = question_entry.get("id")
+    question_data = question_entry.get("question")
+
+    if not question_id or not isinstance(question_id, str):
+      raise ValueError("Each question entry requires an 'id' string.")
+    if not isinstance(question_data, dict):
+      raise ValueError("Each question entry requires a 'question' dictionary.")
+
+    response_id = f"generated_{question_id}"
+
+    items.append(
+      {
+        "content": f"<span class='learnosity-response question-{response_id}'></span>",
+        "response_ids": [response_id],
+        "workflow": "",
+        "reference": f"item-{question_id}",
+      }
+    )
+
+    question_payload = deepcopy(cast(dict[str, Any], question_data))
+    question_payload["response_id"] = response_id
+    question_payload.setdefault("description", "")
+    questions.append(question_payload)
+
+  return {
+    "items": items,
+    "questionsApiActivity": {
+      "consumer_key": os.getenv("LEARNOSITY_CONSUMER_KEY", "INSERT_CONSUMER_KEY_HERE"),
+      "timestamp": os.getenv("LEARNOSITY_TIMESTAMP", "INSERT_CURRENT_TIMESTAMP_HERE"),
+      "signature": os.getenv("LEARNOSITY_SIGNATURE", "INSERT_GENERATED_SIGNATURE_HERE"),
+      "user_id": os.getenv("LEARNOSITY_USER_ID", "demo_user"),
+      "type": "submit_practice",
+      "state": "initial",
+      "id": os.getenv("LEARNOSITY_ACTIVITY_ID", "generated_practice"),
+      "name": os.getenv("LEARNOSITY_ACTIVITY_NAME", "Generated Practice"),
+      "questions": questions,
+    },
+  }
 
 def build_practice_question_system_instruction() -> str:
     return """ 
@@ -86,7 +164,8 @@ Output a single JSON array containing the new questions. Adhere strictly to this
     "id": "01",
     "question": {
       "type": "clozetext",
-      "metadata": { "valid_response_count": 1 }, 
+      "metadata": { "valid_response_count": 1 },
+      "instant_feedback": true, 
       "stimulus": "<p>[Insert instruction, e.g., 'Fill in the blanks using the correct past tense form.']</p>",
       "template": "<p>[Insert sentence with {{response}} placeholders]</p>",
       "max_length": 15,
@@ -106,6 +185,7 @@ Output a single JSON array containing the new questions. Adhere strictly to this
     "question": {
       "type": "classification",
       "metadata": { "valid_response_count": 1 },
+      "instant_feedback": true,
       "stimulus": "<p>[Insert instruction, e.g., 'Classify the following words...']</p>",
       "ui_style": {
         "column_count": 2, 
@@ -269,6 +349,13 @@ def main() -> None:
 
     print(json.dumps(new_questions, indent=2))
 
+    new_questions = json.load(open("/Users/palashshinde/learnosity/learnosity-sdk-python/sandbox/new_activity_test.json", "r", encoding="utf-8"))
+
+    activity_payload_json = convert_questions_to_activity(new_questions)
+    print("\n--- Generated Activity Payload ---")
+    OUTPUT_ACTIVITY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with OUTPUT_ACTIVITY_PATH.open("w", encoding="utf-8") as f:
+        json.dump(activity_payload_json, f, indent=2)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,107 @@
+{
+  "items": [
+    {
+      "content": "<span class='learnosity-response question-generated_01'></span>",
+      "response_ids": [
+        "generated_01"
+      ],
+      "workflow": "",
+      "reference": "item-01"
+    },
+    {
+      "content": "<span class='learnosity-response question-generated_02'></span>",
+      "response_ids": [
+        "generated_02"
+      ],
+      "workflow": "",
+      "reference": "item-02"
+    }
+  ],
+  "questionsApiActivity": {
+    "consumer_key": "INSERT_CONSUMER_KEY_HERE",
+    "timestamp": "INSERT_CURRENT_TIMESTAMP_HERE",
+    "signature": "INSERT_GENERATED_SIGNATURE_HERE",
+    "user_id": "demo_user",
+    "type": "submit_practice",
+    "state": "initial",
+    "id": "generated_practice",
+    "name": "Generated Practice",
+    "questions": [
+      {
+        "type": "clozetext",
+        "instant_feedback": true,
+        "metadata": {
+          "valid_response_count": 1
+        },
+        "stimulus": "<p>Fill in each blank with the correct form of \"to be.\" Use full forms for the simple past (e.g., was, were) and natural contractions for the present/present perfect (e.g., I'm, she's, we've been).</p>",
+        "template": "<p>Yesterday, I {{response}} late to the meeting; today {{response}} ready early. She {{response}} worried lately, and last year {{response}} interested in the offer. By noon today, {{response}} very busy, but you {{response}} calm throughout. In general, {{response}} fine.</p>",
+        "max_length": 15,
+        "validation": {
+          "scoring_type": "exactMatch",
+          "alt_responses": [],
+          "valid_response": {
+            "score": 1,
+            "value": [
+              "was",
+              "I'm",
+              "has been",
+              "they weren't",
+              "we've been",
+              "were",
+              "it's"
+            ]
+          }
+        },
+        "response_id": "generated_01",
+        "description": ""
+      },
+      {
+        "type": "classification",
+        "instant_feedback": true,
+        "metadata": {
+          "valid_response_count": 1
+        },
+        "stimulus": "<p>Classify each item based on the part of speech of the bracketed word in context. Place items where the bracketed word functions as a Noun/Pronoun in Column A, and where it functions as a Verb/Adjective/Adverb in Column B.</p>",
+        "ui_style": {
+          "column_count": 2,
+          "column_titles": [
+            "Noun/Pronoun role",
+            "Verb/Adjective/Adverb role"
+          ]
+        },
+        "validation": {
+          "scoring_type": "exactMatch",
+          "valid_response": {
+            "score": 1,
+            "value": [
+              [
+                0,
+                3,
+                4,
+                7
+              ],
+              [
+                1,
+                2,
+                5,
+                6
+              ]
+            ]
+          }
+        },
+        "possible_responses": [
+          "[Running] every morning improves focus.",
+          "The [running] water was cold.",
+          "She will [run] tomorrow.",
+          "His [run] in the play was brief.",
+          "Those are [hers].",
+          "This route is [better] than the other one.",
+          "The [broken] window was replaced.",
+          "[Everyone] arrived early."
+        ],
+        "response_id": "generated_02",
+        "description": ""
+      }
+    ]
+  }
+}
