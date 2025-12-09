@@ -22,7 +22,7 @@
       {
         "response_id": "demoscience1234",
         "type": "sortlist",
-        "description": "In this question, the learner needs to sort the events, chronologically earliest to latest.",
+        "stimulus": "In this question, the learner needs to sort the events, chronologically earliest to latest.",
         "list": [
           "Russian Revolution",
           "Discovery of the Americas",
@@ -43,8 +43,8 @@
       {
         "response_id": "demoscience5678",
         "type": "highlight",
-        "description": "The learner needs to mark one of the flower's anthers in the image.",
-        "img_src": "http://www.learnosity.com/static/img/flower.jpg",
+        "stimulus": "The learner needs to mark one of the flower's anthers in the image.",
+        "img_src": "https://www.amnh.org/var/ezflow_site/storage/images/media/amnh/images/learn-teach/parts-of-a-flower/762007-1-eng-US/parts-of-a-flower_full_610.png",
         "line_color": "rgb(255, 20, 0)",
         "line_width": "4"
       }
