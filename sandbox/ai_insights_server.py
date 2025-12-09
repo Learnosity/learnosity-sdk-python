@@ -40,7 +40,7 @@ items_session_id = uuid4()
 items_request = {
     "user_id": "demo-user",
     "activity_id": "quickstart_examples_activity_001",
-    "activity_template_id": "quickstart_examples_activity_template_001",
+    "activity_template_id": "AI Labs Hackathon 2025 - Insights",
     "session_id": str(items_session_id),
     "rendering_type": "assess",
     "type": "submit_practice",
