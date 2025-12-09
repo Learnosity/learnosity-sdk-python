@@ -14,10 +14,6 @@
     }
   ],
   "questionsApiActivity": {
-    "consumer_key": "yis0TYCu7U9V4o7M",
-    "timestamp": "INSERT_CURRENT_TIMESTAMP_HERE",
-    "signature": "INSERT_GENERATED SIGNATURE HERE",
-    "user_id": "aeee19fb-4e7b-435c-92f9-d93a1099988b",
     "type": "submit_practice",
     "state": "initial",
     "id": "assessdemo",
