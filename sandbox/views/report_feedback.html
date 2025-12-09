@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>Report and Feedback Page</h1>
+  <head>
     <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0 auto;
+        padding: 20px;
+        max-width: 1400px;
+      }
       .reports-layout { display: flex; gap: 16px; align-items: flex-start; }
       #reports-container, #feedback-container { flex: 1 1 50%; min-width: 0; }
       #reports-container { border: 1px solid #ddd; padding: 8px; }
@@ -14,7 +19,23 @@
       .comment-type { font-weight: 600; }
       .question-title { font-weight: 700; margin: 0 0 6px 0; }
       .question-list { margin: 0; padding-left: 18px; }
+      button {
+        background-color: #f3f3f3;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #e8e8e8;
+      }
     </style>
+  </head>
+  <body>
+    <h1>Learnosity Report and AI Feedback</h1>
     <div class="reports-layout">
       <div id="reports-container">
         <span class="learnosity-report" id="session-detail"></span>
@@ -58,7 +79,7 @@
         {% else %}
           <em>No LLM feedback available.</em>
         {% endif %}
-        <button onclick="window.location.href='/loading?type=assess'" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; cursor: pointer;">
+        <button onclick="window.location.href='/loading?type=assess'" style="margin-top: 16px;">
           Generate practice activity
         </button>
       </div>
