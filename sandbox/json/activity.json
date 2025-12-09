@@ -1,0 +1,57 @@
+{
+  "items": [
+    {
+      "content": "<span class='learnosity-response question-demoscience1234'></span>",
+      "response_ids": ["demoscience1234"],
+      "workflow": "",
+      "reference": "question-demoscience1"
+    },
+    {
+      "content": "<span class='learnosity-response question-demoscience5678'></span>",
+      "response_ids": ["demoscience5678"],
+      "workflow": "",
+      "reference": "question-demoscience2"
+    }
+  ],
+  "questionsApiActivity": {
+    "consumer_key": "yis0TYCu7U9V4o7M",
+    "timestamp": "INSERT_CURRENT_TIMESTAMP_HERE",
+    "signature": "INSERT_GENERATED SIGNATURE HERE",
+    "user_id": "aeee19fb-4e7b-435c-92f9-d93a1099988b",
+    "type": "submit_practice",
+    "state": "initial",
+    "id": "assessdemo",
+    "name": "Assess API - Demo",
+    "questions": [
+      {
+        "response_id": "demoscience1234",
+        "type": "sortlist",
+        "description": "In this question, the learner needs to sort the events, chronologically earliest to latest.",
+        "list": [
+          "Russian Revolution",
+          "Discovery of the Americas",
+          "Storming of the Bastille",
+          "Battle of Plataea",
+          "Founding of Rome",
+          "First Crusade"
+        ],
+        "instant_feedback": true,
+        "feedback_attempts": 2,
+        "validation": {
+          "valid_response": [4, 3, 5, 1, 2, 0],
+          "valid_score": 1,
+          "partial_scoring": true,
+          "penalty_score": -1
+        }
+      },
+      {
+        "response_id": "demoscience5678",
+        "type": "highlight",
+        "description": "The learner needs to mark one of the flower's anthers in the image.",
+        "img_src": "http://www.learnosity.com/static/img/flower.jpg",
+        "line_color": "rgb(255, 20, 0)",
+        "line_width": "4"
+      }
+    ]
+  }
+}

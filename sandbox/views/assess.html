@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>Assess Page</h1>
+    <div id="learnosity_assess"></div>
+    <script src="https://assess.learnosity.com/?developer"></script>
+    <script>
+      var assessApp = LearnosityAssess.init({{ generated_request }}, "#learnosity_assess", {
+            readyListener: function () {
+                console.log('Assess API init COMPLETE --------------');
+
+                if (typeof window._readyListener === 'function') {
+                    window._readyListener();
+                }
+            },
+            errorListener: function () {
+                console.log('Assess API init FAILED --------------');
+            }
+        });
+    </script>
+  </body>
+</html>

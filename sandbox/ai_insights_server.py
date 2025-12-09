@@ -1,10 +1,11 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
+import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from uuid import uuid4
 from urllib.parse import urlparse, parse_qs
+
 from jinja2 import Template
 
 from learnosity_sdk.request import Init
@@ -20,6 +21,12 @@ port = 8001
 security = {
     "consumer_key": config.consumer_key,
     "domain": host,
+}
+
+assess_security = {
+    "consumer_key": config.consumer_key,
+    "domain": host,
+    "user_id": "assessment_taker"
 }
 
 def build_report_request(user_id: str, session_id: str):
@@ -52,6 +59,10 @@ initItems = Init("items", security, config.consumer_secret, request=items_reques
 # Build reports init per request using query parameters
 generated_request_Items = initItems.generate()
 
+with open('sandbox/json/activity.json', 'r', encoding='utf-8') as f:
+    assess_request = json.loads(f.read())
+initAssess = Init("assess", assess_security, config.consumer_secret, request=assess_request)
+generated_request_Assess = initAssess.generate()
 
 class Server(BaseHTTPRequestHandler):
     def _ok(self, body: str):
@@ -66,6 +77,8 @@ class Server(BaseHTTPRequestHandler):
             qs = parse_qs(parsed.query)
             user_id = (qs.get("user_id") or ["demo-user"]).pop(0)
             session_id = (qs.get("session_id") or ["demo-session"]).pop(0)
+
+            security["user_id"] = user_id
 
             initReports = Init(
                 "reports",
@@ -83,6 +96,8 @@ class Server(BaseHTTPRequestHandler):
             qs = parse_qs(parsed.query)
             user_id = (qs.get("user_id") or ["demo-user"]).pop(0)
             session_id = (qs.get("session_id") or ["demo-session"]).pop(0)
+
+            security["user_id"] = user_id
 
             initReports = Init(
                 "reports",
@@ -104,6 +119,12 @@ class Server(BaseHTTPRequestHandler):
             with open('sandbox/views/items.html', 'r', encoding='utf-8') as f:
                 tpl = Template(f.read())
             self._ok(tpl.render(generated_request=generated_request_Items))
+            return
+
+        if parsed.path == "/assess":
+            with open('sandbox/views/assess.html', 'r', encoding='utf-8') as f:
+                tpl = Template(f.read())
+            self._ok(tpl.render(generated_request=generated_request_Assess))
             return
 
         # Index with simple form submitting to /reports
