@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>LLM Thinking...</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: #333;
+        }
+        .loading-container {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 {
+            margin: 0 0 12px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+        p {
+            margin: 0;
+            font-size: 16px;
+            color: #666;
+        }
+        .dots {
+            display: inline-block;
+            width: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <h1>{{ config.title | default('Loading...') }}</h1>
+        <p>{{ config.message | default('Please wait') }}<span class="dots" id="dots"></span></p>
+    </div>
+    
+    <script>
+        // Animate dots
+        const dotsElement = document.getElementById('dots');
+        let dotCount = 0;
+        setInterval(() => {
+            dotCount = (dotCount + 1) % 4;
+            dotsElement.textContent = '.'.repeat(dotCount);
+        }, 500);
+
+        // Get query parameters from current URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id') || 'demo-user';
+        const sessionId = urlParams.get('session_id') || 'demo-session';
+        
+        // Redirect configuration from server
+        const redirectPath = '{{ config.redirect_path | default("/") }}';
+        
+        // Build redirect URL with query parameters
+        setTimeout(() => {
+            window.location.href = (redirectPath === '/report-feedback') ? `${redirectPath}?user_id=${encodeURIComponent(userId)}&session_id=${encodeURIComponent(sessionId)}` : redirectPath;
+        }, 1500);
+    </script>
+</body>
+</html>

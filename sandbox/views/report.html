@@ -3,7 +3,7 @@
   <body>
     <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
       <h1 style="margin:0;">Reports Page</h1>
-      <button type="button" onclick="(function(){ var qs = window.location.search || ''; window.location.href = '/report-feedback' + qs; })()">Generate feedback</button>
+      <button type="button" onclick="(function(){ var params = new URLSearchParams(window.location.search); params.set('type', 'feedback'); window.location.href = `/loading?${params.toString()}`; })()">Generate feedback</button>
     </div>
     <div class="reports-layout">
       <div id="reports-container">

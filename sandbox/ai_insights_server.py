@@ -126,6 +126,35 @@ class Server(BaseHTTPRequestHandler):
             self._ok(tpl.render(generated_request=generated_request_Assess))
             return
 
+        if parsed.path == "/loading":
+            qs = parse_qs(parsed.query)
+            loading_type = (qs.get("type") or ["feedback"]).pop(0)
+            
+            # Configure loading page based on type
+            if loading_type == "feedback":
+                config_data = {
+                    "title": "Generating AI Feedback",
+                    "message": "Please wait while we analyze the responses",
+                    "redirect_path": "/report-feedback",
+                }
+            elif loading_type == "assess":
+                config_data = {
+                    "title": "Generating Assessment",
+                    "message": "Please wait while we create your practice activity",
+                    "redirect_path": "/assess",
+                }
+            else:
+                config_data = {
+                    "title": "Loading...",
+                    "message": "Please wait",
+                    "redirect_path": "/",
+                }
+            
+            with open('sandbox/views/loading.html', 'r', encoding='utf-8') as f:
+                tpl = Template(f.read())
+            self._ok(tpl.render(config=config_data))
+            return
+
         # Index with simple form submitting to /reports
         with open('sandbox/views/index.html', 'r', encoding='utf-8') as f:
             tpl = Template(f.read())
