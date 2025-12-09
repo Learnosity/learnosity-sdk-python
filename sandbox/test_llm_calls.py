@@ -349,8 +349,6 @@ def main() -> None:
 
     print(json.dumps(new_questions, indent=2))
 
-    new_questions = json.load(open("/Users/palashshinde/learnosity/learnosity-sdk-python/sandbox/new_activity_test.json", "r", encoding="utf-8"))
-
     activity_payload_json = convert_questions_to_activity(new_questions)
     print("\n--- Generated Activity Payload ---")
     OUTPUT_ACTIVITY_PATH.parent.mkdir(parents=True, exist_ok=True)

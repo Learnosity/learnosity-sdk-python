@@ -52,7 +52,7 @@ initItems = Init("items", security, config.consumer_secret, request=items_reques
 # Build reports init per request using query parameters
 generated_request_Items = initItems.generate()
 
-with open('sandbox/json/activity.json', 'r', encoding='utf-8') as f:
+with open('sandbox/json/activity_payload.json', 'r', encoding='utf-8') as f:
     assess_request = json.loads(f.read())
 
 class Server(BaseHTTPRequestHandler):
