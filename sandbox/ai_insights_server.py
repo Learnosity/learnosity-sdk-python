@@ -23,12 +23,6 @@ security = {
     "domain": host,
 }
 
-assess_security = {
-    "consumer_key": config.consumer_key,
-    "domain": host,
-    "user_id": "assessment_taker"
-}
-
 def build_report_request(user_id: str, session_id: str):
     return {
         "reports": [
@@ -43,7 +37,6 @@ def build_report_request(user_id: str, session_id: str):
 
 # Simple example items request
 items_session_id = uuid4()
-print(f"{items_session_id=}")
 items_request = {
     "user_id": "demo-user",
     "activity_id": "quickstart_examples_activity_001",
@@ -61,8 +54,6 @@ generated_request_Items = initItems.generate()
 
 with open('sandbox/json/activity.json', 'r', encoding='utf-8') as f:
     assess_request = json.loads(f.read())
-initAssess = Init("assess", assess_security, config.consumer_secret, request=assess_request)
-generated_request_Assess = initAssess.generate()
 
 class Server(BaseHTTPRequestHandler):
     def _ok(self, body: str):
@@ -122,6 +113,15 @@ class Server(BaseHTTPRequestHandler):
             return
 
         if parsed.path == "/assess":
+            # Generate random user_id per navigation to /assess for convenience
+            assess_security = {
+                "consumer_key": config.consumer_key,
+                "domain": host,
+                "user_id": str(uuid4())
+            }
+            initAssess = Init("assess", assess_security, config.consumer_secret, request=assess_request)
+            generated_request_Assess = initAssess.generate()
+
             with open('sandbox/views/assess.html', 'r', encoding='utf-8') as f:
                 tpl = Template(f.read())
             self._ok(tpl.render(generated_request=generated_request_Assess))
