@@ -107,7 +107,6 @@ Output a single JSON array containing the new questions. Adhere strictly to this
     "id": "01",
     "question": {
       "type": "clozetext",
-      "metadata": { "valid_response_count": 1 },
       "instant_feedback": true, 
       "stimulus": "<p>[Insert instruction, e.g., 'Fill in the blanks using the correct past tense form.']</p>",
       "template": "<p>[Insert sentence with {{response}} placeholders]</p>",
@@ -127,7 +126,6 @@ Output a single JSON array containing the new questions. Adhere strictly to this
     "id": "02",
     "question": {
       "type": "classification",
-      "metadata": { "valid_response_count": 1 },
       "instant_feedback": true,
       "stimulus": "<p>[Insert instruction, e.g., 'Classify the following words...']</p>",
       "ui_style": {
