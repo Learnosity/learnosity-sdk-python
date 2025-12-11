@@ -74,14 +74,14 @@ class Init(object):
                 del output['domain']
 
             # Stringify the request packet if necessary
-            if self.request is not None:
+            if isinstance(self.request, dict):
                 output.update(self.request)
 
         elif self.service == 'events':
             output['security'] = self.security
             output['config'] = self.request
         elif self.service == 'assess':
-            if self.request is not None:
+            if isinstance(self.request, dict):
                 output.update(self.request)
         elif self.service == 'data':
             # We ignore the encode param for data API
@@ -193,7 +193,7 @@ class Init(object):
         elif self.service == 'assess':
             self.sign_request_data = False
 
-            if self.request is not None and 'questionsApiActivity' in self.request:
+            if isinstance(self.request, dict) and 'questionsApiActivity' in self.request and isinstance(self.request['questionsApiActivity'], dict):
                 questionsApi = self.request['questionsApiActivity']
 
                 if 'domain' in self.security:
@@ -223,13 +223,13 @@ class Init(object):
                 self.request['questionsApiActivity'].update(questionsApi)
 
         elif self.service == 'items' or self.service == 'reports':
-            if self.request is not None and ('user_id' not in self.security and 'user_id' in self.request):
+            if isinstance(self.request, dict) and ('user_id' not in self.security and 'user_id' in self.request):
                 self.security['user_id'] = self.request['user_id']
 
         elif self.service == 'events':
             self.sign_request_data = False
             hashed_users = {}
-            users = self.request.get('users', []) if self.request is not None else []
+            users = self.request.get('users', []) if isinstance(self.request, dict) else []
             for user in users:
                 concat = "{}{}".format(user, self.secret)
                 hashed_users[user] = hashlib.sha256(concat.encode('utf-8')).hexdigest()
@@ -244,8 +244,8 @@ class Init(object):
         return '$02$' + signature
 
     def add_telemetry_data(self) -> None:
-        if self.request is not None and self.__telemetry_enabled:
-            if 'meta' in self.request:
+        if isinstance(self.request, dict) and self.__telemetry_enabled:
+            if 'meta' in self.request and isinstance(self.request['meta'], dict):
                 self.request['meta']['sdk'] = self.get_sdk_meta()
             else:
                 self.request['meta'] = {
