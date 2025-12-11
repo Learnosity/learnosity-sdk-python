@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [unreleased] - 2025-12-11
 ### Added
 - Added Data API configuration to request signatures
-- Added Data API Demo to standalone demoes
+- Added Data API Demo to standalone demos
 
 ### Fixed
 - Fixed mypy errors failing lint check on ci build
