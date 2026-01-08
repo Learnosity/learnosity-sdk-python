@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.13] - 2026-01-08
+### Added
+- Added SDK language and version to request metadata
+- Added Consumer and Action to request metadata
+
 ## [v0.3.12] - 2024-11-22
 ### Added
 - Added pre-commit hooks and Github CI action for code formatting and linting.
