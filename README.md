@@ -5,7 +5,6 @@
 An official Learnosity open-source project.</p>
 
 [![Latest Stable Version](https://badge.fury.io/gh/Learnosity%2Flearnosity-sdk-python.svg)](https://pypi.org/project/learnosity_sdk/)
-[![Build Status](https://app.travis-ci.com/Learnosity/learnosity-sdk-python.svg?branch=master)](https://app.travis-ci.com/Learnosity/learnosity-sdk-python)
 [![License](https://github.com/Learnosity/learnosity-sdk-python/raw/master/docs/images/apache-license.svg)](https://github.com/Learnosity/learnosity-sdk-python/blob/master/LICENSE.md)
 [![Downloads](https://github.com/Learnosity/learnosity-sdk-python/raw/master/docs/images/downloads.svg)](https://github.com/Learnosity/learnosity-sdk-python/releases)
 ---
