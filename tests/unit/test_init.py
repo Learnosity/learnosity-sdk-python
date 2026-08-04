@@ -1,9 +1,22 @@
 import collections
 import json
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import unittest
 
 import learnosity_sdk.request
+
+
+def as_dict(value: object) -> Dict[str, Any]:
+    """
+    Narrow ``value`` to ``Dict[str, Any]`` for both mypy and the test runner.
+
+    Unlike ``typing.cast``, ``isinstance`` here is a real, always-executed
+    check: mismatches fail the test with a clear message instead of being
+    silently trusted.
+    """
+    if not isinstance(value, dict):
+        raise AssertionError(f'Expected a dict, got {type(value).__name__}: {value!r}')
+    return value
 
 ServiceTestSpec = collections.namedtuple(
     "ServiceTestSpec", [
@@ -244,8 +257,7 @@ class TestRequestTypeHandling(unittest.TestCase):
         init = learnosity_sdk.request.Init(
             'questions', self._security({'user_id': '$ANONYMIZED_USER_ID'}),
             self.secret, request={'foo': 'bar'})
-        output = init.generate(encode=False)
-        assert isinstance(output, dict)
+        output = as_dict(init.generate(encode=False))
         self.assertEqual(output['foo'], 'bar')
         self.assertNotIn('domain', output)
 
@@ -254,8 +266,7 @@ class TestRequestTypeHandling(unittest.TestCase):
         init = learnosity_sdk.request.Init(
             'assess', self._security({'user_id': '$ANONYMIZED_USER_ID'}),
             self.secret, request={'foo': 'bar'})
-        output = init.generate(encode=False)
-        assert isinstance(output, dict)
+        output = as_dict(init.generate(encode=False))
         self.assertEqual(output['foo'], 'bar')
 
     def test_assess_questions_api_activity_is_signed(self) -> None:
@@ -268,8 +279,8 @@ class TestRequestTypeHandling(unittest.TestCase):
             'assess', self._security({'user_id': '$ANONYMIZED_USER_ID'}),
             self.secret, request={'questionsApiActivity': {'foo': 'bar'}})
 
-        assert isinstance(init.request, dict)
-        activity = init.request['questionsApiActivity']
+        request = as_dict(init.request)
+        activity = request['questionsApiActivity']
         self.assertEqual(activity['consumer_key'], self.key)
         self.assertEqual(activity['user_id'], '$ANONYMIZED_USER_ID')
         self.assertEqual(activity['timestamp'], self.timestamp)
@@ -287,8 +298,8 @@ class TestRequestTypeHandling(unittest.TestCase):
             'assess', self._security({'user_id': '$ANONYMIZED_USER_ID'}),
             self.secret, request={'questionsApiActivity': 'not-a-dict'})
 
-        assert isinstance(init.request, dict)
-        self.assertEqual(init.request['questionsApiActivity'], 'not-a-dict')
+        request = as_dict(init.request)
+        self.assertEqual(request['questionsApiActivity'], 'not-a-dict')
 
     def test_assess_activity_uses_activity_domain_and_strips_stale_keys(self) -> None:
         """
@@ -311,8 +322,8 @@ class TestRequestTypeHandling(unittest.TestCase):
                 'extra': 'keep-me',
             }})
 
-        assert isinstance(init.request, dict)
-        activity = init.request['questionsApiActivity']
+        request = as_dict(init.request)
+        activity = request['questionsApiActivity']
         # Stale identity keys are replaced with freshly generated values.
         self.assertEqual(activity['consumer_key'], self.key)
         self.assertTrue(activity['signature'].startswith('$02$'))
@@ -334,8 +345,8 @@ class TestRequestTypeHandling(unittest.TestCase):
             'assess', security, self.secret,
             request={'questionsApiActivity': {'extra': 'keep-me'}})
 
-        assert isinstance(init.request, dict)
-        activity = init.request['questionsApiActivity']
+        request = as_dict(init.request)
+        activity = request['questionsApiActivity']
         self.assertTrue(activity['signature'].startswith('$02$'))
         self.assertEqual(activity['extra'], 'keep-me')
 
@@ -387,17 +398,17 @@ class TestTelemetryMetaHandling(unittest.TestCase):
         """When telemetry is enabled and no ``meta`` exists, one is created."""
         init = learnosity_sdk.request.Init(
             'items', self._security(), self.secret, request={'items': ['item_1']})
-        assert isinstance(init.request, dict)
-        self.assertIn('sdk', init.request['meta'])
+        request = as_dict(init.request)
+        self.assertIn('sdk', request['meta'])
 
     def test_existing_meta_dict_is_preserved(self) -> None:
         """An existing ``meta`` dict must keep its keys and gain the sdk block."""
         init = learnosity_sdk.request.Init(
             'items', self._security(), self.secret,
             request={'items': ['item_1'], 'meta': {'existing': 'value'}})
-        assert isinstance(init.request, dict)
-        self.assertEqual(init.request['meta']['existing'], 'value')
-        self.assertIn('sdk', init.request['meta'])
+        request = as_dict(init.request)
+        self.assertEqual(request['meta']['existing'], 'value')
+        self.assertIn('sdk', request['meta'])
 
     def test_non_dict_meta_is_replaced(self) -> None:
         """
@@ -408,6 +419,6 @@ class TestTelemetryMetaHandling(unittest.TestCase):
         init = learnosity_sdk.request.Init(
             'items', self._security(), self.secret,
             request={'items': ['item_1'], 'meta': 'not-a-dict'})
-        assert isinstance(init.request, dict)
-        self.assertIsInstance(init.request['meta'], dict)
-        self.assertIn('sdk', init.request['meta'])
+        request = as_dict(init.request)
+        self.assertIsInstance(request['meta'], dict)
+        self.assertIn('sdk', request['meta'])
