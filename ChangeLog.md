@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [unreleased] - 2025-12-11
+### Added
+- Added Data API configuration to request signatures
+- Added Data API Demo to standalone demos
+
+### Fixed
+- Fixed mypy errors failing lint check on ci build
+- Fixed missing import on setuptools types for testing
+
 ## [v0.3.13] - 2026-01-08
 ### Added
 - Added SDK language and version to request metadata

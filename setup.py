@@ -1,7 +1,7 @@
 import setuptools
 
 # Loads __version__ using exec as setup.py can't import its own package
-version = {}
+version: dict[str, str] = {}
 version_file = 'learnosity_sdk/_version.py'
 exec(open(version_file).read(), { '__builtins__': None }, version)
 if '__version__' not in version:
@@ -27,6 +27,7 @@ TEST_REQUIRES = [
     'responses >=0.8.1',
     'types-requests',
     'types-Jinja2',
+    'types-setuptools',
     'mypy',
 ]
 
