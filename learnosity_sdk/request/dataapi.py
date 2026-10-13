@@ -16,9 +16,7 @@ class DataApi(object):
         self._session = requests.Session()
 
     def __del__(self) -> None:
-        session = getattr(self, '_session', None)
-        if session is not None:
-            session.close()
+        self.close()
 
     def _extract_consumer(self, security_packet: Dict[str, str]) -> str:
         """
@@ -62,6 +60,11 @@ class DataApi(object):
                 path = '/' + '/'.join(path_parts[2:])
 
         return f"{action}_{path}"
+
+    def close(self) -> None:
+        session = getattr(self, '_session', None)
+        if session is not None:
+            session.close()
 
     def request(self, endpoint: str, security_packet: Dict[str, str],
                 secret: str, request_packet:Dict[str, Any] = {}, action: str = 'get') -> Response:

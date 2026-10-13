@@ -117,6 +117,29 @@ class IntegrationTestDataApiClient(unittest.TestCase):
 
         assert keys == {'py-sdk-test-2019-1', 'py-sdk-test-2019-2'}
 
+    def test_request_after_close(self) -> None:
+        """Verify that a client can still make requests after close() is called
+
+        Two requests are made to warm the pooled session, close() releases it,
+        and a third request on the same client must still succeed because the
+        session lazily rebuilds its connection pool.
+        """
+        client = DataApi()
+        endpoint = self.__build_base_url() + items_endpoint
+
+        references: List[str] = cast(List[str], items_request['references'])
+
+        first = client.request(endpoint, security, consumer_secret, items_request, action)
+        assert first.json()['data'][0]['reference'] in references
+
+        second = client.request(endpoint, security, consumer_secret, items_request, action)
+        assert second.json()['data'][0]['reference'] in references
+
+        client.close()
+
+        third = client.request(endpoint, security, consumer_secret, items_request, action)
+        assert third.json()['data'][0]['reference'] in references
+
     def test_question_paging(self) -> None:
         """Verify that paging works"""
         client = DataApi()

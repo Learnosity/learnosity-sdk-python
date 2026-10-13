@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [unreleased] - 2025-12-11
 ### Changed
-- Reuse the same request session on same Data API instance
+- Reuse the same request session on the same Data API instance
 
 ### Added
 - Added Data API configuration to request signatures
 - Added Data API Demo to standalone demos
+- Added a close() public method to close the session
 
 ### Fixed
 - Fixed mypy errors failing lint check on ci build
