@@ -103,6 +103,10 @@ class DataApi(object):
             'X-Learnosity-Action': derived_action,
             'X-Learnosity-SDK': f'Python:{sdk_version}'
         }
+        # Lazily create the session so subclasses that override __init__
+        # without calling super().__init__() still benefit from connection reuse.
+        if getattr(self, '_session', None) is None:
+            self._session = requests.Session()
 
         return self._session.post(endpoint, data=init.generate(), headers=headers)
 

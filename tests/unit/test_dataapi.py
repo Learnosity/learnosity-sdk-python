@@ -266,6 +266,30 @@ class UnitTestDataApiClient(unittest.TestCase):
         client.close()
 
     @responses.activate
+    def test_request_lazily_creates_session_for_subclass_skipping_super(self) -> None:
+        """Verify a subclass that overrides __init__ without super() still works
+
+        Before session reuse, DataApi had no __init__, so such a subclass was
+        valid. request() must lazily create the session so these subclasses keep
+        working and still benefit from connection reuse.
+        """
+        class LegacySubclass(DataApi):
+            def __init__(self) -> None:
+                # Intentionally does not call super().__init__()
+                pass
+
+        client = LegacySubclass()
+        assert getattr(client, '_session', None) is None
+
+        responses.add(responses.POST, self.endpoint, json=self.dummy_responses[0])
+        response = client.request(self.endpoint, self.security, self.consumer_secret, self.request, self.action)
+
+        assert response.json() == self.dummy_responses[0]
+        # The session was created on demand, so subsequent calls reuse it.
+        assert isinstance(client._session, requests.Session)
+
+
+    @responses.activate
     def test_metadata_headers_in_paginated_requests(self) -> None:
         """Verify that metadata headers are sent in all paginated requests"""
         for dummy in self.dummy_responses:
