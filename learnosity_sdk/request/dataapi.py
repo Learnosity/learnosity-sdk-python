@@ -62,6 +62,7 @@ class DataApi(object):
         return f"{action}_{path}"
 
     def close(self) -> None:
+        """Close pooled connections; later requests on this client remain supported."""
         session = getattr(self, '_session', None)
         if session is not None:
             session.close()
