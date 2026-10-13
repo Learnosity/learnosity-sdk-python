@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [unreleased] - 2025-12-11
+### Changed
+- Reuse the same request session on same Data API instance
+
 ### Added
 - Added Data API configuration to request signatures
 - Added Data API Demo to standalone demos

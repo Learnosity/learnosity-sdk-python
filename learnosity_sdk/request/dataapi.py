@@ -12,6 +12,14 @@ from learnosity_sdk._version import __version__
 
 class DataApi(object):
 
+    def __init__(self) -> None:
+        self._session = requests.Session()
+
+    def __del__(self) -> None:
+        session = getattr(self, '_session', None)
+        if session is not None:
+            session.close()
+
     def _extract_consumer(self, security_packet: Dict[str, str]) -> str:
         """
         Extract the consumer key from the security packet.
@@ -92,7 +100,7 @@ class DataApi(object):
             'X-Learnosity-SDK': f'Python:{sdk_version}'
         }
 
-        return requests.post(endpoint, data=init.generate(), headers=headers)
+        return self._session.post(endpoint, data=init.generate(), headers=headers)
 
     def results_iter(self, endpoint: str, security_packet: Dict[str, str],
                      secret: str, request_packet: Dict[str, Any] = {},
