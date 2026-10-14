@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added Data API configuration to request signatures
 - Added Data API Demo to standalone demos
 
+### Changed
+- Declared a minimum supported Python version of 3.9 via `python_requires`
+
 ### Fixed
 - Fixed mypy errors failing lint check on ci build
 - Fixed missing import on setuptools types for testing

@@ -46,6 +46,7 @@ setuptools.setup(
     long_description=readmeText, # Pulled from README.me on line 28
     long_description_content_type='text/markdown',
     packages=setuptools.find_packages(exclude=('tests')),
+    python_requires='>=3.9',
     install_requires=INSTALL_REQUIRES,
     extras_require={
         'dev': DEV_REQUIRES,

@@ -70,7 +70,7 @@ build-clean: real-clean
 dist: distclean venv pip-requirements-dev
 	$(call venv-activate); \
 		$(PYTHON) setup.py sdist; \
-		$(PYTHON) setup.py bdist_wheel --universal
+		$(PYTHON) setup.py bdist_wheel
 dist-upload: dist-check-version clean test dist-upload-twine
 dist-check-version: PKG_VER=$(shell sed -n "s/^.*__version__\s*=\s*'\([^']\+\)'.*$$/\1/p" learnosity_sdk/_version.py)
 dist-check-version: GIT_TAG=$(shell git describe --tags)
