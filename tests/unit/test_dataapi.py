@@ -231,8 +231,8 @@ class UnitTestDataApiClient(unittest.TestCase):
         client = DataApi()
 
         # The instance holds a single Session...
-        assert isinstance(client._session, requests.Session)
-        session = client._session
+        assert isinstance(client._http_session, requests.Session)
+        session = client._http_session
 
         # ...and spying on that session's post shows every paginated request
         # goes through the same object rather than a fresh connection each time.
@@ -250,19 +250,19 @@ class UnitTestDataApiClient(unittest.TestCase):
                                  self.request, self.action))
 
         assert call_count == 2
-        assert client._session is session
+        assert client._http_session is session
 
     def test_close_closes_session(self) -> None:
         """Verify that close() closes the underlying session"""
         client = DataApi()
-        with mock.patch.object(client._session, 'close') as mock_close:
+        with mock.patch.object(client._http_session, 'close') as mock_close:
             client.close()
         mock_close.assert_called_once_with()
 
     def test_close_without_session_is_safe(self) -> None:
         """Verify that close() does not raise if the session was never created"""
         client = DataApi.__new__(DataApi)
-        # No __init__ ran, so _session does not exist; close() must not raise.
+        # No __init__ ran, so _http_session does not exist; close() must not raise.
         client.close()
 
     @responses.activate
@@ -279,14 +279,14 @@ class UnitTestDataApiClient(unittest.TestCase):
                 pass
 
         client = LegacySubclass()
-        assert getattr(client, '_session', None) is None
+        assert getattr(client, '_http_session', None) is None
 
         responses.add(responses.POST, self.endpoint, json=self.dummy_responses[0])
         response = client.request(self.endpoint, self.security, self.consumer_secret, self.request, self.action)
 
         assert response.json() == self.dummy_responses[0]
         # The session was created on demand, so subsequent calls reuse it.
-        assert isinstance(client._session, requests.Session)
+        assert isinstance(client._http_session, requests.Session)
 
 
     @responses.activate

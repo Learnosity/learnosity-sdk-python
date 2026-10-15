@@ -13,7 +13,7 @@ from learnosity_sdk._version import __version__
 class DataApi(object):
 
     def __init__(self) -> None:
-        self._session = requests.Session()
+        self._http_session = requests.Session()
 
     def __del__(self) -> None:
         self.close()
@@ -63,7 +63,7 @@ class DataApi(object):
 
     def close(self) -> None:
         """Close pooled connections; later requests on this client remain supported."""
-        session = getattr(self, '_session', None)
+        session = getattr(self, '_http_session', None)
         if session is not None:
             session.close()
 
@@ -105,10 +105,10 @@ class DataApi(object):
         }
         # Lazily create the session so subclasses that override __init__
         # without calling super().__init__() still benefit from connection reuse.
-        if getattr(self, '_session', None) is None:
-            self._session = requests.Session()
+        if getattr(self, '_http_session', None) is None:
+            self._http_session = requests.Session()
 
-        return self._session.post(endpoint, data=init.generate(), headers=headers)
+        return self._http_session.post(endpoint, data=init.generate(), headers=headers)
 
     def results_iter(self, endpoint: str, security_packet: Dict[str, str],
                      secret: str, request_packet: Dict[str, Any] = {},
