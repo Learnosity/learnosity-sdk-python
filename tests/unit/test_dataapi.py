@@ -1,5 +1,7 @@
 from typing import Any, Dict, cast
 import unittest
+from unittest import mock
+import requests
 import responses
 from learnosity_sdk.request import DataApi
 from learnosity_sdk.exceptions import DataApiException
@@ -219,6 +221,72 @@ class UnitTestDataApiClient(unittest.TestCase):
         client = DataApi()
         action = client._derive_action('https://data.learnosity.com/v2025.1.preview123/itembank/questions', 'get')
         assert action == 'get_/itembank/questions'
+
+
+    @responses.activate
+    def test_session_reused_across_requests(self) -> None:
+        """Verify that the same requests.Session is reused across requests on one instance"""
+        for dummy in self.dummy_responses:
+            responses.add(responses.POST, self.endpoint, json=dummy)
+        client = DataApi()
+
+        # The instance holds a single Session...
+        assert isinstance(client._http_session, requests.Session)
+        session = client._http_session
+
+        # ...and spying on that session's post shows every paginated request
+        # goes through the same object rather than a fresh connection each time.
+        original_post = session.post
+        call_count = 0
+
+        def counting_post(*args: Any, **kwargs: Any) -> Any:
+            nonlocal call_count
+            call_count += 1
+            return original_post(*args, **kwargs)
+
+        session.post = counting_post  # type: ignore[method-assign]
+
+        list(client.request_iter(self.endpoint, self.security, self.consumer_secret,
+                                 self.request, self.action))
+
+        assert call_count == 2
+        assert client._http_session is session
+
+    def test_close_closes_session(self) -> None:
+        """Verify that close() closes the underlying session"""
+        client = DataApi()
+        with mock.patch.object(client._http_session, 'close') as mock_close:
+            client.close()
+        mock_close.assert_called_once_with()
+
+    def test_close_without_session_is_safe(self) -> None:
+        """Verify that close() does not raise if the session was never created"""
+        client = DataApi.__new__(DataApi)
+        # No __init__ ran, so _http_session does not exist; close() must not raise.
+        client.close()
+
+    @responses.activate
+    def test_request_lazily_creates_session_for_subclass_skipping_super(self) -> None:
+        """Verify a subclass that overrides __init__ without super() still works
+
+        Before session reuse, DataApi had no __init__, so such a subclass was
+        valid. request() must lazily create the session so these subclasses keep
+        working and still benefit from connection reuse.
+        """
+        class LegacySubclass(DataApi):
+            def __init__(self) -> None:
+                # Intentionally does not call super().__init__()
+                pass
+
+        client = LegacySubclass()
+        assert getattr(client, '_http_session', None) is None
+
+        responses.add(responses.POST, self.endpoint, json=self.dummy_responses[0])
+        response = client.request(self.endpoint, self.security, self.consumer_secret, self.request, self.action)
+
+        assert response.json() == self.dummy_responses[0]
+        # The session was created on demand, so subsequent calls reuse it.
+        assert isinstance(client._http_session, requests.Session)
 
 
     @responses.activate
